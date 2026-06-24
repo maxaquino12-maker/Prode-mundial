@@ -1,3 +1,7 @@
+
+bash
+
+cat > /mnt/user-data/outputs/prode-mundial-2026.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,8 +12,8 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --bg: #5d5d63; --bg-dark: #48484d; --bg-card: #6a6a70; --bg-input: #52525a;
-  --orange: #ff7a00; --orange-light: #ff9533; --orange-dark: #cc6200;
-  --white: #ffffff; --white-70: rgba(255,255,255,0.7); --white-40: rgba(255,255,255,0.4);
+  --orange: #ff7a00; --orange-light: #ff9533;
+  --white: #ffffff; --white-40: rgba(255,255,255,0.4);
   --white-15: rgba(255,255,255,0.15); --white-10: rgba(255,255,255,0.1);
   --border: rgba(255,255,255,0.18); --text: #ffffff; --text-muted: rgba(255,255,255,0.65);
   --green: #4caf50; --red: #f44336; --gold: #ffd700;
@@ -17,32 +21,23 @@
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 .dot-bg { position: fixed; top:0; left:0; width:100%; height:100%; background-image: radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px); background-size: 22px 22px; pointer-events:none; z-index:0; }
 .app { position: relative; z-index:1; min-height:100vh; }
-
-/* LOADER */
-.loader-overlay { position:fixed; inset:0; background:rgba(72,72,77,0.92); z-index:500; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
-.loader-spinner { width:40px; height:40px; border:3px solid var(--white-15); border-top-color:var(--orange); border-radius:50%; animation:spin 0.7s linear infinite; }
+.loader-overlay { position:fixed; inset:0; background:rgba(72,72,77,0.95); z-index:500; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
+.loader-spinner { width:42px; height:42px; border:3px solid var(--white-15); border-top-color:var(--orange); border-radius:50%; animation:spin 0.7s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
 .loader-txt { font-size:13px; color:var(--text-muted); }
-
-/* HEADER */
 .header { background: var(--bg-dark); border-bottom: 3px solid var(--orange); padding: 0 18px; display:flex; align-items:center; justify-content:space-between; height:58px; position:sticky; top:0; z-index:100; }
 .logo { display:flex; align-items:center; gap:10px; }
-.logo-icon { width:34px; height:34px; background:var(--orange); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:700; }
+.logo-icon { width:34px; height:34px; background:var(--orange); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:17px; }
 .logo-text { font-size:16px; font-weight:700; }
 .logo-sub { font-size:11px; color:var(--orange); display:block; margin-top:-2px; }
 .header-right { display:flex; align-items:center; gap:8px; }
 .avatar { width:32px; height:32px; border-radius:50%; background:var(--orange); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; cursor:pointer; border:2px solid var(--white-40); }
 .btn-logout { background:var(--white-10); border:1px solid var(--border); color:var(--text-muted); padding:5px 11px; border-radius:6px; font-size:12px; cursor:pointer; }
-
-/* NAV */
 .nav { background:var(--bg-card); border-bottom:1px solid var(--border); display:flex; overflow-x:auto; scrollbar-width:none; }
 .nav::-webkit-scrollbar { display:none; }
 .nav-btn { padding:11px 15px; font-size:13px; font-weight:500; color:var(--text-muted); border:none; background:none; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; transition:all 0.2s; }
 .nav-btn.active { color:var(--orange); border-bottom-color:var(--orange); }
-
 .main { padding:16px; max-width:840px; margin:0 auto; }
-
-/* LOGIN */
 .login-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:18px; }
 .login-card { background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:32px 26px; width:100%; max-width:380px; }
 .login-logo { text-align:center; margin-bottom:24px; }
@@ -53,23 +48,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .form-group label { font-size:11px; color:var(--text-muted); display:block; margin-bottom:5px; font-weight:500; text-transform:uppercase; letter-spacing:0.5px; }
 .form-control { width:100%; padding:9px 12px; background:var(--bg-input); border:1px solid var(--border); border-radius:8px; color:var(--white); font-size:14px; outline:none; transition:border-color 0.2s; }
 .form-control:focus { border-color:var(--orange); }
-.form-control::placeholder { color:var(--white-40); }
+.form-control::placeholder { color:rgba(255,255,255,0.35); }
 .btn-primary { width:100%; padding:11px; background:var(--orange); border:none; border-radius:8px; color:var(--white); font-size:14px; font-weight:700; cursor:pointer; margin-top:4px; transition:background 0.2s; }
 .btn-primary:hover { background:var(--orange-light); }
-.btn-primary:disabled { background:var(--white-15); cursor:default; }
 .login-switch { text-align:center; margin-top:14px; font-size:13px; color:var(--text-muted); }
 .login-switch a { color:var(--orange); cursor:pointer; font-weight:500; }
-.api-warn { background:rgba(255,122,0,0.12); border:1px solid var(--orange); border-radius:8px; padding:9px 12px; margin-top:12px; font-size:12px; color:var(--orange); text-align:center; }
-
-/* CARDS */
+.error-box { background:rgba(244,67,54,0.15); border:1px solid var(--red); border-radius:8px; padding:9px 12px; margin-top:10px; font-size:12px; color:#ff8a80; text-align:center; display:none; }
 .card { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:10px; }
 .card-title { font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.7px; margin-bottom:12px; }
 .stats-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(115px,1fr)); gap:8px; margin-bottom:12px; }
 .stat-card { background:var(--bg-dark); border:1px solid var(--border); border-radius:10px; padding:12px 14px; text-align:center; }
 .stat-val { font-size:24px; font-weight:700; color:var(--orange); }
 .stat-lbl { font-size:11px; color:var(--text-muted); margin-top:2px; }
-
-/* MATCH */
 .match-card { background:var(--bg-dark); border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin-bottom:8px; }
 .match-meta { font-size:11px; color:var(--orange); margin-bottom:7px; display:flex; gap:7px; align-items:center; flex-wrap:wrap; }
 .match-badge { background:var(--orange); color:var(--white); font-size:9px; font-weight:700; padding:2px 5px; border-radius:4px; }
@@ -83,17 +73,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .score-input { width:40px; height:32px; text-align:center; background:var(--bg-input); border:1px solid var(--border); border-radius:7px; color:var(--white); font-size:16px; font-weight:700; outline:none; }
 .score-input:focus { border-color:var(--orange); }
 .score-sep { color:var(--text-muted); font-size:16px; }
-.btn-save { margin-left:auto; padding:6px 13px; background:var(--orange); border:none; border-radius:6px; color:var(--white); font-size:12px; font-weight:600; cursor:pointer; transition:background 0.2s; }
-.btn-save:hover { background:var(--orange-light); }
+.btn-save { margin-left:auto; padding:6px 13px; background:var(--orange); border:none; border-radius:6px; color:var(--white); font-size:12px; font-weight:600; cursor:pointer; }
 .btn-save:disabled { background:var(--white-15); color:var(--text-muted); cursor:default; }
-
-/* PUNTOS */
 .pts-badge { display:inline-block; padding:2px 7px; border-radius:4px; font-size:11px; font-weight:700; }
 .pts-5 { background:#1b5e20; color:#69f0ae; }
 .pts-3 { background:#1565c0; color:#82b1ff; }
 .pts-0 { background:rgba(255,255,255,0.08); color:var(--text-muted); }
-
-/* LEADERBOARD */
 .lb-row { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:8px; margin-bottom:5px; background:var(--bg-dark); border:1px solid var(--border); }
 .lb-row.me { border-color:var(--orange); }
 .lb-rank { font-size:14px; font-weight:700; color:var(--text-muted); min-width:24px; }
@@ -103,70 +88,43 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .lb-avatar { width:32px; height:32px; border-radius:50%; background:var(--orange); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; }
 .lb-name { flex:1; font-size:13px; font-weight:500; }
 .lb-pts { font-size:16px; font-weight:700; color:var(--orange); }
-.lb-exact { font-size:11px; color:var(--text-muted); }
-
-/* TABS */
 .tab-row { display:flex; gap:5px; margin-bottom:13px; flex-wrap:wrap; }
 .tab-pill { padding:5px 12px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid var(--border); background:none; color:var(--text-muted); transition:all 0.2s; }
 .tab-pill.active { background:var(--orange); border-color:var(--orange); color:var(--white); }
-
-/* PROGRESS */
 .progress-bar { background:var(--white-15); border-radius:4px; height:5px; margin-top:4px; overflow:hidden; }
 .progress-fill { height:100%; border-radius:4px; background:var(--orange); }
-
-/* RESULT TAG */
-.result-tag { padding:3px 8px; border-radius:5px; font-size:11px; font-weight:700; }
-.result-live { background:#b71c1c; color:#ffcdd2; }
-.result-upcoming { background:var(--white-10); color:var(--text-muted); }
-
-/* SHARE */
+.result-live { background:#b71c1c; color:#ffcdd2; padding:3px 8px; border-radius:5px; font-size:11px; font-weight:700; }
+.result-upcoming { background:var(--white-10); color:var(--text-muted); padding:3px 8px; border-radius:5px; font-size:11px; }
 .btn-share { display:flex; align-items:center; gap:5px; padding:7px 13px; background:#25d366; border:none; border-radius:7px; color:var(--white); font-size:12px; font-weight:600; cursor:pointer; }
-
-/* ADMIN */
 .admin-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
-.btn-sm { padding:5px 11px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid; transition:all 0.2s; }
+.btn-sm { padding:5px 11px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid; }
 .btn-sm.orange { background:var(--orange); border-color:var(--orange); color:var(--white); }
 .btn-sm.outline { background:none; border-color:var(--border); color:var(--text-muted); }
 .btn-sm.danger { background:none; border-color:var(--red); color:var(--red); }
-
-/* NOTIF */
-.notif { position:fixed; top:66px; right:13px; background:var(--bg-dark); border:1px solid var(--orange); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--white); z-index:1000; max-width:260px; animation:slideIn 0.3s ease; }
+.notif { position:fixed; top:66px; right:13px; background:var(--bg-dark); border:1px solid var(--orange); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--white); z-index:1000; max-width:270px; animation:slideIn 0.3s ease; box-shadow:0 4px 16px rgba(0,0,0,0.4); }
 @keyframes slideIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
-
-/* MISC */
 .user-chip { background:var(--white-10); border-radius:4px; padding:1px 5px; font-size:10px; color:var(--text-muted); }
 .empty-state { text-align:center; padding:36px 16px; color:var(--text-muted); }
 .empty-state .icon { font-size:36px; margin-bottom:10px; }
 .section { display:none; }
 .section.active { display:block; }
-
-/* MODAL RESULTADO ADMIN */
 .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:200; display:flex; align-items:center; justify-content:center; padding:16px; }
 .modal { background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:22px; width:100%; max-width:360px; }
 .modal-title { font-size:16px; font-weight:700; margin-bottom:16px; }
 .modal-footer { display:flex; gap:8px; margin-top:16px; }
 .btn-cancel { flex:1; padding:9px; background:none; border:1px solid var(--border); border-radius:7px; color:var(--text-muted); cursor:pointer; font-size:13px; }
-
-@media(max-width:560px){
-  .main{padding:10px;}
-  .login-card{padding:20px 14px;}
-  .team-name{font-size:11px;}
-  .stats-row{grid-template-columns:1fr 1fr;}
-  .score-input{width:36px;height:28px;font-size:14px;}
-}
+@media(max-width:560px){ .main{padding:10px;} .team-name{font-size:11px;} .stats-row{grid-template-columns:1fr 1fr;} }
 </style>
 </head>
 <body>
 <div class="dot-bg"></div>
 <div class="app">
 
-<!-- LOADER -->
 <div id="loaderEl" class="loader-overlay" style="display:none">
   <div class="loader-spinner"></div>
   <div class="loader-txt" id="loaderTxt">Cargando...</div>
 </div>
 
-<!-- LOGIN -->
 <div id="loginView" class="login-wrap">
   <div class="login-card">
     <div class="login-logo">
@@ -175,24 +133,24 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <p>USA &middot; Canad&aacute; &middot; M&eacute;xico</p>
     </div>
     <div id="loginForm">
-      <div class="form-group"><label>Usuario o Email</label><input class="form-control" id="loginUser" placeholder="usuario o email"></div>
-      <div class="form-group"><label>Contrase&ntilde;a</label><input class="form-control" id="loginPass" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" type="password"></div>
-      <button class="btn-primary" id="btnLogin" onclick="doLogin()">Ingresar</button>
+      <div class="form-group"><label>Usuario o Email</label><input class="form-control" id="loginUser" placeholder="usuario o email" autocomplete="username"></div>
+      <div class="form-group"><label>Contrase&ntilde;a</label><input class="form-control" id="loginPass" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" type="password" autocomplete="current-password"></div>
+      <button class="btn-primary" onclick="doLogin()">Ingresar</button>
+      <div id="loginError" class="error-box"></div>
       <div class="login-switch">&iquest;No ten&eacute;s cuenta? <a onclick="showRegister()">Registrate</a></div>
-      <div id="apiWarn" class="api-warn" style="display:none">&#9888;&#65039; Configurá la URL de tu Apps Script primero</div>
     </div>
     <div id="registerForm" style="display:none">
       <div class="form-group"><label>Nombre y apellido</label><input class="form-control" id="regName" placeholder="Juan P&eacute;rez"></div>
       <div class="form-group"><label>Usuario</label><input class="form-control" id="regUser" placeholder="juanperez"></div>
       <div class="form-group"><label>Email</label><input class="form-control" id="regEmail" placeholder="juan@email.com" type="email"></div>
       <div class="form-group"><label>Contrase&ntilde;a</label><input class="form-control" id="regPass" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" type="password"></div>
-      <button class="btn-primary" id="btnRegister" onclick="doRegister()">Crear cuenta</button>
+      <button class="btn-primary" onclick="doRegister()">Crear cuenta</button>
+      <div id="regError" class="error-box"></div>
       <div class="login-switch"><a onclick="showLogin()">&larr; Volver al login</a></div>
     </div>
   </div>
 </div>
 
-<!-- APP -->
 <div id="appView" style="display:none">
   <div class="header">
     <div class="logo">
@@ -213,8 +171,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <button class="nav-btn" id="nav-admin" onclick="showSection('admin')" style="display:none">&#9881;&#65039; Admin</button>
   </div>
   <div class="main">
-
-    <!-- DASHBOARD -->
     <div class="section active" id="sec-dashboard">
       <div class="stats-row">
         <div class="stat-card"><div class="stat-val" id="dashPts">0</div><div class="stat-lbl">Mis puntos</div></div>
@@ -222,18 +178,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div class="stat-card"><div class="stat-val" id="dashExact">0</div><div class="stat-lbl">Exactos</div></div>
         <div class="stat-card"><div class="stat-val" id="dashPending">0</div><div class="stat-lbl">Sin pronosticar</div></div>
       </div>
-      <div class="card"><div class="card-title">&#9200; Pr&oacute;ximo partido</div><div id="nextMatchInfo"><div class="loader-txt">Cargando...</div></div></div>
-      <div class="card"><div class="card-title">&#127942; Top 5 del prode</div><div id="dashLeaderboard"><div class="loader-txt">Cargando...</div></div></div>
-      <div class="card"><div class="card-title">&#127760; Partidos de hoy</div><div id="todayMatches"><div class="loader-txt">Cargando...</div></div></div>
+      <div class="card"><div class="card-title">&#9200; Pr&oacute;ximo partido</div><div id="nextMatchInfo"></div></div>
+      <div class="card"><div class="card-title">&#127942; Top 5</div><div id="dashLeaderboard"></div></div>
+      <div class="card"><div class="card-title">&#127760; Partidos de hoy</div><div id="todayMatches"></div></div>
     </div>
-
-    <!-- PRONOSTICOS -->
     <div class="section" id="sec-pronosticos">
       <div class="tab-row" id="phaseTabs"></div>
       <div id="matchList"></div>
     </div>
-
-    <!-- TABLA -->
     <div class="section" id="sec-tabla">
       <div class="card" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
         <span style="font-size:14px;font-weight:600;">Ranking general</span>
@@ -241,14 +193,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       </div>
       <div id="leaderboard"></div>
     </div>
-
-    <!-- HISTORIAL -->
     <div class="section" id="sec-historial">
       <div class="card-title" style="margin-bottom:10px;">Mis pron&oacute;sticos</div>
       <div id="historialList"></div>
     </div>
-
-    <!-- STATS -->
     <div class="section" id="sec-estadisticas">
       <div class="stats-row">
         <div class="stat-card"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">Pron&oacute;sticos</div></div>
@@ -258,8 +206,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       </div>
       <div class="card"><div class="card-title">Actividad por partido</div><div id="statsDetail"></div></div>
     </div>
-
-    <!-- ADMIN -->
     <div class="section" id="sec-admin">
       <div class="card">
         <div class="card-title">&#9881;&#65039; Panel administrador</div>
@@ -270,13 +216,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div class="tab-row" style="margin-top:11px;">
           <button class="btn-sm orange" onclick="openResultModal()">&#9654; Cargar resultado</button>
           <button class="btn-sm outline" onclick="adminExportCSV()">&#128229; Exportar CSV</button>
-          <button class="btn-sm danger" onclick="adminReset()">&#128260; Reiniciar</button>
+          <button class="btn-sm danger" onclick="adminReset()">&#128260; Reiniciar torneo</button>
         </div>
       </div>
       <div class="card"><div class="card-title">Participantes</div><div id="adminUsersList"></div></div>
     </div>
-
-    <!-- PERFIL -->
     <div class="section" id="sec-perfil">
       <div class="card" style="text-align:center;padding:24px;">
         <div style="width:68px;height:68px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;margin:0 auto 12px;" id="profileAvatar">?</div>
@@ -289,47 +233,36 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         </div>
       </div>
     </div>
-
   </div>
-</div><!-- /appView -->
+</div>
 
-<!-- MODAL CARGAR RESULTADO (ADMIN) -->
 <div id="resultModal" class="modal-overlay" style="display:none">
   <div class="modal">
     <div class="modal-title">&#9917; Cargar resultado</div>
-    <div class="form-group">
-      <label>Partido</label>
-      <select class="form-control" id="modalMatch"></select>
-    </div>
-    <div style="display:flex;gap:10px;align-items:center;margin-top:4px;">
+    <div class="form-group"><label>Partido</label><select class="form-control" id="modalMatch"></select></div>
+    <div style="display:flex;gap:10px;align-items:flex-end;margin-top:4px;">
       <div class="form-group" style="flex:1;margin:0"><label>Local</label><input type="number" min="0" max="20" class="form-control" id="modalHome" placeholder="0" style="text-align:center;font-size:20px;font-weight:700;"></div>
-      <div style="font-size:20px;color:var(--text-muted);margin-top:16px;">-</div>
+      <div style="font-size:20px;color:var(--text-muted);padding-bottom:9px;">-</div>
       <div class="form-group" style="flex:1;margin:0"><label>Visitante</label><input type="number" min="0" max="20" class="form-control" id="modalAway" placeholder="0" style="text-align:center;font-size:20px;font-weight:700;"></div>
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeResultModal()">Cancelar</button>
-      <button class="btn-primary" style="width:auto;flex:1;" onclick="adminSaveResult()">Guardar resultado</button>
+      <button class="btn-primary" style="width:auto;flex:1;" onclick="adminSaveResult()">Guardar</button>
     </div>
   </div>
 </div>
 
-<!-- NOTIF -->
 <div id="notifEl" class="notif" style="display:none"></div>
 
 <script>
-// ══════════════════════════════════════════════════
-// CONFIGURACIÓN — reemplazá con tu URL de Apps Script
-// ══════════════════════════════════════════════════
-var API_URL = https://script.google.com/macros/s/AKfycbx6-NOFTpFZdeDhURqXmQHV01rSRRDDjyqNPihmecKVEcX1d9NajnBbjgVtuVW5parSWA/exec;
-// Ejemplo: 'https://script.google.com/macros/s/AKfycb.../exec'
+// ╔══════════════════════════════════════════════════════╗
+// ║  PEGÁ AQUÍ TU URL DE APPS SCRIPT (entre comillas)   ║
+// ╚══════════════════════════════════════════════════════╝
+var API_URL = 'https://script.google.com/macros/s/AKfycbx6-NOFTpFZdeDhURqXmQHV01rSRRDDjyqNPihmecKVEcX1d9NajnBbjgVtuVW5parSWA/exec';
 
-// ══════════════════════════════════════════════════
-// DATOS DEL MUNDIAL
-// ══════════════════════════════════════════════════
+// ══════════ FIXTURE MUNDIAL 2026 ══════════
 var FLAGS = {'M\xe9xico':'\ud83c\uddf2\ud83c\uddfd','Sud\xe1frica':'\ud83c\uddff\ud83c\udde6','Corea del Sur':'\ud83c\uddf0\ud83c\uddf7','Chequia':'\ud83c\udde8\ud83c\uddff','Suiza':'\ud83c\udde8\ud83c\udded','Canad\xe1':'\ud83c\udde8\ud83c\udde6','Bosnia':'\ud83c\udde7\ud83c\udde6','Qatar':'\ud83c\uddf6\ud83c\udde6','Marruecos':'\ud83c\uddf2\ud83c\udde6','Hait\xed':'\ud83c\udded\ud83c\uddf9','Escocia':'\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f','Brasil':'\ud83c\udde7\ud83c\uddf7','Ecuador':'\ud83c\uddea\ud83c\udde8','Alemania':'\ud83c\udde9\ud83c\uddea','Cura\xe7ao':'\ud83c\udde8\ud83c\uddfc','Costa de Marfil':'\ud83c\udde8\ud83c\uddee','Jap\xf3n':'\ud83c\uddef\ud83c\uddf5','Suecia':'\ud83c\uddf8\ud83c\uddea','T\xfanez':'\ud83c\uddf9\ud83c\uddf3','Pa\xedses Bajos':'\ud83c\uddf3\ud83c\uddf1','Turqu\xeda':'\ud83c\uddf9\ud83c\uddf7','Estados Unidos':'\ud83c\uddfa\ud83c\uddf8','Paraguay':'\ud83c\uddf5\ud83c\uddfe','Australia':'\ud83c\udde6\ud83c\uddfa','Noruega':'\ud83c\uddf3\ud83c\uddf4','Francia':'\ud83c\uddeb\ud83c\uddf7','Senegal':'\ud83c\uddf8\ud83c\uddf3','Iraq':'\ud83c\uddee\ud83c\uddf6','Espa\xf1a':'\ud83c\uddea\ud83c\uddf8','Uruguay':'\ud83c\uddfa\ud83c\uddfe','Cabo Verde':'\ud83c\udde8\ud83c\uddfb','Arabia Saudita':'\ud83c\uddf8\ud83c\udde6','B\xe9lgica':'\ud83c\udde7\ud83c\uddea','Egipto':'\ud83c\uddea\ud83c\uddec','Ir\xe1n':'\ud83c\uddee\ud83c\uddf7','Nueva Zelanda':'\ud83c\uddf3\ud83c\uddff','Panam\xe1':'\ud83c\uddf5\ud83c\udde6','Inglaterra':'\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f','Ghana':'\ud83c\uddec\ud83c\udded','Croacia':'\ud83c\udded\ud83c\uddf7','Colombia':'\ud83c\udde8\ud83c\uddf4','Portugal':'\ud83c\uddf5\ud83c\uddf9','Congo DR':'\ud83c\udde8\ud83c\udde9','Uzbekist\xe1n':'\ud83c\uddfa\ud83c\uddff','Argelia':'\ud83c\udde9\ud83c\uddff','Austria':'\ud83c\udde6\ud83c\uddf9','Jordania':'\ud83c\uddef\ud83c\uddf4','Argentina':'\ud83c\udde6\ud83c\uddf7'};
-
 var PHASES = {'grupos':'Fase de Grupos','r32':'Ronda de 32','cuartos':'Cuartos de Final','semis':'Semifinales','final':'Final'};
-
 var MATCHES = [
   {id:1,phase:'grupos',date:'2026-06-24T15:00',home:'Suiza',away:'Canad\xe1',venue:'Vancouver'},
   {id:2,phase:'grupos',date:'2026-06-24T15:00',home:'Bosnia',away:'Qatar',venue:'Seattle'},
@@ -374,83 +307,90 @@ var MATCHES = [
   {id:41,phase:'r32',date:'2026-07-04T17:00',home:'Ganador R32-3',away:'Ganador R32-4',venue:'TBD'},
   {id:42,phase:'r32',date:'2026-07-05T16:00',home:'Ganador R32-5',away:'Ganador R32-6',venue:'TBD'},
   {id:43,phase:'r32',date:'2026-07-05T20:00',home:'Ganador R32-7',away:'Ganador R32-8',venue:'TBD'},
-  {id:44,phase:'cuartos',date:'2026-07-06T15:00',home:'Cuartos TBD',away:'Cuartos TBD',venue:'TBD'},
-  {id:45,phase:'cuartos',date:'2026-07-06T20:00',home:'Cuartos TBD',away:'Cuartos TBD',venue:'TBD'},
-  {id:46,phase:'cuartos',date:'2026-07-07T12:00',home:'Cuartos TBD',away:'Cuartos TBD',venue:'TBD'},
-  {id:47,phase:'cuartos',date:'2026-07-07T16:00',home:'Cuartos TBD',away:'Cuartos TBD',venue:'TBD'},
-  {id:48,phase:'semis',date:'2026-07-11T17:00',home:'Semi TBD',away:'Semi TBD',venue:'TBD'},
-  {id:49,phase:'semis',date:'2026-07-11T21:00',home:'Semi TBD',away:'Semi TBD',venue:'TBD'},
+  {id:44,phase:'cuartos',date:'2026-07-06T15:00',home:'Cuarto 1',away:'Cuarto 2',venue:'TBD'},
+  {id:45,phase:'cuartos',date:'2026-07-06T20:00',home:'Cuarto 3',away:'Cuarto 4',venue:'TBD'},
+  {id:46,phase:'cuartos',date:'2026-07-07T12:00',home:'Cuarto 5',away:'Cuarto 6',venue:'TBD'},
+  {id:47,phase:'cuartos',date:'2026-07-07T16:00',home:'Cuarto 7',away:'Cuarto 8',venue:'TBD'},
+  {id:48,phase:'semis',date:'2026-07-11T17:00',home:'Semi 1',away:'Semi 2',venue:'TBD'},
+  {id:49,phase:'semis',date:'2026-07-11T21:00',home:'Semi 3',away:'Semi 4',venue:'TBD'},
   {id:50,phase:'final',date:'2026-07-19T15:00',home:'Final TBD',away:'Final TBD',venue:'MetLife Stadium NJ'}
 ];
 
-// ══════════════════════════════════════════════════
-// ESTADO GLOBAL
-// ══════════════════════════════════════════════════
-var currentUser = null;
-var authToken   = null;
-var myPronos    = {};
-var resultados  = {};
-var ranking     = [];
+// ══════════ ESTADO ══════════
+var currentUser = null, authToken = null;
+var myPronos = {}, resultados = {}, ranking = [];
 var currentPhase = 'grupos';
 var now = new Date();
 
-// ══════════════════════════════════════════════════
-// API HELPER
-// ══════════════════════════════════════════════════
-function api(action, params) {
-  if (!params) params = {};
-  params.action = action;
-  var url = API_URL + '?action=' + encodeURIComponent(action);
-  Object.keys(params).forEach(function(k) {
-    if (k !== 'action') url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
-  });
-  return fetch(url).then(function(r) { return r.json(); });
+// ══════════ API — usa solo GET con jsonp para evitar CORS ══════════
+function api(params, callback) {
+  var url = API_URL + '?';
+  var parts = [];
+  Object.keys(params).forEach(function(k){ parts.push(encodeURIComponent(k)+'='+encodeURIComponent(params[k])); });
+  var cbName = 'cb_' + Date.now() + '_' + Math.floor(Math.random()*9999);
+  parts.push('callback='+cbName);
+  url += parts.join('&');
+
+  window[cbName] = function(data) {
+    delete window[cbName];
+    var s = document.getElementById('jsonp_'+cbName);
+    if (s) s.parentNode.removeChild(s);
+    callback(null, data);
+  };
+
+  var script = document.createElement('script');
+  script.id = 'jsonp_'+cbName;
+  script.src = url;
+  script.onerror = function() {
+    delete window[cbName];
+    var s = document.getElementById('jsonp_'+cbName);
+    if (s) s.parentNode.removeChild(s);
+    callback(new Error('Error de conexi\xf3n con el servidor'));
+  };
+  document.head.appendChild(script);
+
+  // timeout 15s
+  setTimeout(function(){
+    if (window[cbName]) {
+      delete window[cbName];
+      var s = document.getElementById('jsonp_'+cbName);
+      if (s) s.parentNode.removeChild(s);
+      callback(new Error('Tiempo de espera agotado'));
+    }
+  }, 15000);
 }
 
-function apiPost(action, body) {
-  body.action = action;
-  return fetch(API_URL, {
-    method: 'POST',
-    body: JSON.stringify(body),
-    headers: { 'Content-Type': 'text/plain' }
-  }).then(function(r) { return r.json(); });
-}
-
-// ══════════════════════════════════════════════════
-// AUTH
-// ══════════════════════════════════════════════════
+// ══════════ AUTH ══════════
 function doLogin() {
-  if (API_URL.indexOf('REEMPLAZAR') >= 0) {
-    document.getElementById('apiWarn').style.display = 'block';
-    return;
-  }
   var u = document.getElementById('loginUser').value.trim();
   var p = document.getElementById('loginPass').value.trim();
-  if (!u || !p) { showNotif('\u26a0\ufe0f Complet\xe1 usuario y contrase\xf1a'); return; }
+  if (!u || !p) { showLoginError('Complet\xe1 usuario y contrase\xf1a'); return; }
   showLoader('Ingresando...');
-  apiPost('login', { usuario: u, password: p }).then(function(res) {
+  api({action:'login', usuario:u, password:p}, function(err, res){
     hideLoader();
-    if (!res.ok) { showNotif('\u274c ' + res.error); return; }
+    if (err) { showLoginError('Error de conexi\xf3n. Verific\xe1 que el Apps Script est\xe9 publicado correctamente.'); return; }
+    if (!res.ok) { showLoginError(res.error || 'Usuario o contrase\xf1a incorrectos'); return; }
     authToken = res.token;
     currentUser = res.user;
     enterApp();
-  }).catch(function() { hideLoader(); showNotif('\u274c Error de conexi\xf3n. Verific\xe1 tu URL de Apps Script.'); });
+  });
 }
 
 function doRegister() {
   var nombre = document.getElementById('regName').value.trim();
   var usuario = document.getElementById('regUser').value.trim();
-  var email   = document.getElementById('regEmail').value.trim();
-  var pass    = document.getElementById('regPass').value.trim();
-  if (!nombre||!usuario||!email||!pass) { showNotif('\u26a0\ufe0f Complet\xe1 todos los campos'); return; }
+  var email = document.getElementById('regEmail').value.trim();
+  var pass = document.getElementById('regPass').value.trim();
+  if (!nombre||!usuario||!email||!pass) { showRegError('Complet\xe1 todos los campos'); return; }
   showLoader('Creando cuenta...');
-  apiPost('register', { nombre: nombre, usuario: usuario, email: email, password: pass }).then(function(res) {
+  api({action:'register', nombre:nombre, usuario:usuario, email:email, password:pass}, function(err, res){
     hideLoader();
-    if (!res.ok) { showNotif('\u274c ' + res.error); return; }
+    if (err) { showRegError('Error de conexi\xf3n'); return; }
+    if (!res.ok) { showRegError(res.error || 'Error al registrarse'); return; }
     authToken = res.token;
     currentUser = res.user;
     enterApp();
-  }).catch(function() { hideLoader(); showNotif('\u274c Error de conexi\xf3n'); });
+  });
 }
 
 function enterApp() {
@@ -461,7 +401,7 @@ function enterApp() {
   document.getElementById('profileAvatar').textContent = ini;
   document.getElementById('profileName').textContent = currentUser.nombre;
   document.getElementById('profileEmail').textContent = currentUser.email;
-  if (currentUser.isAdmin === true || currentUser.isAdmin === 'true') {
+  if (currentUser.isAdmin === true || currentUser.isAdmin === 'true' || currentUser.isAdmin === 'TRUE') {
     document.getElementById('nav-admin').style.display = 'flex';
   }
   loadInitialData();
@@ -477,354 +417,240 @@ function doLogout() {
 function showLogin() {
   document.getElementById('loginForm').style.display = 'block';
   document.getElementById('registerForm').style.display = 'none';
-  document.getElementById('apiWarn').style.display = 'none';
+  hideLoginError(); hideRegError();
 }
 function showRegister() {
   document.getElementById('loginForm').style.display = 'none';
   document.getElementById('registerForm').style.display = 'block';
 }
+function showLoginError(msg) { var el=document.getElementById('loginError'); el.textContent=msg; el.style.display='block'; }
+function hideLoginError() { document.getElementById('loginError').style.display='none'; }
+function showRegError(msg) { var el=document.getElementById('regError'); el.textContent=msg; el.style.display='block'; }
+function hideRegError() { document.getElementById('regError').style.display='none'; }
 
-// ══════════════════════════════════════════════════
-// CARGA INICIAL DE DATOS
-// ══════════════════════════════════════════════════
+// ══════════ CARGA INICIAL ══════════
 function loadInitialData() {
   showLoader('Cargando datos...');
-  Promise.all([
-    api('getPronos', { userId: currentUser.id }),
-    api('getResultados'),
-    api('getRanking')
-  ]).then(function(results) {
-    hideLoader();
-    if (results[0].ok) myPronos = results[0].pronos || {};
-    if (results[1].ok) resultados = results[1].resultados || {};
-    if (results[2].ok) ranking = results[2].ranking || [];
-    showSection('dashboard');
-    showNotif('\ud83d\udc4b Bienvenido/a, ' + currentUser.nombre.split(' ')[0] + '!');
-  }).catch(function() {
-    hideLoader();
-    showNotif('\u26a0\ufe0f Error cargando datos');
-    showSection('dashboard');
-  });
+  var done = 0, total = 3;
+  function check() { if (++done === total) { hideLoader(); showSection('dashboard'); showNotif('\ud83d\udc4b Bienvenido/a, '+currentUser.nombre.split(' ')[0]+'!'); } }
+  api({action:'getPronos', userId:currentUser.id}, function(err,res){ if(!err&&res.ok) myPronos=res.pronos||{}; check(); });
+  api({action:'getResultados'}, function(err,res){ if(!err&&res.ok) resultados=res.resultados||{}; check(); });
+  api({action:'getRanking'}, function(err,res){ if(!err&&res.ok) ranking=res.ranking||[]; check(); });
 }
 
-function refreshData() {
-  return Promise.all([
-    api('getPronos', { userId: currentUser.id }),
-    api('getResultados'),
-    api('getRanking')
-  ]).then(function(res) {
-    if (res[0].ok) myPronos = res[0].pronos || {};
-    if (res[1].ok) resultados = res[1].resultados || {};
-    if (res[2].ok) ranking = res[2].ranking || [];
-  });
+function refreshAll(cb) {
+  var done=0;
+  function check(){ if(++done===3 && cb) cb(); }
+  api({action:'getPronos',userId:currentUser.id}, function(err,res){ if(!err&&res.ok) myPronos=res.pronos||{}; check(); });
+  api({action:'getResultados'}, function(err,res){ if(!err&&res.ok) resultados=res.resultados||{}; check(); });
+  api({action:'getRanking'}, function(err,res){ if(!err&&res.ok) ranking=res.ranking||[]; check(); });
 }
 
-// ══════════════════════════════════════════════════
-// NAVEGACIÓN
-// ══════════════════════════════════════════════════
+// ══════════ NAV ══════════
 function showSection(sec) {
   document.querySelectorAll('.section').forEach(function(x){x.classList.remove('active');});
   document.querySelectorAll('.nav-btn').forEach(function(x){x.classList.remove('active');});
-  var el = document.getElementById('sec-' + sec);
-  if (el) el.classList.add('active');
-  var nb = document.getElementById('nav-' + sec);
-  if (nb) nb.classList.add('active');
-  if (sec === 'dashboard')    renderDashboard();
-  if (sec === 'pronosticos')  renderPronosticos();
-  if (sec === 'tabla')        renderTabla();
-  if (sec === 'historial')    renderHistorial();
-  if (sec === 'estadisticas') { showLoader('Cargando stats...'); api('getStats').then(function(r){ hideLoader(); renderEstadisticas(r.ok ? r.stats : {}); }); }
-  if (sec === 'admin')        { showLoader('Cargando...'); refreshData().then(function(){ hideLoader(); renderAdmin(); }); }
-  if (sec === 'perfil')       renderPerfil();
+  var el=document.getElementById('sec-'+sec); if(el) el.classList.add('active');
+  var nb=document.getElementById('nav-'+sec); if(nb) nb.classList.add('active');
+  if(sec==='dashboard') renderDashboard();
+  if(sec==='pronosticos') renderPronosticos();
+  if(sec==='tabla') { showLoader('Actualizando ranking...'); api({action:'getRanking'},function(err,res){ hideLoader(); if(!err&&res.ok) ranking=res.ranking||[]; renderTabla(); }); }
+  if(sec==='historial') renderHistorial();
+  if(sec==='estadisticas') { showLoader('Cargando stats...'); api({action:'getStats'},function(err,res){ hideLoader(); renderEstadisticas(!err&&res.ok?res.stats:{}); }); }
+  if(sec==='admin') { showLoader('Cargando...'); refreshAll(function(){ hideLoader(); renderAdmin(); }); }
+  if(sec==='perfil') renderPerfil();
 }
 
-// ══════════════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════════════
+// ══════════ HELPERS ══════════
 function isMatchClosed(m) { return new Date(m.date) <= now; }
-
 function getTimeUntil(ds) {
-  var diff = new Date(ds) - now;
-  if (diff <= 0) return null;
-  var h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000);
-  if (h > 48) return Math.floor(h/24) + 'd';
-  if (h > 0) return h + 'h ' + m + 'm';
-  return m + 'm';
+  var diff=new Date(ds)-now; if(diff<=0) return null;
+  var h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000);
+  if(h>48) return Math.floor(h/24)+'d'; if(h>0) return h+'h '+m+'m'; return m+'m';
 }
-
 function calcPts(prono, result) {
-  if (!result || result.home === undefined) return null;
-  var ph=parseInt(prono.home), pa=parseInt(prono.away), rh=parseInt(result.home), ra=parseInt(result.away);
-  if (ph===rh && pa===ra) return 5;
-  var pW = ph>pa?'H':ph<pa?'A':'D', rW = rh>ra?'H':rh<ra?'A':'D';
-  if (pW===rW) return 3;
-  return 0;
+  if(!result||result.home===undefined) return null;
+  var ph=+prono.home, pa=+prono.away, rh=+result.home, ra=+result.away;
+  if(ph===rh&&pa===ra) return 5;
+  var pW=ph>pa?'H':ph<pa?'A':'D', rW=rh>ra?'H':rh<ra?'A':'D';
+  return pW===rW?3:0;
 }
-
 function getMyStats() {
   var total=0, exact=0;
-  Object.keys(myPronos).forEach(function(mid) {
-    var r = resultados[mid];
-    if (!r) return;
-    var pts = calcPts(myPronos[mid], r);
-    total += pts||0; if (pts===5) exact++;
-  });
-  return { total:total, exact:exact };
+  Object.keys(myPronos).forEach(function(mid){ var r=resultados[mid]; if(!r) return; var pts=calcPts(myPronos[mid],r); total+=pts||0; if(pts===5) exact++; });
+  return {total:total, exact:exact};
 }
+function ini(nombre) { return nombre.split(' ').map(function(x){return x[0];}).join('').slice(0,2).toUpperCase(); }
+function fmtDate(ds) { var d=new Date(ds); return d.toLocaleDateString('es-AR',{weekday:'short',month:'short',day:'numeric'})+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})+' hs'; }
 
-function ini(nombre) {
-  return nombre.split(' ').map(function(x){return x[0];}).join('').slice(0,2).toUpperCase();
-}
-
-function fmtDate(ds) {
-  var d = new Date(ds);
-  return d.toLocaleDateString('es-AR',{weekday:'short',month:'short',day:'numeric'}) + ' ' + d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}) + ' hs';
-}
-
-// ══════════════════════════════════════════════════
-// DASHBOARD
-// ══════════════════════════════════════════════════
+// ══════════ DASHBOARD ══════════
 function renderDashboard() {
-  var st = getMyStats();
-  var myRank = ranking.findIndex(function(x){return String(x.id)===String(currentUser.id);})+1;
-  var pending = MATCHES.filter(function(m){return !isMatchClosed(m)&&!myPronos[m.id];}).length;
-  document.getElementById('dashPts').textContent = st.total;
-  document.getElementById('dashPos').textContent = myRank>0 ? '#'+myRank : '-';
-  document.getElementById('dashExact').textContent = st.exact;
-  document.getElementById('dashPending').textContent = pending;
-
-  var nm = MATCHES.filter(function(m){return !isMatchClosed(m);}).sort(function(a,b){return new Date(a.date)-new Date(b.date);})[0];
-  var nmd = document.getElementById('nextMatchInfo');
-  if (nm) {
-    var t=getTimeUntil(nm.date), fh=FLAGS[nm.home]||'\ud83c\udff4', fa=FLAGS[nm.away]||'\ud83c\udff4';
-    nmd.innerHTML='<div style="font-size:15px;font-weight:600;">'+fh+' '+nm.home+' vs '+fa+' '+nm.away+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px;">'+nm.venue+' \u00b7 '+fmtDate(nm.date)+'</div>'+(t?'<div style="margin-top:10px;display:inline-block;background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:7px 13px;"><span style="font-size:18px;font-weight:700;color:var(--orange);">'+t+'</span> <span style="font-size:11px;color:var(--text-muted);">para el cierre</span></div>':'<span style="color:var(--red);font-size:13px;margin-top:8px;display:block;">\u26bd EN CURSO</span>');
+  var st=getMyStats(), myRank=ranking.findIndex(function(x){return String(x.id)===String(currentUser.id);})+1;
+  var pending=MATCHES.filter(function(m){return !isMatchClosed(m)&&!myPronos[m.id];}).length;
+  document.getElementById('dashPts').textContent=st.total;
+  document.getElementById('dashPos').textContent=myRank>0?'#'+myRank:'-';
+  document.getElementById('dashExact').textContent=st.exact;
+  document.getElementById('dashPending').textContent=pending;
+  var nm=MATCHES.filter(function(m){return !isMatchClosed(m);}).sort(function(a,b){return new Date(a.date)-new Date(b.date);})[0];
+  var nmd=document.getElementById('nextMatchInfo');
+  if(nm){var t=getTimeUntil(nm.date),fh=FLAGS[nm.home]||'\ud83c\udff4',fa=FLAGS[nm.away]||'\ud83c\udff4'; nmd.innerHTML='<div style="font-size:15px;font-weight:600;">'+fh+' '+nm.home+' vs '+fa+' '+nm.away+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px;">'+nm.venue+' \u00b7 '+fmtDate(nm.date)+'</div>'+(t?'<div style="margin-top:10px;display:inline-block;background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:7px 13px;"><span style="font-size:18px;font-weight:700;color:var(--orange);">'+t+'</span> <span style="font-size:11px;color:var(--text-muted);">para cerrar</span></div>':'<span style="color:var(--red);font-size:13px;margin-top:8px;display:block;">\u26bd EN CURSO</span>');
   } else nmd.innerHTML='<p style="color:var(--text-muted);font-size:13px;">No hay m\xe1s partidos pendientes</p>';
-
-  document.getElementById('dashLeaderboard').innerHTML = ranking.slice(0,5).map(function(u,i){
-    var medal=i===0?'\ud83e\udd47':i===1?'\ud83e\udd48':i===2?'\ud83e\udd49':'';
-    var isMe=String(u.id)===String(currentUser.id);
-    return '<div class="lb-row'+(isMe?' me':'')+'"><div class="lb-rank">'+(medal||'#'+(i+1))+'</div><div class="lb-avatar" style="font-size:11px;">'+ini(u.nombre)+'</div><div class="lb-name">'+u.nombre+(isMe?' <span class="user-chip">Vos</span>':'')+'</div><div><div class="lb-pts">'+u.total+'</div><div class="lb-exact">'+u.exact+' exactos</div></div></div>';
-  }).join('');
-
-  var todayStr = new Date().toISOString().slice(0,10);
-  var todayM = MATCHES.filter(function(m){return m.date.startsWith(todayStr);});
-  var tmd = document.getElementById('todayMatches');
-  if (!todayM.length) { tmd.innerHTML='<div class="empty-state"><div class="icon">\ud83d\udcc5</div><div>No hay partidos programados para hoy</div></div>'; return; }
-  tmd.innerHTML = todayM.map(function(m){
-    var fh=FLAGS[m.home]||'\ud83c\udff4',fa=FLAGS[m.away]||'\ud83c\udff4',r=resultados[m.id];
-    var st=isMatchClosed(m)?(r?'<span class="result-tag" style="background:var(--bg-dark);color:var(--text-muted);">'+r.home+' - '+r.away+'</span>':'<span class="result-tag result-live">\u26bd VIVO</span>'):'<span class="result-tag result-upcoming">'+new Date(m.date).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})+' hs</span>';
-    return '<div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);"><div style="flex:1;font-size:12px;">'+fh+' '+m.home+' vs '+fa+' '+m.away+'</div>'+st+'</div>';
-  }).join('');
+  document.getElementById('dashLeaderboard').innerHTML=ranking.slice(0,5).map(function(u,i){var medal=i===0?'\ud83e\udd47':i===1?'\ud83e\udd48':i===2?'\ud83e\udd49':'';var isMe=String(u.id)===String(currentUser.id);return '<div class="lb-row'+(isMe?' me':'')+'"><div class="lb-rank">'+(medal||'#'+(i+1))+'</div><div class="lb-avatar" style="font-size:11px;">'+ini(u.nombre)+'</div><div class="lb-name">'+u.nombre+(isMe?' <span class="user-chip">Vos</span>':'')+'</div><div><div class="lb-pts">'+u.total+'</div><div style="font-size:11px;color:var(--text-muted);">'+u.exact+' exactos</div></div></div>';}).join('');
+  var todayStr=new Date().toISOString().slice(0,10);
+  var todayM=MATCHES.filter(function(m){return m.date.startsWith(todayStr);});
+  var tmd=document.getElementById('todayMatches');
+  if(!todayM.length){tmd.innerHTML='<div class="empty-state"><div class="icon">\ud83d\udcc5</div><div>No hay partidos programados hoy</div></div>';return;}
+  tmd.innerHTML=todayM.map(function(m){var fh=FLAGS[m.home]||'\ud83c\udff4',fa=FLAGS[m.away]||'\ud83c\udff4',r=resultados[m.id];var st2=isMatchClosed(m)?(r?'<span style="background:var(--bg-dark);color:var(--text-muted);padding:3px 8px;border-radius:5px;font-size:11px;">'+r.home+' - '+r.away+'</span>':'<span class="result-live">\u26bd VIVO</span>'):'<span class="result-upcoming">'+new Date(m.date).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})+' hs</span>';return '<div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);"><div style="flex:1;font-size:12px;">'+fh+' '+m.home+' vs '+fa+' '+m.away+'</div>'+st2+'</div>';}).join('');
 }
 
-// ══════════════════════════════════════════════════
-// PRONÓSTICOS
-// ══════════════════════════════════════════════════
+// ══════════ PRONÓSTICOS ══════════
 function renderPronosticos() {
   var phases=[...new Set(MATCHES.map(function(m){return m.phase;}))];
-  document.getElementById('phaseTabs').innerHTML=phases.map(function(p){
-    return '<button class="tab-pill'+(currentPhase===p?' active':'')+'\" onclick=\"setPhase(\''+p+'\')\">'+PHASES[p]+'</button>';
-  }).join('');
+  document.getElementById('phaseTabs').innerHTML=phases.map(function(p){return '<button class="tab-pill'+(currentPhase===p?' active':'')+'\" onclick=\"setPhase(\''+p+'\')\">'+PHASES[p]+'</button>';}).join('');
   renderMatchList();
 }
-
-function setPhase(p){ currentPhase=p; renderPronosticos(); }
-
-function renderMatchList() {
-  var list = document.getElementById('matchList');
-  var filtered = MATCHES.filter(function(m){return m.phase===currentPhase;});
-  if (!filtered.length) { list.innerHTML='<div class="empty-state"><div class="icon">\ud83d\udccb</div><div>No hay partidos en esta fase</div></div>'; return; }
-  list.innerHTML = filtered.map(function(m){
-    var fh=FLAGS[m.home]||'\ud83c\udff4', fa=FLAGS[m.away]||'\ud83c\udff4';
-    var closed=isMatchClosed(m), myP=myPronos[m.id], r=resultados[m.id];
-    var tl=getTimeUntil(m.date);
+function setPhase(p){currentPhase=p;renderPronosticos();}
+function renderMatchList(){
+  var list=document.getElementById('matchList');
+  var filtered=MATCHES.filter(function(m){return m.phase===currentPhase;});
+  if(!filtered.length){list.innerHTML='<div class="empty-state"><div class="icon">\ud83d\udccb</div><div>No hay partidos en esta fase</div></div>';return;}
+  list.innerHTML=filtered.map(function(m){
+    var fh=FLAGS[m.home]||'\ud83c\udff4',fa=FLAGS[m.away]||'\ud83c\udff4';
+    var closed=isMatchClosed(m),myP=myPronos[m.id],r=resultados[m.id],tl=getTimeUntil(m.date);
     var ptsBadge='';
-    if (myP&&r) { var pts=calcPts(myP,r); ptsBadge='<span class="pts-badge '+(pts===5?'pts-5':pts>=2?'pts-3':'pts-0')+'">+'+pts+' pts</span>'; }
-    var scoreSection = closed
-      ? '<div style="display:flex;align-items:center;margin-top:9px;gap:9px;flex-wrap:wrap;">'+(r?'<span style="font-size:12px;color:var(--white-70);">Real: <b>'+r.home+' - '+r.away+'</b></span>':'<span class="result-tag result-live">\u26bd EN VIVO</span>')+(myP?'<span style="font-size:12px;color:var(--text-muted);">Tu prono: '+myP.home+' - '+myP.away+'</span>':'<span style="color:var(--red);font-size:12px;">Sin pron\xf3stico</span>')+'</div>'
-      : '<div class="score-inputs"><input type="number" min="0" max="20" class="score-input" id="sh-'+m.id+'" value="'+(myP!==undefined?myP.home:'')+'" placeholder="0"><span class="score-sep">-</span><input type="number" min="0" max="20" class="score-input" id="sa-'+m.id+'" value="'+(myP!==undefined?myP.away:'')+'" placeholder="0"><button class="btn-save" onclick="saveProno('+m.id+')">Guardar</button>'+(myP?'<span style="font-size:11px;color:var(--green);">\u2713 Guardado</span>':'')+'</div>';
+    if(myP&&r){var pts=calcPts(myP,r);ptsBadge='<span class="pts-badge '+(pts===5?'pts-5':pts>=2?'pts-3':'pts-0')+'">+'+pts+' pts</span>';}
+    var scoreSection=closed
+      ?'<div style="display:flex;align-items:center;margin-top:9px;gap:9px;flex-wrap:wrap;">'+(r?'<span style="font-size:12px;color:rgba(255,255,255,0.7);">Real: <b>'+r.home+' - '+r.away+'</b></span>':'<span class="result-live">\u26bd EN VIVO</span>')+(myP?'<span style="font-size:12px;color:var(--text-muted);">Tu prono: '+myP.home+' - '+myP.away+'</span>':'<span style="color:var(--red);font-size:12px;">Sin pron\xf3stico</span>')+'</div>'
+      :'<div class="score-inputs"><input type="number" min="0" max="20" class="score-input" id="sh-'+m.id+'" value="'+(myP!==undefined?myP.home:'')+'" placeholder="0"><span class="score-sep">-</span><input type="number" min="0" max="20" class="score-input" id="sa-'+m.id+'" value="'+(myP!==undefined?myP.away:'')+'" placeholder="0"><button class="btn-save" id="btn-'+m.id+'" onclick="saveProno('+m.id+')">Guardar</button>'+(myP?'<span style="font-size:11px;color:var(--green);">\u2713 Guardado</span>':'')+'</div>';
     return '<div class="match-card"><div class="match-meta"><span class="match-badge">'+PHASES[m.phase]+'</span><span>'+fmtDate(m.date)+'</span>'+(tl&&!closed?'<span style="color:var(--text-muted);">\u23f1 '+tl+'</span>':'')+ptsBadge+'</div><div class="match-teams"><div class="team"><div class="team-flag">'+fh+'</div><div class="team-name">'+m.home+'</div></div><div class="vs">VS</div><div class="team right"><div class="team-name">'+m.away+'</div><div class="team-flag">'+fa+'</div></div></div>'+scoreSection+'</div>';
   }).join('');
 }
-
-function saveProno(mid) {
+function saveProno(mid){
   var h=document.getElementById('sh-'+mid).value, a=document.getElementById('sa-'+mid).value;
-  if (h===''||a==='') { showNotif('\u26a0\ufe0f Ingres\xe1 ambos marcadores'); return; }
-  var btn = document.querySelector('#sh-'+mid).parentElement.querySelector('.btn-save');
-  btn.disabled=true; btn.textContent='...';
-  apiPost('saveProno',{userId:currentUser.id, matchId:mid, homeScore:parseInt(h), awayScore:parseInt(a)}).then(function(res){
-    if (res.ok) {
-      myPronos[mid]={home:parseInt(h),away:parseInt(a)};
-      showNotif('\u2705 Pron\xf3stico guardado!');
-      renderMatchList();
-    } else { showNotif('\u274c '+res.error); btn.disabled=false; btn.textContent='Guardar'; }
-  }).catch(function(){ showNotif('\u274c Error de conexi\xf3n'); btn.disabled=false; btn.textContent='Guardar'; });
+  if(h===''||a===''){showNotif('\u26a0\ufe0f Ingres\xe1 ambos marcadores');return;}
+  var btn=document.getElementById('btn-'+mid); if(btn){btn.disabled=true;btn.textContent='...';}
+  api({action:'saveProno',userId:currentUser.id,matchId:mid,homeScore:parseInt(h),awayScore:parseInt(a)},function(err,res){
+    if(err||!res.ok){showNotif('\u274c '+(res&&res.error?res.error:'Error al guardar'));if(btn){btn.disabled=false;btn.textContent='Guardar';}return;}
+    myPronos[mid]={home:parseInt(h),away:parseInt(a)};
+    showNotif('\u2705 Pron\xf3stico guardado!');
+    renderMatchList();
+  });
 }
 
-// ══════════════════════════════════════════════════
-// TABLA
-// ══════════════════════════════════════════════════
-function renderTabla() {
-  showLoader('Actualizando ranking...');
-  api('getRanking').then(function(res){
-    hideLoader();
-    if (res.ok) ranking = res.ranking || [];
-    document.getElementById('leaderboard').innerHTML = ranking.map(function(u,i){
-      var isMe=String(u.id)===String(currentUser.id);
-      var rcls=i===0?'gold':i===1?'silver':i===2?'bronze':'';
-      var medal=i===0?'\ud83e\udd47':i===1?'\ud83e\udd48':i===2?'\ud83e\udd49':'#'+(i+1);
-      return '<div class="lb-row'+(isMe?' me':'')+'"><div class="lb-rank '+rcls+'">'+medal+'</div><div class="lb-avatar" style="font-size:11px;background:'+(isMe?'var(--orange)':'var(--bg-dark)')+';">'+ini(u.nombre)+'</div><div><div class="lb-name">'+u.nombre+(isMe?' <span class="user-chip">Vos</span>':'')+'</div><div style="font-size:11px;color:var(--text-muted);">'+u.hit+' aciertos \u00b7 '+u.exact+' exactos \u00b7 '+u.pronosCount+' jugados</div></div><div style="text-align:right;"><div class="lb-pts">'+u.total+'</div><div class="lb-exact">pts</div></div></div>';
-    }).join('');
-  }).catch(function(){ hideLoader(); showNotif('\u274c Error cargando ranking'); });
+// ══════════ TABLA ══════════
+function renderTabla(){
+  document.getElementById('leaderboard').innerHTML=ranking.map(function(u,i){
+    var isMe=String(u.id)===String(currentUser.id);
+    var rcls=i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    var medal=i===0?'\ud83e\udd47':i===1?'\ud83e\udd48':i===2?'\ud83e\udd49':'#'+(i+1);
+    return '<div class="lb-row'+(isMe?' me':'')+'"><div class="lb-rank '+rcls+'">'+medal+'</div><div class="lb-avatar" style="font-size:11px;background:'+(isMe?'var(--orange)':'var(--bg-dark)')+';">'+ini(u.nombre)+'</div><div><div class="lb-name">'+u.nombre+(isMe?' <span class="user-chip">Vos</span>':'')+'</div><div style="font-size:11px;color:var(--text-muted);">'+u.hit+' aciertos \u00b7 '+u.exact+' exactos</div></div><div style="text-align:right;"><div class="lb-pts">'+u.total+'</div><div style="font-size:11px;color:var(--text-muted);">pts</div></div></div>';
+  }).join('');
 }
 
-// ══════════════════════════════════════════════════
-// HISTORIAL
-// ══════════════════════════════════════════════════
-function renderHistorial() {
-  var list = document.getElementById('historialList');
-  var entries = MATCHES.filter(function(m){return myPronos[m.id];}).sort(function(a,b){return new Date(b.date)-new Date(a.date);});
-  if (!entries.length) { list.innerHTML='<div class="empty-state"><div class="icon">\ud83d\udcdd</div><div>Todav\xeda no hiciste pron\xf3sticos</div></div>'; return; }
-  list.innerHTML = entries.map(function(m){
-    var prono=myPronos[m.id], r=resultados[m.id], pts=r?calcPts(prono,r):null;
-    var fh=FLAGS[m.home]||'\ud83c\udff4', fa=FLAGS[m.away]||'\ud83c\udff4';
+// ══════════ HISTORIAL ══════════
+function renderHistorial(){
+  var list=document.getElementById('historialList');
+  var entries=MATCHES.filter(function(m){return myPronos[m.id];}).sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+  if(!entries.length){list.innerHTML='<div class="empty-state"><div class="icon">\ud83d\udcdd</div><div>Todav\xeda no hiciste pron\xf3sticos</div></div>';return;}
+  list.innerHTML=entries.map(function(m){
+    var prono=myPronos[m.id],r=resultados[m.id],pts=r?calcPts(prono,r):null;
+    var fh=FLAGS[m.home]||'\ud83c\udff4',fa=FLAGS[m.away]||'\ud83c\udff4';
     var pb=pts!==null?'<span class="pts-badge '+(pts===5?'pts-5':pts>=2?'pts-3':'pts-0')+'">+'+pts+' pts</span>':'';
     return '<div class="match-card"><div class="match-meta"><span class="match-badge">'+PHASES[m.phase]+'</span><span>'+new Date(m.date).toLocaleDateString('es-AR',{month:'short',day:'numeric'})+'</span>'+pb+'</div><div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;"><span style="font-size:13px;font-weight:600;">'+fh+' '+m.home+' vs '+fa+' '+m.away+'</span><span style="font-size:12px;color:var(--orange);">Mi prono: <b>'+prono.home+' - '+prono.away+'</b></span>'+(r?'<span style="font-size:12px;color:var(--text-muted);">Real: '+r.home+' - '+r.away+'</span>':'<span style="font-size:11px;color:var(--text-muted);">Pendiente</span>')+'</div></div>';
   }).join('');
 }
 
-// ══════════════════════════════════════════════════
-// ESTADÍSTICAS
-// ══════════════════════════════════════════════════
-function renderEstadisticas(stats) {
-  if (!stats) stats={};
-  document.getElementById('statTotal').textContent = stats.totalPronos||0;
-  document.getElementById('statExact').textContent = (stats.pctExactos||0)+'%';
-  document.getElementById('statAvgPts').textContent = stats.avgPts||0;
-  var mbm = stats.mostBetMatchId ? MATCHES.find(function(m){return String(m.id)===String(stats.mostBetMatchId);}) : null;
-  document.getElementById('statPop').textContent = mbm?((FLAGS[mbm.home]||'')+' vs '+(FLAGS[mbm.away]||'')):'-';
-  var mc = stats.matchCount||{};
-  var sd = document.getElementById('statsDetail');
-  var bm = MATCHES.filter(function(m){return mc[m.id]||mc[String(m.id)];}).slice(0,8);
-  if (!bm.length) { sd.innerHTML='<p style="color:var(--text-muted);font-size:13px;">A\xfan no hay datos suficientes</p>'; return; }
-  var maxC = Math.max.apply(null, bm.map(function(m){return mc[m.id]||mc[String(m.id)]||0;}));
-  sd.innerHTML = bm.map(function(m){
-    var cnt=mc[m.id]||mc[String(m.id)]||0, pct=maxC>0?Math.round(cnt/maxC*100):0;
-    return '<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span>'+(FLAGS[m.home]||'')+' '+m.home+' vs '+(FLAGS[m.away]||'')+' '+m.away+'</span><span style="color:var(--orange);">'+cnt+' apuestas</span></div><div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div></div>';
-  }).join('');
+// ══════════ STATS ══════════
+function renderEstadisticas(stats){
+  if(!stats) stats={};
+  document.getElementById('statTotal').textContent=stats.totalPronos||0;
+  document.getElementById('statExact').textContent=(stats.pctExactos||0)+'%';
+  document.getElementById('statAvgPts').textContent=stats.avgPts||0;
+  var mbm=stats.mostBetMatchId?MATCHES.find(function(m){return String(m.id)===String(stats.mostBetMatchId);}):null;
+  document.getElementById('statPop').textContent=mbm?((FLAGS[mbm.home]||'')+' vs '+(FLAGS[mbm.away]||'')):'-';
+  var mc=stats.matchCount||{},sd=document.getElementById('statsDetail');
+  var bm=MATCHES.filter(function(m){return mc[m.id]||mc[String(m.id)];}).slice(0,8);
+  if(!bm.length){sd.innerHTML='<p style="color:var(--text-muted);font-size:13px;">A\xfan no hay datos</p>';return;}
+  var maxC=Math.max.apply(null,bm.map(function(m){return mc[m.id]||mc[String(m.id)]||0;}));
+  sd.innerHTML=bm.map(function(m){var cnt=mc[m.id]||mc[String(m.id)]||0,pct=maxC>0?Math.round(cnt/maxC*100):0;return '<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span>'+(FLAGS[m.home]||'')+' '+m.home+' vs '+(FLAGS[m.away]||'')+' '+m.away+'</span><span style="color:var(--orange);">'+cnt+'</span></div><div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div></div>';}).join('');
 }
 
-// ══════════════════════════════════════════════════
-// ADMIN
-// ══════════════════════════════════════════════════
-function renderAdmin() {
-  document.getElementById('adminUsers').textContent = ranking.length;
-  document.getElementById('adminProds').textContent = ranking.reduce(function(a,u){return a+u.pronosCount;},0);
-  document.getElementById('adminPlayed').textContent = Object.keys(resultados).length + ' / ' + MATCHES.length;
-  document.getElementById('adminUsersList').innerHTML = ranking.map(function(u,i){
-    return '<div class="admin-row"><div><div style="font-size:13px;font-weight:500;">'+u.nombre+' <span class="user-chip">@'+u.usuario+'</span>'+(u.isAdmin===true||u.isAdmin==='true'?' <span style="color:var(--orange);font-size:10px;font-weight:700;">ADMIN</span>':'')+'</div><div style="font-size:11px;color:var(--text-muted);">'+u.pronosCount+' pron\xf3sticos \u00b7 '+u.total+' pts \u00b7 '+u.exact+' exactos</div></div><span style="font-size:13px;color:var(--text-muted);">#'+(i+1)+'</span></div>';
-  }).join('');
+// ══════════ ADMIN ══════════
+function renderAdmin(){
+  document.getElementById('adminUsers').textContent=ranking.length;
+  document.getElementById('adminProds').textContent=ranking.reduce(function(a,u){return a+u.pronosCount;},0);
+  document.getElementById('adminPlayed').textContent=Object.keys(resultados).length+' / '+MATCHES.length;
+  document.getElementById('adminUsersList').innerHTML=ranking.map(function(u,i){return '<div class="admin-row"><div><div style="font-size:13px;font-weight:500;">'+u.nombre+' <span class="user-chip">@'+u.usuario+'</span>'+(u.isAdmin===true||u.isAdmin==='true'||u.isAdmin==='TRUE'?' <span style="color:var(--orange);font-size:10px;font-weight:700;">ADMIN</span>':'')+'</div><div style="font-size:11px;color:var(--text-muted);">'+u.pronosCount+' pron\xf3sticos \u00b7 '+u.total+' pts</div></div><span style="color:var(--text-muted);">#'+(i+1)+'</span></div>';}).join('');
 }
-
-function openResultModal() {
-  var sel = document.getElementById('modalMatch');
-  sel.innerHTML = MATCHES.map(function(m){
-    return '<option value="'+m.id+'">'+(FLAGS[m.home]||'')+' '+m.home+' vs '+(FLAGS[m.away]||'')+' '+m.away+' ('+new Date(m.date).toLocaleDateString('es-AR',{month:'short',day:'numeric'})+')</option>';
-  }).join('');
-  var firstClosed = MATCHES.filter(function(m){return isMatchClosed(m)&&!resultados[m.id];})[0];
-  if (firstClosed) sel.value = firstClosed.id;
+function openResultModal(){
+  var sel=document.getElementById('modalMatch');
+  sel.innerHTML=MATCHES.map(function(m){return '<option value="'+m.id+'">'+(FLAGS[m.home]||'')+' '+m.home+' vs '+(FLAGS[m.away]||'')+' '+m.away+'</option>';}).join('');
+  var firstClosed=MATCHES.filter(function(m){return isMatchClosed(m)&&!resultados[m.id];})[0];
+  if(firstClosed) sel.value=firstClosed.id;
   document.getElementById('modalHome').value='';
   document.getElementById('modalAway').value='';
   document.getElementById('resultModal').style.display='flex';
 }
-
-function closeResultModal() { document.getElementById('resultModal').style.display='none'; }
-
-function adminSaveResult() {
+function closeResultModal(){document.getElementById('resultModal').style.display='none';}
+function adminSaveResult(){
   var mid=document.getElementById('modalMatch').value;
-  var h=document.getElementById('modalHome').value;
-  var a=document.getElementById('modalAway').value;
-  if (h===''||a==='') { showNotif('\u26a0\ufe0f Ingres\xe1 el marcador'); return; }
+  var h=document.getElementById('modalHome').value, a=document.getElementById('modalAway').value;
+  if(h===''||a===''){showNotif('\u26a0\ufe0f Ingres\xe1 el marcador');return;}
   showLoader('Guardando resultado...');
-  apiPost('saveResultado',{adminToken:authToken,matchId:parseInt(mid),homeScore:parseInt(h),awayScore:parseInt(a)}).then(function(res){
-    hideLoader(); closeResultModal();
-    if (res.ok) {
-      resultados[mid]={home:parseInt(h),away:parseInt(a)};
-      showNotif('\u2705 Resultado guardado!');
-      refreshData().then(function(){ renderAdmin(); });
-    } else showNotif('\u274c '+res.error);
-  }).catch(function(){ hideLoader(); showNotif('\u274c Error de conexi\xf3n'); });
+  api({action:'saveResultado',adminToken:authToken,matchId:parseInt(mid),homeScore:parseInt(h),awayScore:parseInt(a)},function(err,res){
+    hideLoader();closeResultModal();
+    if(err||!res.ok){showNotif('\u274c '+(res&&res.error?res.error:'Error'));return;}
+    resultados[mid]={home:parseInt(h),away:parseInt(a)};
+    showNotif('\u2705 Resultado cargado!');
+    refreshAll(function(){renderAdmin();});
+  });
 }
-
-function adminExportCSV() {
+function adminExportCSV(){
   var rows=[['Pos','Nombre','Usuario','Puntos','Exactos','Aciertos','Jugados']];
-  ranking.forEach(function(u,i){ rows.push([i+1,u.nombre,u.usuario,u.total,u.exact,u.hit,u.pronosCount]); });
+  ranking.forEach(function(u,i){rows.push([i+1,u.nombre,u.usuario,u.total,u.exact,u.hit,u.pronosCount]);});
   var csv=rows.map(function(r){return r.join(',');}).join('\n');
   var blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
   var url=URL.createObjectURL(blob),a=document.createElement('a');
-  a.href=url;a.download='prode-mundial-2026-ranking.csv';a.click();
+  a.href=url;a.download='prode-2026-ranking.csv';a.click();
   showNotif('\ud83d\udce5 CSV exportado!');
 }
-
-function adminReset() {
-  if (!confirm('\u00bfSeg\xfaro que quer\xe9s reiniciar? Se borran TODOS los pron\xf3sticos y resultados.')) return;
-  showLoader('Reiniciando torneo...');
-  apiPost('resetTorneo',{adminToken:authToken}).then(function(res){
+function adminReset(){
+  if(!confirm('\u00bfSeg\xfaro? Se borran TODOS los pron\xf3sticos y resultados.')) return;
+  showLoader('Reiniciando...');
+  api({action:'resetTorneo',adminToken:authToken},function(err,res){
     hideLoader();
-    if (res.ok) {
-      myPronos={}; resultados={};
-      showNotif('\ud83d\udd04 Torneo reiniciado');
-      refreshData().then(function(){ renderAdmin(); });
-    } else showNotif('\u274c '+res.error);
-  }).catch(function(){ hideLoader(); showNotif('\u274c Error'); });
+    if(err||!res.ok){showNotif('\u274c '+(res&&res.error?res.error:'Error'));return;}
+    myPronos={};resultados={};showNotif('\ud83d\udd04 Torneo reiniciado');
+    refreshAll(function(){renderAdmin();});
+  });
 }
 
-// ══════════════════════════════════════════════════
-// PERFIL
-// ══════════════════════════════════════════════════
-function renderPerfil() {
-  var st=getMyStats();
-  var myRank=ranking.findIndex(function(x){return String(x.id)===String(currentUser.id);})+1;
+// ══════════ PERFIL ══════════
+function renderPerfil(){
+  var st=getMyStats(),myRank=ranking.findIndex(function(x){return String(x.id)===String(currentUser.id);})+1;
   document.getElementById('profilePts').textContent=st.total;
   document.getElementById('profileExact').textContent=st.exact;
   document.getElementById('profilePos').textContent='#'+myRank;
 }
 
-// ══════════════════════════════════════════════════
-// SHARE
-// ══════════════════════════════════════════════════
-function shareRanking() {
+// ══════════ SHARE ══════════
+function shareRanking(){
   var top=ranking.slice(0,5);
   var txt='\ud83c\udfc6 Prode Mundial 2026 - Top 5:\n'+top.map(function(u,i){return (i+1)+'. '+u.nombre+' \u2014 '+u.total+' pts';}).join('\n')+'\n\n\u26bd\ufe0f \u00a1Sum\xe1te al prode!';
   window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
 }
 
-// ══════════════════════════════════════════════════
-// UI HELPERS
-// ══════════════════════════════════════════════════
-function showLoader(txt) {
-  document.getElementById('loaderTxt').textContent=txt||'Cargando...';
-  document.getElementById('loaderEl').style.display='flex';
-}
-function hideLoader() { document.getElementById('loaderEl').style.display='none'; }
+// ══════════ UI ══════════
+function showLoader(txt){document.getElementById('loaderTxt').textContent=txt||'Cargando...';document.getElementById('loaderEl').style.display='flex';}
+function hideLoader(){document.getElementById('loaderEl').style.display='none';}
+function showNotif(msg){var el=document.getElementById('notifEl');el.textContent=msg;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(function(){el.style.display='none';},3500);}
 
-function showNotif(msg) {
-  var el=document.getElementById('notifEl');
-  el.textContent=msg; el.style.display='block';
-  clearTimeout(el._t);
-  el._t=setTimeout(function(){el.style.display='none';},3500);
-}
-
-// Enter key en login
 document.getElementById('loginPass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 document.getElementById('loginUser').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
-
-// Verificar config al cargar
-window.addEventListener('load', function() {
-  if (API_URL.indexOf('REEMPLAZAR') >= 0) {
-    document.getElementById('apiWarn').style.display='block';
-  }
-});
 </script>
 </body>
 </html>
+HTMLEOF
+echo "OK"
+ls -lh /mnt/user-data/outputs/prode-mundial-2026.html
+Salida
