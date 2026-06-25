@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prode Mundial 2026)</title>
+<title>Prode Mundial 2026</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -125,7 +125,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   <div class="login-card">
     <div class="login-logo">
       <div class="ball">&#9917;</div>
-      <h1>Prode Mundial 2026 - SC20</h1>
+      <h1>Prode Mundial 2026</h1>
       <p>USA &middot; Canad&aacute; &middot; M&eacute;xico</p>
     </div>
     <div id="loginForm">
@@ -211,6 +211,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div class="admin-row"><span>Partidos con resultado</span><span id="adminPlayed" style="font-weight:600;">-</span></div>
         <div class="tab-row" style="margin-top:11px;">
           <button class="btn-sm orange" onclick="fetchLiveResults()">&#127758; Resultados del d&iacute;a</button>
+          <button class="btn-sm orange" onclick="openEquiposPanel()">&#9917; Actualizar equipos</button>
           <button class="btn-sm orange" onclick="openResultModal()">&#9654; Cargar manual</button
           <button class="btn-sm outline" onclick="adminExportCSV()">&#128229; Exportar CSV</button>
           <button class="btn-sm danger" onclick="adminReset()">&#128260; Reiniciar torneo</button>
@@ -224,6 +225,20 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div id="liveResultsContent"></div>
       </div>
       <div class="card"><div class="card-title">Participantes</div><div id="adminUsersList"></div></div>
+
+      <!-- CARD ACTUALIZAR EQUIPOS FASES ELIMINATORIAS -->
+      <div class="card" id="equiposPanel" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div class="card-title" style="margin:0;">&#9917; Actualizar equipos</div>
+          <span onclick="document.getElementById('equiposPanel').style.display='none'" style="cursor:pointer;color:var(--text-muted);font-size:18px;">&#10005;</span>
+        </div>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Editá los nombres de los equipos en las fases eliminatorias a medida que se van conociendo los clasificados.</p>
+        <div class="tab-row" id="equiposPhaseTabs" style="margin-bottom:14px;"></div>
+        <div id="equiposMatchList"></div>
+        <div style="margin-top:14px;">
+          <button class="btn-primary" onclick="saveEquipos()" style="max-width:200px;">Guardar cambios</button>
+        </div>
+      </div>
     </div>
     <div class="section" id="sec-perfil">
       <div class="card" style="text-align:center;padding:24px;">
@@ -731,6 +746,146 @@ function confirmApiResult(matchId,homeScore,awayScore,btn) {
     refreshAll(function(){renderAdmin();fetchLiveResults();});
   });
 }
+
+
+// ACTUALIZAR EQUIPOS FASES ELIMINATORIAS
+var equiposPhase = 'r32';
+var ELIM_PHASES = ['r32','octavos','cuartos','semis','final'];
+
+// customTeams guarda los nombres editados: { matchId: {home:'X', away:'Y'} }
+var customTeams = JSON.parse(localStorage.getItem('customTeams26')||'{}');
+
+function getTeamName(matchId, side) {
+  var ct = customTeams[matchId];
+  if (ct && ct[side]) return ct[side];
+  var m = MATCHES.find(function(x){return x.id===matchId;});
+  return m ? m[side] : '';
+}
+
+function getMatchDisplay(m) {
+  return {
+    home: getTeamName(m.id, 'home'),
+    away: getTeamName(m.id, 'away'),
+    flag_home: FLAGS[getTeamName(m.id,'home')] || '\ud83c\udff4',
+    flag_away: FLAGS[getTeamName(m.id,'away')] || '\ud83c\udff4'
+  };
+}
+
+function openEquiposPanel() {
+  document.getElementById('equiposPanel').style.display = 'block';
+  document.getElementById('equiposPanel').scrollIntoView({behavior:'smooth', block:'start'});
+  renderEquiposTabs();
+  renderEquiposMatchList();
+}
+
+function renderEquiposTabs() {
+  document.getElementById('equiposPhaseTabs').innerHTML = ELIM_PHASES.map(function(p){
+    return '<button class="tab-pill'+(equiposPhase===p?' active':'')+'\" onclick=\"setEquiposPhase(\''+p+'\')\">'+PHASES[p]+'</button>';
+  }).join('');
+}
+
+function setEquiposPhase(p) {
+  equiposPhase = p;
+  renderEquiposTabs();
+  renderEquiposMatchList();
+}
+
+function renderEquiposMatchList() {
+  var matches = MATCHES.filter(function(m){ return m.phase === equiposPhase; });
+  var html = matches.map(function(m) {
+    var ct = customTeams[m.id] || {};
+    var origHome = m.home, origAway = m.away;
+    var curHome = ct.home || origHome;
+    var curAway = ct.away || origAway;
+    var fh = FLAGS[curHome] || '\ud83c\udff4';
+    var fa = FLAGS[curAway] || '\ud83c\udff4';
+    var dateStr = new Date(m.date).toLocaleDateString('es-AR',{weekday:'short',month:'short',day:'numeric'});
+    return '<div style="background:var(--bg-dark);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:9px;">'
+      + '<div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">'
+      +   '<span style="background:var(--orange);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;margin-right:6px;">'+PHASES[m.phase]+'</span>'
+      +   dateStr
+      + '</div>'
+      + '<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;">'
+      +   '<div>'
+      +     '<div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">LOCAL</div>'
+      +     '<div style="display:flex;align-items:center;gap:6px;">'
+      +       '<span style="font-size:18px;">'+fh+'</span>'
+      +       '<input type="text" class="form-control" id="home-'+m.id+'" value="'+curHome+'" placeholder="'+origHome+'" style="font-size:13px;padding:6px 9px;">'
+      +     '</div>'
+      +   '</div>'
+      +   '<div style="text-align:center;color:var(--text-muted);font-size:12px;padding-top:18px;">VS</div>'
+      +   '<div>'
+      +     '<div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">VISITANTE</div>'
+      +     '<div style="display:flex;align-items:center;gap:6px;">'
+      +       '<input type="text" class="form-control" id="away-'+m.id+'" value="'+curAway+'" placeholder="'+origAway+'" style="font-size:13px;padding:6px 9px;">'
+      +       '<span style="font-size:18px;">'+fa+'</span>'
+      +     '</div>'
+      +   '</div>'
+      + '</div>'
+      + '<div style="margin-top:8px;display:flex;gap:8px;">'
+      +   '<button class="btn-sm orange" style="font-size:11px;" onclick="saveOneEquipo('+m.id+')">Guardar este</button>'
+      +   (curHome !== origHome || curAway !== origAway ? '<button class="btn-sm outline" style="font-size:11px;color:var(--text-muted);" onclick="resetEquipo('+m.id+')">Restaurar original</button>' : '')
+      + '</div>'
+      + '</div>';
+  }).join('');
+  document.getElementById('equiposMatchList').innerHTML = html || '<div class="empty-state"><div class="icon">\ud83d\udccb</div><div>No hay partidos en esta fase</div></div>';
+}
+
+function saveOneEquipo(matchId) {
+  var home = document.getElementById('home-'+matchId).value.trim();
+  var away = document.getElementById('away-'+matchId).value.trim();
+  if (!home || !away) { showNotif('\u26a0\ufe0f Complet\xe1 ambos equipos'); return; }
+  if (!customTeams[matchId]) customTeams[matchId] = {};
+  customTeams[matchId].home = home;
+  customTeams[matchId].away = away;
+  localStorage.setItem('customTeams26', JSON.stringify(customTeams));
+  showNotif('\u2705 Equipo actualizado: ' + home + ' vs ' + away);
+  renderEquiposMatchList();
+  // Actualizar el MATCHES local para que se refleje en pronósticos
+  applyCustomTeams();
+}
+
+function saveEquipos() {
+  var matches = MATCHES.filter(function(m){ return m.phase === equiposPhase; });
+  var updated = 0;
+  matches.forEach(function(m) {
+    var home = document.getElementById('home-'+m.id);
+    var away = document.getElementById('away-'+m.id);
+    if (!home || !away) return;
+    var hv = home.value.trim(), av = away.value.trim();
+    if (hv && av) {
+      if (!customTeams[m.id]) customTeams[m.id] = {};
+      customTeams[m.id].home = hv;
+      customTeams[m.id].away = av;
+      updated++;
+    }
+  });
+  localStorage.setItem('customTeams26', JSON.stringify(customTeams));
+  showNotif('\u2705 ' + updated + ' partidos actualizados!');
+  applyCustomTeams();
+  renderEquiposMatchList();
+}
+
+function resetEquipo(matchId) {
+  delete customTeams[matchId];
+  localStorage.setItem('customTeams26', JSON.stringify(customTeams));
+  applyCustomTeams();
+  renderEquiposMatchList();
+  showNotif('\ud83d\udd04 Restaurado al nombre original');
+}
+
+function applyCustomTeams() {
+  // Parchea los MATCHES en memoria con los nombres personalizados
+  Object.keys(customTeams).forEach(function(mid) {
+    var m = MATCHES.find(function(x){ return x.id == mid; });
+    if (!m) return;
+    if (customTeams[mid].home) m.home = customTeams[mid].home;
+    if (customTeams[mid].away) m.away = customTeams[mid].away;
+  });
+}
+
+// Aplicar al cargar la página
+applyCustomTeams();
 
 function renderPerfil(){
   var st=getMyStats(),myRank=ranking.findIndex(function(x){return String(x.id)===String(currentUser.id);})+1;
