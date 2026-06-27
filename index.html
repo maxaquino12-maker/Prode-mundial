@@ -271,7 +271,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     </div>
     <!-- SECCIÓN CUADRO DE ELIMINACIÓN -->
     <div class="section" id="sec-cuadro">
-      <div id="bracketContainer"></div>
+      <div id="bracketContainer">
+        <div style="text-align:center;padding:40px;color:var(--text-muted);">Cargando cuadro...</div>
+      </div>
     </div>
 
     <!-- SECCIÓN PRONÓSTICOS DE TODOS -->
@@ -476,11 +478,9 @@ function showSection(sec) {
   if(sec==='estadisticas') { showLoader('Cargando stats...'); api({action:'getStats'},function(err,res){ hideLoader(); renderEstadisticas(!err&&res.ok?res.stats:{}); }); }
   if(sec==='admin') { showLoader('Cargando...'); refreshAll(function(){ hideLoader(); renderAdmin(); }); }
   if(sec==='cuadro') {
-    showLoader('Cargando pronósticos...');
-    refreshAll(function(){
-      hideLoader();
-      renderCuadro();
-    });
+    renderCuadro();
+    // Actualizar en background sin bloquear
+    refreshAll(function(){ renderCuadro(); });
   }
   if(sec==='todos') {
     showLoader('Cargando pronósticos...');
@@ -863,115 +863,185 @@ function buildTeamRow(name, flag, realScore, myScore, result, side, m) {
 
 
 
+
 // ══════════ CUADRO DE ELIMINACIÓN ══════════
 function renderCuadro() {
-  var container = document.getElementById('bracketContainer');
-  if (!container) return;
+  var el = document.getElementById('bracketContainer');
+  if (!el) return;
 
-  var phases = [
-    {key:'r32',     label:'Ronda de 32',   ids:[25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40]},
-    {key:'octavos', label:'Octavos',        ids:[41,42,43,44,45,46,47,48]},
-    {key:'cuartos', label:'Cuartos',        ids:[49,50,51,52]},
-    {key:'semis',   label:'Semifinales',    ids:[53,54]},
-    {key:'final',   label:'Final',          ids:[56]}
+  // Definición de los 16 partidos de R32 y cómo se conectan a octavos
+  var r32 = [
+    {id:25, home:'Sud\u00e1frica', away:'Canad\u00e1',        date:'2026-06-28T16:00', octavo:0},
+    {id:28, home:'Pa\u00edses Bajos', away:'Marruecos',       date:'2026-06-29T22:00', octavo:0},
+    {id:27, home:'Alemania',   away:'Paraguay',                date:'2026-06-29T17:30', octavo:1},
+    {id:29, home:'Francia',    away:'Suecia',                  date:'2026-06-30T14:00', octavo:1},
+    {id:26, home:'Brasil',     away:'Jap\u00f3n',             date:'2026-06-29T14:00', octavo:2},
+    {id:30, home:'Costa de Marfil', away:'Noruega',           date:'2026-06-30T18:00', octavo:2},
+    {id:31, home:'M\u00e9xico', away:'Ecuador',               date:'2026-06-30T22:00', octavo:3},
+    {id:32, home:'Portugal',   away:'3\u00ba E/H/I/J/K',      date:'2026-07-01T13:00', octavo:3},
+    {id:33, home:'Espa\u00f1a', away:'3\u00ba A/E/H/I/J',     date:'2026-07-01T17:00', octavo:4},
+    {id:34, home:'Estados Unidos', away:'3\u00ba B/E/F/I/J',  date:'2026-07-01T21:00', octavo:4},
+    {id:35, home:'Inglaterra', away:'Croacia',                 date:'2026-07-02T16:00', octavo:5},
+    {id:36, home:'Colombia',   away:'B\u00e9lgica',           date:'2026-07-02T20:00', octavo:5},
+    {id:37, home:'Suiza',      away:'Ir\u00e1n',              date:'2026-07-03T00:00', octavo:6},
+    {id:40, home:'Uruguay',    away:'Arabia Saudita',          date:'2026-07-03T22:30', octavo:6},
+    {id:39, home:'Argentina',  away:'Cabo Verde',              date:'2026-07-03T19:00', octavo:7},
+    {id:38, home:'Australia',  away:'Turqu\u00eda',           date:'2026-07-03T15:00', octavo:7},
   ];
 
-  var html = '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:12px;">';
-  html += '<div style="display:flex;gap:8px;padding:4px 2px;width:max-content;align-items:flex-start;">';
+  var octavos = [
+    {id:41, date:'2026-07-04T14:00'},
+    {id:42, date:'2026-07-04T18:00'},
+    {id:43, date:'2026-07-05T17:00'},
+    {id:44, date:'2026-07-05T21:00'},
+    {id:45, date:'2026-07-06T16:00'},
+    {id:46, date:'2026-07-06T21:00'},
+    {id:47, date:'2026-07-07T13:00'},
+    {id:48, date:'2026-07-07T17:00'},
+  ];
 
-  phases.forEach(function(phase) {
-    html += '<div style="display:flex;flex-direction:column;gap:6px;width:190px;flex-shrink:0;">';
-    html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;'
-          + 'color:var(--orange);text-align:center;padding:7px 4px;'
-          + 'border-bottom:2px solid var(--orange);margin-bottom:4px;">'
-          + phase.label + '</div>';
+  var cuartos = [
+    {id:49, date:'2026-07-09T17:00'},
+    {id:50, date:'2026-07-10T16:00'},
+    {id:51, date:'2026-07-11T18:00'},
+    {id:52, date:'2026-07-11T22:00'},
+  ];
 
-    phase.ids.forEach(function(matchId) {
-      var m = MATCHES.find(function(x){ return x.id === matchId; });
-      if (!m) {
-        html += '<div style="background:var(--bg-dark);border:1px solid var(--border);'
-              + 'border-radius:8px;padding:10px;font-size:11px;color:var(--text-muted);text-align:center;">Por definir</div>';
-        return;
-      }
+  var semis = [
+    {id:53, date:'2026-07-14T16:00'},
+    {id:54, date:'2026-07-15T16:00'},
+  ];
 
-      var r = resultados[m.id];
-      var myP = myPronos[m.id];
-      var closed = isMatchClosed(m);
-      var fh = FLAGS[m.home] || '\ud83c\udff4';
-      var fa = FLAGS[m.away] || '\ud83c\udff4';
+  function fmtMatchDate(ds) {
+    var d = new Date(parseARG(ds));
+    var dias = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+    var meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    return dias[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth()+1)
+      + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0') + 'hs';
+  }
 
-      var d = new Date(parseARG(m.date));
-      var dateStr = d.toLocaleDateString('es-AR',{day:'numeric',month:'numeric',timeZone:'America/Argentina/Buenos_Aires'})
-        + ' ' + d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/Argentina/Buenos_Aires'}) + 'hs';
+  function teamLine(name, score, myScore, isWinner, isClosed) {
+    var flag = FLAGS[name] || '';
+    var short = name.length > 15 ? name.slice(0,14)+'\u2026' : name;
+    var bg = isWinner ? 'rgba(255,122,0,0.2)' : 'transparent';
+    var nameColor = isClosed ? (isWinner ? '#fff' : 'rgba(255,255,255,0.45)') : 'rgba(255,255,255,0.85)';
+    var fontW = isWinner ? '700' : '400';
+    var scoreEl = '';
+    if (score !== null && score !== undefined) {
+      var sbg = isWinner ? 'var(--orange)' : 'rgba(255,255,255,0.12)';
+      var scol = isWinner ? '#fff' : 'rgba(255,255,255,0.5)';
+      scoreEl = '<span style="background:'+sbg+';color:'+scol+';font-size:12px;font-weight:700;'
+              + 'padding:1px 7px;border-radius:4px;min-width:22px;text-align:center;flex-shrink:0;">'+score+'</span>';
+    } else {
+      scoreEl = '<span style="background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.3);font-size:11px;'
+              + 'padding:1px 7px;border-radius:4px;min-width:22px;text-align:center;flex-shrink:0;">-</span>';
+    }
+    var pronoEl = (myScore !== null && myScore !== undefined)
+      ? '<span style="font-size:9px;color:var(--orange);min-width:12px;text-align:center;flex-shrink:0;" title="Tu pronóstico">'+myScore+'</span>'
+      : '';
+    return '<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;background:'+bg+';min-width:0;">'
+      + '<span style="font-size:14px;width:18px;flex-shrink:0;text-align:center;">'+flag+'</span>'
+      + '<span style="flex:1;font-size:11px;font-weight:'+fontW+';color:'+nameColor+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+short+'</span>'
+      + scoreEl + pronoEl
+      + '</div>';
+  }
 
-      // Card
-      html += '<div style="background:var(--bg-dark);border:1px solid '
-            + (r ? 'rgba(76,175,80,0.5)' : closed ? 'rgba(244,67,54,0.4)' : 'var(--border)')
-            + ';border-radius:8px;overflow:hidden;">';
+  function matchCard(matchData, overrideHome, overrideAway) {
+    var id = matchData.id;
+    var res = resultados[id] || null;
+    var myP = myPronos[id] || null;
+    var closed = isMatchClosed({date: matchData.date});
+    var home = overrideHome || matchData.home || 'Por definir';
+    var away = overrideAway || matchData.away || 'Por definir';
+    var homeWin = res && res.home > res.away;
+    var awayWin = res && res.away > res.home;
 
-      // Header
-      html += '<div style="background:var(--bg-card);padding:4px 8px;font-size:9px;'
-            + 'color:var(--text-muted);display:flex;justify-content:space-between;align-items:center;">';
-      html += '<span>' + dateStr + '</span>';
-      if (r)           html += '<span style="color:#69f0ae;font-weight:700;font-size:9px;">FIN</span>';
-      else if (closed) html += '<span style="color:var(--red);font-weight:700;font-size:9px;">EN VIVO</span>';
-      else             html += '<span style="color:var(--text-muted);font-size:9px;">Pronto</span>';
-      html += '</div>';
+    var dateLabel = fmtMatchDate(matchData.date);
+    var statusDot = res ? '<span style="color:#69f0ae;font-size:9px;font-weight:700;">&#10003; FIN</span>'
+      : closed ? '<span style="color:var(--red);font-size:9px;font-weight:700;">&#9679; VIVO</span>'
+      : '';
 
-      // Local
-      var homeWin = r && r.home > r.away;
-      var awayWin = r && r.away > r.home;
-      html += cuadroTeamRow(m.home, fh, r ? r.home : null, myP ? myP.home : null, homeWin);
-      html += '<div style="height:1px;background:var(--border);"></div>';
-      html += cuadroTeamRow(m.away, fa, r ? r.away : null, myP ? myP.away : null, awayWin);
-      html += '</div>'; // cierre card
-    });
+    return '<div style="background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;overflow:hidden;width:188px;flex-shrink:0;">'
+      + '<div style="background:var(--bg-card);padding:3px 8px;display:flex;justify-content:space-between;align-items:center;">'
+      + '<span style="font-size:9px;color:var(--text-muted);">'+dateLabel+'</span>'
+      + statusDot
+      + '</div>'
+      + '<div style="height:1px;background:var(--border);"></div>'
+      + teamLine(home, res ? res.home : null, myP ? myP.home : null, homeWin, !!res)
+      + '<div style="height:1px;background:var(--border);"></div>'
+      + teamLine(away, res ? res.away : null, myP ? myP.away : null, awayWin, !!res)
+      + '</div>';
+  }
 
-    html += '</div>'; // cierre columna
+  function phaseCol(label, cards) {
+    var col = '<div style="display:flex;flex-direction:column;flex-shrink:0;">';
+    col += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;'
+         + 'color:var(--orange);text-align:center;padding:7px 4px;border-bottom:2px solid var(--orange);'
+         + 'margin-bottom:8px;width:188px;">'+label+'</div>';
+    col += '<div style="display:flex;flex-direction:column;gap:' + (cards.length <= 4 ? '28' : '10') + 'px;">';
+    cards.forEach(function(c){ col += c; });
+    col += '</div></div>';
+    return col;
+  }
+
+  // Construir columnas
+  var r32Cards = r32.map(function(m) { return matchCard(m); });
+
+  var octCards = octavos.map(function(o, i) {
+    var m = MATCHES.find(function(x){ return x.id === o.id; });
+    return matchCard(o, m ? m.home : 'Por definir', m ? m.away : 'Por definir');
   });
 
-  html += '</div></div>'; // cierre flex + scroll
+  var cuarCards = cuartos.map(function(c, i) {
+    var m = MATCHES.find(function(x){ return x.id === c.id; });
+    return matchCard(c, m ? m.home : 'Por definir', m ? m.away : 'Por definir');
+  });
+
+  var semiCards = semis.map(function(s) {
+    var m = MATCHES.find(function(x){ return x.id === s.id; });
+    return matchCard(s, m ? m.home : 'Por definir', m ? m.away : 'Por definir');
+  });
+
+  var mFinal = MATCHES.find(function(x){ return x.id === 56; });
+  var finalCard = matchCard({id:56, date:'2026-07-19T16:00'},
+    mFinal ? mFinal.home : 'Gan. Semi 1', mFinal ? mFinal.away : 'Gan. Semi 2');
+
+  var m3 = MATCHES.find(function(x){ return x.id === 55; });
+  var terCard = matchCard({id:55, date:'2026-07-18T18:00'},
+    m3 ? m3.home : 'Perdedor Semi 1', m3 ? m3.away : 'Perdedor Semi 2');
+
+  var out = '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px;">';
+  out += '<div style="display:flex;gap:12px;padding:4px 2px;width:max-content;align-items:center;">';
+
+  // Separar R32 en dos grupos de 8 con un poco de espacio entre el col de r32 y octavos
+  var r32Left  = r32Cards.slice(0,8);
+  var r32Right = r32Cards.slice(8,16);
+  var octLeft  = octCards.slice(0,4);
+  var octRight = octCards.slice(4,8);
+  var cuarLeft = cuarCards.slice(0,2);
+  var cuarRight= cuarCards.slice(2,4);
+
+  // Columna R32 (izquierda) → Octavos (izq) → Cuartos (izq) → Semis → Final → Cuartos (der) → Octavos (der) → R32 (der)
+  // Simplificado: columnas de izquierda a derecha
+  out += phaseCol('Ronda de 32', r32Left);
+  out += phaseCol('Octavos', octLeft);
+  out += phaseCol('Cuartos', cuarLeft);
+  out += phaseCol('Semifinales', semiCards);
+  out += '<div style="display:flex;flex-direction:column;flex-shrink:0;">';
+  out += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--orange);text-align:center;padding:7px 4px;border-bottom:2px solid var(--orange);margin-bottom:8px;width:188px;">Final</div>';
+  out += finalCard;
+  out += '</div>';
+  out += phaseCol('Cuartos', cuarRight);
+  out += phaseCol('Octavos', octRight);
+  out += phaseCol('Ronda de 32', r32Right);
+
+  out += '</div></div>';
 
   // 3er puesto
-  var m3 = MATCHES.find(function(x){ return x.id === 55; });
-  if (m3) {
-    var r3 = resultados[55];
-    var myP3 = myPronos[55];
-    var fh3 = FLAGS[m3.home]||'\ud83c\udff4', fa3 = FLAGS[m3.away]||'\ud83c\udff4';
-    html += '<div style="margin-top:14px;">';
-    html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">3\u00b0 Puesto</div>';
-    html += '<div style="background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;overflow:hidden;max-width:200px;">';
-    html += cuadroTeamRow(m3.home, fh3, r3 ? r3.home : null, myP3 ? myP3.home : null, r3 && r3.home > r3.away);
-    html += '<div style="height:1px;background:var(--border);"></div>';
-    html += cuadroTeamRow(m3.away, fa3, r3 ? r3.away : null, myP3 ? myP3.away : null, r3 && r3.away > r3.home);
-    html += '</div></div>';
-  }
+  out += '<div style="margin-top:14px;"><div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;letter-spacing:0.5px;">3° Puesto — Hard Rock Stadium, Miami · 18/7 16:00hs</div>';
+  out += '<div style="max-width:200px;">'+terCard+'</div></div>';
 
-  container.innerHTML = html;
-}
-
-function cuadroTeamRow(name, flag, real, prono, isWinner) {
-  var nameTrunc = name.length > 14 ? name.slice(0,13)+'\u2026' : name;
-  var html = '<div style="display:flex;align-items:center;gap:5px;padding:6px 8px;'
-           + 'background:' + (isWinner ? 'rgba(255,122,0,0.15)' : 'transparent') + ';">';
-  html += '<span style="font-size:13px;width:18px;flex-shrink:0;">' + flag + '</span>';
-  html += '<span style="flex:1;font-size:11px;font-weight:' + (isWinner ? '700' : '400')
-        + ';color:' + (isWinner ? 'var(--white)' : 'var(--text-muted)') + ';overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">'
-        + nameTrunc + '</span>';
-  if (real !== null && real !== undefined) {
-    html += '<span style="background:' + (isWinner ? 'var(--orange)' : 'var(--bg-card)')
-          + ';color:' + (isWinner ? 'var(--white)' : 'var(--text-muted)')
-          + ';font-size:12px;font-weight:700;padding:2px 7px;border-radius:4px;min-width:22px;text-align:center;">'
-          + real + '</span>';
-  } else {
-    html += '<span style="background:var(--bg-card);color:var(--text-muted);font-size:11px;'
-          + 'padding:2px 7px;border-radius:4px;min-width:22px;text-align:center;">-</span>';
-  }
-  if (prono !== null && prono !== undefined) {
-    html += '<span style="font-size:9px;color:var(--orange);min-width:12px;text-align:center;" title="Tu prono">' + prono + '</span>';
-  }
-  html += '</div>';
-  return html;
+  el.innerHTML = out;
 }
 
 
