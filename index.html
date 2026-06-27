@@ -164,6 +164,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <button class="nav-btn" id="nav-tabla" onclick="showSection('tabla')">&#127942; Tabla</button>
     <button class="nav-btn" id="nav-historial" onclick="showSection('historial')">&#128202; Historial</button>
     <button class="nav-btn" id="nav-estadisticas" onclick="showSection('estadisticas')">&#128200; Stats</button>
+    <button class="nav-btn" id="nav-cuadro" onclick="showSection('cuadro')">&#127959; Cuadro</button>
     <button class="nav-btn" id="nav-todos" onclick="showSection('todos')">&#128065; Todos</button>
     <button class="nav-btn" id="nav-admin" onclick="showSection('admin')" style="display:none">&#9881;&#65039; Admin</button>
   </div>
@@ -269,6 +270,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <button class="btn-cancel" onclick="closeResultModal()">Cancelar</button>
       <button class="btn-primary" style="width:auto;flex:1;" onclick="adminSaveResult()">Guardar</button>
     </div>
+    <!-- SECCIÓN CUADRO DE ELIMINACIÓN -->
+    <div class="section" id="sec-cuadro">
+      <div id="bracketContainer"></div>
+    </div>
+
     <!-- SECCIÓN PRONÓSTICOS DE TODOS -->
     <div class="section" id="sec-todos">
       <div style="background:rgba(255,122,0,0.12);border:1px solid rgba(255,122,0,0.4);border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:12px;color:rgba(255,255,255,0.85);display:flex;gap:10px;align-items:flex-start;">
@@ -564,12 +570,16 @@ function showSection(sec) {
   if(sec==='historial') renderHistorial();
   if(sec==='estadisticas') { showLoader('Cargando stats...'); api({action:'getStats'},function(err,res){ hideLoader(); renderEstadisticas(!err&&res.ok?res.stats:{}); }); }
   if(sec==='admin') { showLoader('Cargando...'); refreshAll(function(){ hideLoader(); renderAdmin(); }); }
-  if(sec==='todos') {
+  if(sec==='cuadro') {
     showLoader('Cargando pronósticos...');
     refreshAll(function(){
       hideLoader();
-      renderTodos();
+      renderCuadro();
     });
+  }
+  if(sec==='todos') {
+    showLoader('Cargando pronósticos...');
+    refreshAll(function(){ hideLoader(); renderTodos(); });
   }
   if(sec==='perfil') renderPerfil();
 }
@@ -704,16 +714,23 @@ function renderEstadisticas(stats){
 }
 
 // ══════════ ADMIN ══════════
-// PRONÓSTICOS DE TODOS
-var todosPhase = 'r32';
+
+// ══════════════════════════════════════════════════
+// CUADRO DE ELIMINACIÓN
+// ══════════════════════════════════════════════════
+
+// IDs de partidos por ronda (según nuestro fixture)
+
+// ══════════ PRONÓSTICOS DE TODOS ══════════
+var todosPhase = 'grupos';
 
 function renderTodos() {
-  // Elegir fase con al menos un partido cerrado, si no mostrar grupos
+  // Elegir automáticamente la fase con partidos cerrados más reciente
+  var phases = [...new Set(MATCHES.map(function(m){ return m.phase; }))];
   var closedPhases = [...new Set(MATCHES.filter(function(m){ return isMatchClosed(m); }).map(function(m){ return m.phase; }))];
   if (closedPhases.length > 0 && !closedPhases.includes(todosPhase)) {
     todosPhase = closedPhases[closedPhases.length - 1];
   }
-  var phases = [...new Set(MATCHES.map(function(m){ return m.phase; }))];
   document.getElementById('todosPhase').innerHTML = phases.map(function(p){
     return '<button class="tab-pill'+(todosPhase===p?' active':'')+'\" onclick=\"setTodosPhase(\''+p+'\')\">'+PHASES[p]+'</button>';
   }).join('');
@@ -733,16 +750,16 @@ function renderTodosContent() {
   var html = '';
   matches.forEach(function(m) {
     var closed = isMatchClosed(m);
-    var fh = FLAGS[m.home] || '\ud83c\udff4', fa = FLAGS[m.away] || '\ud83c\udff4';
+    var fh = FLAGS[m.home]||'\ud83c\udff4', fa = FLAGS[m.away]||'\ud83c\udff4';
     var r = resultados[m.id];
-    var dateStr = new Date(m.date).toLocaleDateString('es-AR',{weekday:'short',month:'short',day:'numeric'})
-      + ' ' + new Date(m.date).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}) + ' hs';
+    var dateStr = new Date(parseARG(m.date)).toLocaleDateString('es-AR',{weekday:'short',month:'short',day:'numeric',timeZone:'America/Argentina/Buenos_Aires'})
+      +' '+new Date(parseARG(m.date)).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/Argentina/Buenos_Aires'})+' hs';
     html += '<div class="match-card">';
     html += '<div class="match-meta">';
     html += '<span class="match-badge">'+PHASES[m.phase]+'</span>';
     html += '<span>'+dateStr+'</span>';
     if (r) html += '<span style="background:var(--bg-card);color:var(--white);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;">'+r.home+' - '+r.away+'</span>';
-    if (!closed) html += '<span style="background:rgba(76,175,80,0.2);color:#69f0ae;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;">ABIERTO - tus rivales no ven tu prono</span>';
+    if (!closed) html += '<span style="background:rgba(76,175,80,0.2);color:#69f0ae;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;">\ud83d\udd12 Pronos ocultos</span>';
     html += '</div>';
     html += '<div class="match-teams" style="margin-bottom:10px;">';
     html += '<div class="team"><div class="team-flag">'+fh+'</div><div class="team-name">'+m.home+'</div></div>';
@@ -761,12 +778,12 @@ function renderTodosContent() {
         html += '<div style="font-size:12px;color:var(--text-muted);">A\u00fan no cargaste tu pron\u00f3stico.</div>';
       }
     } else {
-      html += '<div id="pronos-match-'+m.id+'" style="font-size:12px;color:var(--text-muted);">Cargando pron\u00f3sticos...</div>';
+      html += '<div id="pronos-match-'+m.id+'"><div style="font-size:12px;color:var(--text-muted);">Cargando pron\u00f3sticos...</div></div>';
     }
     html += '</div>';
   });
   content.innerHTML = html;
-  // Cargar pronósticos de partidos cerrados
+  // Cargar pronósticos async de partidos cerrados
   matches.filter(function(m){ return isMatchClosed(m); }).forEach(function(m){
     loadPronosForMatch(m, resultados[m.id]);
   });
@@ -777,35 +794,31 @@ function loadPronosForMatch(match, result) {
   if (!container) return;
   api({action:'getPronosByMatch', matchId:match.id}, function(err, res) {
     if (err || !res.ok || !res.pronos || !res.pronos.length) {
-      if (container) container.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:6px 0;">Nadie pronostic\u00f3 este partido.</div>';
+      if (container) container.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:6px 0;">Nadie pronostic\u00f3 este partido a\u00fan.</div>';
       return;
     }
     var pronos = res.pronos;
-    // Ordenar: más puntos primero
     if (result) {
       pronos.sort(function(a,b){
-        var pa = calcPts({home:a.homeScore,away:a.awayScore},result)||0;
-        var pb = calcPts({home:b.homeScore,away:b.awayScore},result)||0;
-        return pb - pa;
+        return (calcPts({home:b.homeScore,away:b.awayScore},result)||0)-(calcPts({home:a.homeScore,away:a.awayScore},result)||0);
       });
     }
-    var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:4px;">';
+    var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px;margin-top:4px;">';
     pronos.forEach(function(p){
-      var isMe = String(p.userId) === String(currentUser.id);
+      var isMe = String(p.userId)===String(currentUser.id);
       var pts = result ? calcPts({home:p.homeScore,away:p.awayScore},result) : null;
-      var ptsBadge = pts!==null ? '<span class="pts-badge '+(pts===5?'pts-5':pts>=3?'pts-3':'pts-0')+'" style="font-size:10px;">+'+pts+' pts</span>' : '';
+      var ptsBadge = pts!==null?'<span class="pts-badge '+(pts===5?'pts-5':pts>=3?'pts-3':'pts-0')+'" style="font-size:10px;">+'+pts+' pts</span>':'';
       html += '<div style="'+(isMe?'background:rgba(255,122,0,0.12);border:1px solid var(--orange);':'background:var(--bg-dark);border:1px solid var(--border);')+'border-radius:8px;padding:10px 12px;">';
       html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">';
-      html += '<div style="font-size:11px;font-weight:600;color:'+(isMe?'var(--orange)':'var(--white)')+';">'+p.nombre+(isMe?' \u2605':'')+'</div>';
-      html += ptsBadge;
+      html += '<div style="font-size:11px;font-weight:600;color:'+(isMe?'var(--orange)':'var(--white)')+';">'+p.nombre+(isMe?' \u2605':'')+'</div>'+ptsBadge;
       html += '</div>';
       html += '<div style="font-size:20px;font-weight:700;text-align:center;color:var(--white);">'+p.homeScore+' - '+p.awayScore+'</div>';
       html += '</div>';
     });
     html += '</div>';
     if (result) {
-      var exact = pronos.filter(function(p){ return calcPts({home:p.homeScore,away:p.awayScore},result)===5; }).length;
-      var hit   = pronos.filter(function(p){ return (calcPts({home:p.homeScore,away:p.awayScore},result)||0)>0; }).length;
+      var exact=pronos.filter(function(p){return calcPts({home:p.homeScore,away:p.awayScore},result)===5;}).length;
+      var hit=pronos.filter(function(p){return (calcPts({home:p.homeScore,away:p.awayScore},result)||0)>0;}).length;
       html += '<div style="display:flex;gap:14px;margin-top:10px;padding:8px 12px;background:var(--bg-dark);border-radius:8px;font-size:11px;color:var(--text-muted);">';
       html += '<span>\ud83d\udc65 '+pronos.length+' pron\u00f3sticos</span>';
       html += '<span style="color:#69f0ae;">\u2705 '+exact+' exactos</span>';
@@ -815,6 +828,121 @@ function loadPronosForMatch(match, result) {
     if (container) container.innerHTML = html;
   });
 }
+
+
+var BRACKET = {
+  r32: [25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40],
+  octavos: [41,42,43,44,45,46,47,48],
+  cuartos: [49,50,51,52],
+  semis: [53,54],
+  tercero: [55],
+  final: [56]
+};
+
+function renderCuadro() {
+  var container = document.getElementById('bracketContainer');
+  if (!container) return;
+
+  var phases = [
+    { key:'r32',     label:'Ronda de 32' },
+    { key:'octavos', label:'Octavos' },
+    { key:'cuartos', label:'Cuartos' },
+    { key:'semis',   label:'Semis' },
+    { key:'final',   label:'Final' }
+  ];
+
+  // Wrapper con scroll horizontal
+  var html = '<div style="overflow-x:auto;padding-bottom:12px;">';
+  html += '<div style="display:flex;gap:10px;min-width:max-content;align-items:flex-start;padding:4px 2px;">';
+
+  phases.forEach(function(phase) {
+    var ids = BRACKET[phase.key] || [];
+    html += '<div style="display:flex;flex-direction:column;gap:8px;min-width:180px;">';
+    html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--orange);text-align:center;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:4px;">'+phase.label+'</div>';
+    ids.forEach(function(matchId) {
+      html += buildMatchCard(matchId);
+    });
+    html += '</div>';
+  });
+
+  html += '</div></div>';
+
+  // Tabla del 3er puesto separada
+  if (BRACKET.tercero && BRACKET.tercero.length) {
+    html += '<div style="margin-top:16px;">';
+    html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:8px;">3\u00b0 Puesto</div>';
+    html += buildMatchCard(BRACKET.tercero[0]);
+    html += '</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+function buildMatchCard(matchId) {
+  var m = MATCHES.find(function(x){ return x.id === matchId; });
+  if (!m) return '';
+  
+  var r = resultados[matchId];
+  var myP = myPronos[matchId];
+  var closed = isMatchClosed(m);
+  var fh = FLAGS[m.home] || '';
+  var fa = FLAGS[m.away] || '';
+  var dateStr = new Date(parseARG(m.date)).toLocaleDateString('es-AR',{
+    month:'numeric', day:'numeric', timeZone:'America/Argentina/Buenos_Aires'
+  }) + ' ' + new Date(parseARG(m.date)).toLocaleTimeString('es-AR',{
+    hour:'2-digit', minute:'2-digit', hour12:false, timeZone:'America/Argentina/Buenos_Aires'
+  });
+
+  var html = '<div style="background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:6px;">';
+  
+  // Header con fecha
+  html += '<div style="background:var(--bg-card);padding:4px 8px;font-size:9px;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center;">';
+  html += '<span>'+dateStr+' hs</span>';
+  if (r) html += '<span style="color:var(--green);font-size:9px;font-weight:700;">FIN</span>';
+  else if (closed) html += '<span style="color:var(--red);font-size:9px;font-weight:700;animation:blink 1s infinite;">EN VIVO</span>';
+  html += '</div>';
+
+  // Equipo local
+  html += buildTeamRow(m.home, fh, r ? r.home : null, myP ? myP.home : null, r, 'home', m);
+  // Separador
+  html += '<div style="height:1px;background:var(--border);"></div>';
+  // Equipo visitante
+  html += buildTeamRow(m.away, fa, r ? r.away : null, myP ? myP.away : null, r, 'away', m);
+
+  html += '</div>';
+  return html;
+}
+
+function buildTeamRow(name, flag, realScore, myScore, result, side, m) {
+  var isWinner = result && (
+    (side==='home' && result.home > result.away) ||
+    (side==='away' && result.away > result.home)
+  );
+  var nameColor = isWinner ? 'var(--white)' : (result ? 'var(--text-muted)' : 'var(--white)');
+  var fontW = isWinner ? '700' : '400';
+
+  var html = '<div style="display:flex;align-items:center;gap:6px;padding:7px 8px;">';
+  html += '<span style="font-size:14px;width:18px;text-align:center;">'+(flag||'\ud83c\udff4')+'</span>';
+  html += '<span style="flex:1;font-size:11px;font-weight:'+fontW+';color:'+nameColor+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+name+'</span>';
+  
+  // Marcador real
+  if (realScore !== null && realScore !== undefined) {
+    var sc_bg = isWinner ? 'var(--orange)' : 'var(--bg-card)';
+    var sc_col = isWinner ? 'var(--white)' : 'var(--text-muted)';
+    html += '<span style="background:'+sc_bg+';color:'+sc_col+';font-size:12px;font-weight:700;padding:2px 7px;border-radius:4px;min-width:22px;text-align:center;">'+realScore+'</span>';
+  } else {
+    html += '<span style="background:var(--bg-card);color:var(--text-muted);font-size:11px;padding:2px 7px;border-radius:4px;min-width:22px;text-align:center;">-</span>';
+  }
+  
+  // Mi pronóstico
+  if (myScore !== null && myScore !== undefined) {
+    html += '<span style="font-size:9px;color:var(--orange);min-width:14px;text-align:center;" title="Tu prono">'+myScore+'</span>';
+  }
+
+  html += '</div>';
+  return html;
+}
+
 
 function renderAdmin(){
   document.getElementById('adminUsers').textContent=ranking.length;
