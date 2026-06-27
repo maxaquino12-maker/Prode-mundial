@@ -785,10 +785,12 @@ function renderTodosContent() {
   content.innerHTML = html;
   // Cargar pronósticos async de partidos cerrados
   matches.filter(function(m){ return isMatchClosed(m); }).forEach(function(m){
-    loadPronosForMatch(m, resultados[m.id]);
-  });
-}
 
+    console.log("Cargando partido:", m.id, m.home, m.away);
+
+    loadPronosForMatch(m, resultados[m.id]);
+
+});
 async function loadPronosForMatch(match) {
 
     const container = document.getElementById("todos-content");
