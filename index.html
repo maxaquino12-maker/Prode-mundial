@@ -294,144 +294,131 @@ var API_URL = 'https://script.google.com/macros/s/AKfycbzO0-Rt-80h3ov2KAlAaIYqsR
 var FLAGS = {'M\xe9xico':'\ud83c\uddf2\ud83c\uddfd','Sud\xe1frica':'\ud83c\uddff\ud83c\udde6','Corea del Sur':'\ud83c\uddf0\ud83c\uddf7','Chequia':'\ud83c\udde8\ud83c\uddff','Suiza':'\ud83c\udde8\ud83c\udded','Canad\xe1':'\ud83c\udde8\ud83c\udde6','Bosnia':'\ud83c\udde7\ud83c\udde6','Qatar':'\ud83c\uddf6\ud83c\udde6','Marruecos':'\ud83c\uddf2\ud83c\udde6','Hait\xed':'\ud83c\udded\ud83c\uddf9','Escocia':'\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f','Brasil':'\ud83c\udde7\ud83c\uddf7','Ecuador':'\ud83c\uddea\ud83c\udde8','Alemania':'\ud83c\udde9\ud83c\uddea','Cura\xe7ao':'\ud83c\udde8\ud83c\uddfc','Costa de Marfil':'\ud83c\udde8\ud83c\uddee','Jap\xf3n':'\ud83c\uddef\ud83c\uddf5','Suecia':'\ud83c\uddf8\ud83c\uddea','T\xfanez':'\ud83c\uddf9\ud83c\uddf3','Pa\xedses Bajos':'\ud83c\uddf3\ud83c\uddf1','Turqu\xeda':'\ud83c\uddf9\ud83c\uddf7','Estados Unidos':'\ud83c\uddfa\ud83c\uddf8','Paraguay':'\ud83c\uddf5\ud83c\uddfe','Australia':'\ud83c\udde6\ud83c\uddfa','Noruega':'\ud83c\uddf3\ud83c\uddf4','Francia':'\ud83c\uddeb\ud83c\uddf7','Senegal':'\ud83c\uddf8\ud83c\uddf3','Iraq':'\ud83c\uddee\ud83c\uddf6','Espa\xf1a':'\ud83c\uddea\ud83c\uddf8','Uruguay':'\ud83c\uddfa\ud83c\uddfe','Cabo Verde':'\ud83c\udde8\ud83c\uddfb','Arabia Saudita':'\ud83c\uddf8\ud83c\udde6','B\xe9lgica':'\ud83c\udde7\ud83c\uddea','Egipto':'\ud83c\uddea\ud83c\uddec','Ir\xe1n':'\ud83c\uddee\ud83c\uddf7','Nueva Zelanda':'\ud83c\uddf3\ud83c\uddff','Panam\xe1':'\ud83c\uddf5\ud83c\udde6','Inglaterra':'\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f','Ghana':'\ud83c\uddec\ud83c\udded','Croacia':'\ud83c\udded\ud83c\uddf7','Colombia':'\ud83c\udde8\ud83c\uddf4','Portugal':'\ud83c\uddf5\ud83c\uddf9','Congo DR':'\ud83c\udde8\ud83c\udde9','Uzbekist\xe1n':'\ud83c\uddfa\ud83c\uddff','Argelia':'\ud83c\udde9\ud83c\uddff','Austria':'\ud83c\udde6\ud83c\uddf9','Jordania':'\ud83c\uddef\ud83c\uddf4','Argentina':'\ud83c\udde6\ud83c\uddf7'};
 var PHASES = {'grupos':'Fase de Grupos','r32':'Ronda de 32','octavos':'Octavos de Final','cuartos':'Cuartos de Final','semis':'Semifinales','tercero':'3º Puesto','final':'Final'};
 var MATCHES = [
-  // ── FASE DE GRUPOS ──────────────────────────────────────────
-  // Jue 11/jun
-  {id:1,phase:'grupos',date:'2026-06-11T16:00',home:'México',away:'Sudáfrica',venue:'Est. Azteca, Cd. de México'},
-  {id:2,phase:'grupos',date:'2026-06-11T23:00',home:'Corea del Sur',away:'Chequia',venue:'SoFi Stadium, Los Ángeles'},
-  // Vie 12/jun
-  {id:3,phase:'grupos',date:'2026-06-12T16:00',home:'Canadá',away:'Bosnia',venue:'BC Place, Vancouver'},
-  {id:4,phase:'grupos',date:'2026-06-12T22:00',home:'Estados Unidos',away:'Paraguay',venue:'Levi’s Stadium, San Francisco'},
-  // Sáb 13/jun
-  {id:5,phase:'grupos',date:'2026-06-13T16:00',home:'Qatar',away:'Suiza',venue:'AT&T Stadium, Dallas'},
-  {id:6,phase:'grupos',date:'2026-06-13T19:00',home:'Brasil',away:'Marruecos',venue:'MetLife Stadium, NJ'},
-  {id:7,phase:'grupos',date:'2026-06-13T22:00',home:'Haití',away:'Escocia',venue:'Hard Rock Stadium, Miami'},
-  // Dom 14/jun
-  {id:8,phase:'grupos',date:'2026-06-14T01:00',home:'Australia',away:'Turquía',venue:'Arrowhead Stadium, Kansas City'},
-  {id:9,phase:'grupos',date:'2026-06-14T14:00',home:'Alemania',away:'Curaçao',venue:'Lincoln Financial, Philadelphia'},
-  {id:10,phase:'grupos',date:'2026-06-14T17:00',home:'Países Bajos',away:'Japón',venue:'Gillette Stadium, Boston'},
-  {id:11,phase:'grupos',date:'2026-06-14T20:00',home:'Costa de Marfil',away:'Ecuador',venue:'NRG Stadium, Houston'},
-  {id:12,phase:'grupos',date:'2026-06-14T23:00',home:'Suecia',away:'Túnez',venue:'Est. BBVA, Monterrey'},
-  // Lun 15/jun
-  {id:13,phase:'grupos',date:'2026-06-15T13:00',home:'España',away:'Cabo Verde',venue:'SoFi Stadium, Los Ángeles'},
-  {id:14,phase:'grupos',date:'2026-06-15T16:00',home:'Bélgica',away:'Egipto',venue:'Lumen Field, Seattle'},
-  {id:15,phase:'grupos',date:'2026-06-15T19:00',home:'Arabia Saudita',away:'Uruguay',venue:'Mercedes-Benz Stadium, Atlanta'},
-  {id:16,phase:'grupos',date:'2026-06-15T22:00',home:'Irán',away:'Nueva Zelanda',venue:'BC Place, Vancouver'},
-  // Mar 16/jun
-  {id:17,phase:'grupos',date:'2026-06-16T16:00',home:'Francia',away:'Senegal',venue:'MetLife Stadium, NJ'},
-  {id:18,phase:'grupos',date:'2026-06-16T19:00',home:'Iraq',away:'Noruega',venue:'AT&T Stadium, Dallas'},
-  {id:19,phase:'grupos',date:'2026-06-16T22:00',home:'Argentina',away:'Argelia',venue:'Hard Rock Stadium, Miami'},
-  // Mie 17/jun
-  {id:20,phase:'grupos',date:'2026-06-17T01:00',home:'Austria',away:'Jordania',venue:'Arrowhead Stadium, Kansas City'},
-  {id:21,phase:'grupos',date:'2026-06-17T14:00',home:'Portugal',away:'Congo DR',venue:'Levi’s Stadium, San Francisco'},
-  {id:22,phase:'grupos',date:'2026-06-17T17:00',home:'Inglaterra',away:'Croacia',venue:'Lincoln Financial, Philadelphia'},
-  {id:23,phase:'grupos',date:'2026-06-17T20:00',home:'Ghana',away:'Panamá',venue:'NRG Stadium, Houston'},
-  {id:24,phase:'grupos',date:'2026-06-17T23:00',home:'Uzbekistán',away:'Colombia',venue:'SoFi Stadium, Los Ángeles'},
-  // Jue 18/jun
-  {id:25,phase:'grupos',date:'2026-06-18T13:00',home:'Chequia',away:'Sudáfrica',venue:'AT&T Stadium, Dallas'},
-  {id:26,phase:'grupos',date:'2026-06-18T16:00',home:'Suiza',away:'Bosnia',venue:'Gillette Stadium, Boston'},
-  {id:27,phase:'grupos',date:'2026-06-18T19:00',home:'Canadá',away:'Qatar',venue:'BC Place, Vancouver'},
-  {id:28,phase:'grupos',date:'2026-06-18T22:00',home:'México',away:'Corea del Sur',venue:'Est. Azteca, Cd. de México'},
-  // Vie 19/jun
-  {id:29,phase:'grupos',date:'2026-06-19T16:00',home:'Estados Unidos',away:'Australia',venue:'Levi’s Stadium, San Francisco'},
-  {id:30,phase:'grupos',date:'2026-06-19T19:00',home:'Escocia',away:'Marruecos',venue:'Hard Rock Stadium, Miami'},
-  {id:31,phase:'grupos',date:'2026-06-19T21:30',home:'Brasil',away:'Haití',venue:'MetLife Stadium, NJ'},
-  // Sáb 20/jun
-  {id:32,phase:'grupos',date:'2026-06-20T00:00',home:'Turquía',away:'Paraguay',venue:'NRG Stadium, Houston'},
-  {id:33,phase:'grupos',date:'2026-06-20T14:00',home:'Países Bajos',away:'Suecia',venue:'Arrowhead Stadium, Kansas City'},
-  {id:34,phase:'grupos',date:'2026-06-20T17:00',home:'Alemania',away:'Costa de Marfil',venue:'Lincoln Financial, Philadelphia'},
-  {id:35,phase:'grupos',date:'2026-06-20T21:00',home:'Ecuador',away:'Curaçao',venue:'Lumen Field, Seattle'},
-  // Dom 21/jun
-  {id:36,phase:'grupos',date:'2026-06-21T01:00',home:'Túnez',away:'Japón',venue:'Est. BBVA, Monterrey'},
-  {id:37,phase:'grupos',date:'2026-06-21T13:00',home:'España',away:'Arabia Saudita',venue:'SoFi Stadium, Los Ángeles'},
-  {id:38,phase:'grupos',date:'2026-06-21T16:00',home:'Bélgica',away:'Irán',venue:'AT&T Stadium, Dallas'},
-  {id:39,phase:'grupos',date:'2026-06-21T19:00',home:'Uruguay',away:'Cabo Verde',venue:'BC Place, Vancouver'},
-  {id:40,phase:'grupos',date:'2026-06-21T22:00',home:'Nueva Zelanda',away:'Egipto',venue:'Gillette Stadium, Boston'},
-  // Lun 22/jun
-  {id:41,phase:'grupos',date:'2026-06-22T14:00',home:'Argentina',away:'Austria',venue:'Hard Rock Stadium, Miami'},
-  {id:42,phase:'grupos',date:'2026-06-22T18:00',home:'Francia',away:'Iraq',venue:'Mercedes-Benz Stadium, Atlanta'},
-  {id:43,phase:'grupos',date:'2026-06-22T21:00',home:'Noruega',away:'Senegal',venue:'Levi’s Stadium, San Francisco'},
-  // Mar 23/jun
-  {id:44,phase:'grupos',date:'2026-06-23T00:00',home:'Jordania',away:'Argelia',venue:'Lincoln Financial, Philadelphia'},
-  {id:45,phase:'grupos',date:'2026-06-23T14:00',home:'Portugal',away:'Uzbekistán',venue:'NRG Stadium, Houston'},
-  {id:46,phase:'grupos',date:'2026-06-23T17:00',home:'Inglaterra',away:'Ghana',venue:'Arrowhead Stadium, Kansas City'},
-  {id:47,phase:'grupos',date:'2026-06-23T20:00',home:'Panamá',away:'Croacia',venue:'AT&T Stadium, Dallas'},
-  {id:48,phase:'grupos',date:'2026-06-23T23:00',home:'Colombia',away:'Congo DR',venue:'Lumen Field, Seattle'},
+  // ── FASE DE GRUPOS ─────────────────────────────────────────
+  // NOTA: IDs 1-6 son partidos anteriores al 24/jun (sin pronosticos en planilla)
+  {id:101,phase:'grupos',date:'2026-06-11T16:00',home:'México',away:'Sudáfrica',venue:'Est. Azteca'},
+  {id:102,phase:'grupos',date:'2026-06-11T23:00',home:'Corea del Sur',away:'Chequia',venue:'SoFi Stadium, LA'},
+  {id:103,phase:'grupos',date:'2026-06-12T16:00',home:'Canadá',away:'Bosnia',venue:'BC Place, Vancouver'},
+  {id:104,phase:'grupos',date:'2026-06-12T22:00',home:'Estados Unidos',away:'Paraguay',venue:'Levi’s Stadium, SF'},
+  {id:105,phase:'grupos',date:'2026-06-13T16:00',home:'Qatar',away:'Suiza',venue:'AT&T Stadium, Dallas'},
+  {id:106,phase:'grupos',date:'2026-06-13T19:00',home:'Brasil',away:'Marruecos',venue:'MetLife Stadium, NJ'},
+  // JORNADA 2 — IDs 107-124 (sin pronósticos en planilla)
+  {id:107,phase:'grupos',date:'2026-06-13T22:00',home:'Haití',away:'Escocia',venue:'Hard Rock, Miami'},
+  {id:108,phase:'grupos',date:'2026-06-14T01:00',home:'Australia',away:'Turquía',venue:'Arrowhead, KC'},
+  {id:109,phase:'grupos',date:'2026-06-14T14:00',home:'Alemania',away:'Curaçao',venue:'Lincoln Financial, Phila'},
+  {id:110,phase:'grupos',date:'2026-06-14T17:00',home:'Países Bajos',away:'Japón',venue:'Gillette Stadium, Boston'},
+  {id:111,phase:'grupos',date:'2026-06-14T20:00',home:'Costa de Marfil',away:'Ecuador',venue:'NRG Stadium, Houston'},
+  {id:112,phase:'grupos',date:'2026-06-14T23:00',home:'Suecia',away:'Túnez',venue:'Est. BBVA, Monterrey'},
+  {id:113,phase:'grupos',date:'2026-06-15T13:00',home:'España',away:'Cabo Verde',venue:'SoFi Stadium, LA'},
+  {id:114,phase:'grupos',date:'2026-06-15T16:00',home:'Bélgica',away:'Egipto',venue:'Lumen Field, Seattle'},
+  {id:115,phase:'grupos',date:'2026-06-15T19:00',home:'Arabia Saudita',away:'Uruguay',venue:'Mercedes-Benz, Atlanta'},
+  {id:116,phase:'grupos',date:'2026-06-15T22:00',home:'Irán',away:'Nueva Zelanda',venue:'BC Place, Vancouver'},
+  {id:117,phase:'grupos',date:'2026-06-16T16:00',home:'Francia',away:'Senegal',venue:'MetLife Stadium, NJ'},
+  {id:118,phase:'grupos',date:'2026-06-16T19:00',home:'Iraq',away:'Noruega',venue:'AT&T Stadium, Dallas'},
+  {id:119,phase:'grupos',date:'2026-06-16T22:00',home:'Argentina',away:'Argelia',venue:'Hard Rock, Miami'},
+  {id:120,phase:'grupos',date:'2026-06-17T01:00',home:'Austria',away:'Jordania',venue:'Arrowhead, KC'},
+  {id:121,phase:'grupos',date:'2026-06-17T14:00',home:'Portugal',away:'Congo DR',venue:'Levi’s Stadium, SF'},
+  {id:122,phase:'grupos',date:'2026-06-17T17:00',home:'Inglaterra',away:'Croacia',venue:'Lincoln Financial, Phila'},
+  {id:123,phase:'grupos',date:'2026-06-17T20:00',home:'Ghana',away:'Panamá',venue:'NRG Stadium, Houston'},
+  {id:124,phase:'grupos',date:'2026-06-17T23:00',home:'Uzbekistán',away:'Colombia',venue:'SoFi Stadium, LA'},
+  // JORNADA 2 continuación — IDs 125-140
+  {id:125,phase:'grupos',date:'2026-06-18T13:00',home:'Chequia',away:'Sudáfrica',venue:'AT&T Stadium, Dallas'},
+  {id:126,phase:'grupos',date:'2026-06-18T16:00',home:'Suiza',away:'Bosnia',venue:'Gillette Stadium, Boston'},
+  {id:127,phase:'grupos',date:'2026-06-18T19:00',home:'Canadá',away:'Qatar',venue:'BC Place, Vancouver'},
+  {id:128,phase:'grupos',date:'2026-06-18T22:00',home:'México',away:'Corea del Sur',venue:'Est. Azteca'},
+  {id:129,phase:'grupos',date:'2026-06-19T16:00',home:'Estados Unidos',away:'Australia',venue:'Levi’s Stadium, SF'},
+  {id:130,phase:'grupos',date:'2026-06-19T19:00',home:'Escocia',away:'Marruecos',venue:'Hard Rock, Miami'},
+  {id:131,phase:'grupos',date:'2026-06-19T21:30',home:'Brasil',away:'Haití',venue:'MetLife Stadium, NJ'},
+  {id:132,phase:'grupos',date:'2026-06-20T00:00',home:'Turquía',away:'Paraguay',venue:'NRG Stadium, Houston'},
+  {id:133,phase:'grupos',date:'2026-06-20T14:00',home:'Países Bajos',away:'Suecia',venue:'Arrowhead, KC'},
+  {id:134,phase:'grupos',date:'2026-06-20T17:00',home:'Alemania',away:'Costa de Marfil',venue:'Lincoln Financial, Phila'},
+  {id:135,phase:'grupos',date:'2026-06-20T21:00',home:'Ecuador',away:'Curaçao',venue:'Lumen Field, Seattle'},
+  {id:136,phase:'grupos',date:'2026-06-21T01:00',home:'Túnez',away:'Japón',venue:'Est. BBVA, Monterrey'},
+  {id:137,phase:'grupos',date:'2026-06-21T13:00',home:'España',away:'Arabia Saudita',venue:'SoFi Stadium, LA'},
+  {id:138,phase:'grupos',date:'2026-06-21T16:00',home:'Bélgica',away:'Irán',venue:'AT&T Stadium, Dallas'},
+  {id:139,phase:'grupos',date:'2026-06-21T19:00',home:'Uruguay',away:'Cabo Verde',venue:'BC Place, Vancouver'},
+  {id:140,phase:'grupos',date:'2026-06-21T22:00',home:'Nueva Zelanda',away:'Egipto',venue:'Gillette Stadium, Boston'},
+  {id:141,phase:'grupos',date:'2026-06-22T14:00',home:'Argentina',away:'Austria',venue:'Hard Rock, Miami'},
+  {id:142,phase:'grupos',date:'2026-06-22T18:00',home:'Francia',away:'Iraq',venue:'Mercedes-Benz, Atlanta'},
+  {id:143,phase:'grupos',date:'2026-06-22T21:00',home:'Noruega',away:'Senegal',venue:'Levi’s Stadium, SF'},
+  {id:144,phase:'grupos',date:'2026-06-23T00:00',home:'Jordania',away:'Argelia',venue:'Lincoln Financial, Phila'},
+  {id:145,phase:'grupos',date:'2026-06-23T14:00',home:'Portugal',away:'Uzbekistán',venue:'NRG Stadium, Houston'},
+  {id:146,phase:'grupos',date:'2026-06-23T17:00',home:'Inglaterra',away:'Ghana',venue:'Arrowhead, KC'},
+  {id:147,phase:'grupos',date:'2026-06-23T20:00',home:'Panamá',away:'Croacia',venue:'AT&T Stadium, Dallas'},
+  {id:148,phase:'grupos',date:'2026-06-23T23:00',home:'Colombia',away:'Congo DR',venue:'Lumen Field, Seattle'},
+  // ── JORNADA 3 (IDs originales 1-24 preservados para la planilla) ──────────
   // Mie 24/jun
-  {id:49,phase:'grupos',date:'2026-06-24T16:00',home:'Suiza',away:'Canadá',venue:'BC Place, Vancouver'},
-  {id:50,phase:'grupos',date:'2026-06-24T16:00',home:'Bosnia',away:'Qatar',venue:'Gillette Stadium, Boston'},
-  {id:51,phase:'grupos',date:'2026-06-24T19:00',home:'Escocia',away:'Brasil',venue:'Hard Rock Stadium, Miami'},
-  {id:52,phase:'grupos',date:'2026-06-24T19:00',home:'Marruecos',away:'Haití',venue:'Mercedes-Benz Stadium, Atlanta'},
-  {id:53,phase:'grupos',date:'2026-06-24T22:00',home:'Chequia',away:'México',venue:'Est. Azteca, Cd. de México'},
-  {id:54,phase:'grupos',date:'2026-06-24T22:00',home:'Sudáfrica',away:'Corea del Sur',venue:'Est. BBVA, Monterrey'},
+  {id:1,phase:'grupos',date:'2026-06-24T16:00',home:'Suiza',away:'Canadá',venue:'BC Place, Vancouver'},
+  {id:2,phase:'grupos',date:'2026-06-24T16:00',home:'Bosnia',away:'Qatar',venue:'Gillette Stadium, Boston'},
+  {id:3,phase:'grupos',date:'2026-06-24T19:00',home:'Escocia',away:'Brasil',venue:'Hard Rock, Miami'},
+  {id:4,phase:'grupos',date:'2026-06-24T19:00',home:'Marruecos',away:'Haití',venue:'Mercedes-Benz, Atlanta'},
+  {id:5,phase:'grupos',date:'2026-06-24T22:00',home:'Chequia',away:'México',venue:'Est. Azteca'},
+  {id:6,phase:'grupos',date:'2026-06-24T22:00',home:'Sudáfrica',away:'Corea del Sur',venue:'Est. BBVA, Monterrey'},
   // Jue 25/jun
-  {id:55,phase:'grupos',date:'2026-06-25T17:00',home:'Curaçao',away:'Costa de Marfil',venue:'SoFi Stadium, Los Ángeles'},
-  {id:56,phase:'grupos',date:'2026-06-25T17:00',home:'Ecuador',away:'Alemania',venue:'AT&T Stadium, Dallas'},
-  {id:57,phase:'grupos',date:'2026-06-25T20:00',home:'Japón',away:'Suecia',venue:'Lincoln Financial, Philadelphia'},
-  {id:58,phase:'grupos',date:'2026-06-25T20:00',home:'Túnez',away:'Países Bajos',venue:'Arrowhead Stadium, Kansas City'},
-  {id:59,phase:'grupos',date:'2026-06-25T23:00',home:'Turquía',away:'Estados Unidos',venue:'SoFi Stadium, Los Ángeles'},
-  {id:60,phase:'grupos',date:'2026-06-25T23:00',home:'Paraguay',away:'Australia',venue:'Levi’s Stadium, San Francisco'},
+  {id:7,phase:'grupos',date:'2026-06-25T17:00',home:'Ecuador',away:'Alemania',venue:'AT&T Stadium, Dallas'},
+  {id:8,phase:'grupos',date:'2026-06-25T17:00',home:'Curaçao',away:'Costa de Marfil',venue:'SoFi Stadium, LA'},
+  {id:9,phase:'grupos',date:'2026-06-25T20:00',home:'Japón',away:'Suecia',venue:'Lincoln Financial, Phila'},
+  {id:10,phase:'grupos',date:'2026-06-25T20:00',home:'Túnez',away:'Países Bajos',venue:'Arrowhead, KC'},
+  {id:11,phase:'grupos',date:'2026-06-25T23:00',home:'Turquía',away:'Estados Unidos',venue:'SoFi Stadium, LA'},
+  {id:12,phase:'grupos',date:'2026-06-25T23:00',home:'Paraguay',away:'Australia',venue:'Levi’s Stadium, SF'},
   // Vie 26/jun
-  {id:61,phase:'grupos',date:'2026-06-26T16:00',home:'Noruega',away:'Francia',venue:'Gillette Stadium, Boston'},
-  {id:62,phase:'grupos',date:'2026-06-26T16:00',home:'Senegal',away:'Iraq',venue:'BMO Field, Toronto'},
-  {id:63,phase:'grupos',date:'2026-06-26T21:00',home:'Cabo Verde',away:'Arabia Saudita',venue:'NRG Stadium, Houston'},
-  {id:64,phase:'grupos',date:'2026-06-26T21:00',home:'Uruguay',away:'España',venue:'Est. Akron, Guadalajara'},
+  {id:13,phase:'grupos',date:'2026-06-26T16:00',home:'Noruega',away:'Francia',venue:'Gillette Stadium, Boston'},
+  {id:14,phase:'grupos',date:'2026-06-26T16:00',home:'Senegal',away:'Iraq',venue:'BMO Field, Toronto'},
+  {id:15,phase:'grupos',date:'2026-06-26T21:00',home:'Cabo Verde',away:'Arabia Saudita',venue:'NRG Stadium, Houston'},
+  {id:16,phase:'grupos',date:'2026-06-26T21:00',home:'Uruguay',away:'España',venue:'Est. Akron, Guadalajara'},
   // Sáb 27/jun
-  {id:65,phase:'grupos',date:'2026-06-27T00:00',home:'Egipto',away:'Irán',venue:'Lumen Field, Seattle'},
-  {id:66,phase:'grupos',date:'2026-06-27T00:00',home:'Nueva Zelanda',away:'Bélgica',venue:'BC Place, Vancouver'},
-  {id:67,phase:'grupos',date:'2026-06-27T18:00',home:'Panamá',away:'Inglaterra',venue:'MetLife Stadium, NJ'},
-  {id:68,phase:'grupos',date:'2026-06-27T18:00',home:'Croacia',away:'Ghana',venue:'Lincoln Financial, Philadelphia'},
-  {id:69,phase:'grupos',date:'2026-06-27T20:30',home:'Colombia',away:'Portugal',venue:'Est. Akron, Guadalajara'},
-  {id:70,phase:'grupos',date:'2026-06-27T20:30',home:'Congo DR',away:'Uzbekistán',venue:'Mercedes-Benz Stadium, Atlanta'},
-  {id:71,phase:'grupos',date:'2026-06-27T23:00',home:'Argelia',away:'Austria',venue:'Lumen Field, Seattle'},
-  {id:72,phase:'grupos',date:'2026-06-27T23:00',home:'Jordania',away:'Argentina',venue:'NRG Stadium, Houston'},
-  // ── RONDA DE 32 (Dieciseisavos) ─────────────────────────────
+  {id:17,phase:'grupos',date:'2026-06-27T00:00',home:'Egipto',away:'Irán',venue:'Lumen Field, Seattle'},
+  {id:18,phase:'grupos',date:'2026-06-27T00:00',home:'Nueva Zelanda',away:'Bélgica',venue:'BC Place, Vancouver'},
+  {id:19,phase:'grupos',date:'2026-06-27T18:00',home:'Panamá',away:'Inglaterra',venue:'MetLife Stadium, NJ'},
+  {id:20,phase:'grupos',date:'2026-06-27T18:00',home:'Croacia',away:'Ghana',venue:'Lincoln Financial, Phila'},
+  {id:21,phase:'grupos',date:'2026-06-27T20:30',home:'Colombia',away:'Portugal',venue:'Est. Akron, Guadalajara'},
+  {id:22,phase:'grupos',date:'2026-06-27T20:30',home:'Congo DR',away:'Uzbekistán',venue:'Mercedes-Benz, Atlanta'},
+  {id:23,phase:'grupos',date:'2026-06-27T23:00',home:'Argelia',away:'Austria',venue:'Lumen Field, Seattle'},
+  {id:24,phase:'grupos',date:'2026-06-27T23:00',home:'Jordania',away:'Argentina',venue:'NRG Stadium, Houston'},
+  // ── RONDA DE 32 — Cruces CONFIRMADOS al 27/jun/2026 ────────
   // Dom 28/jun
-  {id:73,phase:'r32',date:'2026-06-28T16:00',home:'Sudáfrica',away:'Canadá',venue:'SoFi Stadium, Los Ángeles'},
+  {id:25,phase:'r32',date:'2026-06-28T16:00',home:'Sudáfrica',away:'Canadá',venue:'SoFi Stadium, Los Ángeles'},
   // Lun 29/jun
-  {id:74,phase:'r32',date:'2026-06-29T14:00',home:'Brasil',away:'Japón',venue:'NRG Stadium, Houston'},
-  {id:75,phase:'r32',date:'2026-06-29T17:30',home:'Alemania',away:'3º A/B/C/D/F',venue:'AT&T Stadium, Dallas'},
-  {id:76,phase:'r32',date:'2026-06-29T22:00',home:'Países Bajos',away:'Marruecos',venue:'MetLife Stadium, NJ'},
+  {id:26,phase:'r32',date:'2026-06-29T14:00',home:'Brasil',away:'Japón',venue:'NRG Stadium, Houston'},
+  {id:27,phase:'r32',date:'2026-06-29T17:30',home:'Alemania',away:'3º A/B/C/D/F',venue:'Gillette Stadium, Boston'},
+  {id:28,phase:'r32',date:'2026-06-29T22:00',home:'Países Bajos',away:'Marruecos',venue:'Est. BBVA, Monterrey'},
   // Mar 30/jun
-  {id:77,phase:'r32',date:'2026-06-30T14:00',home:'Costa de Marfil',away:'2º Grupo I',venue:'Levi’s Stadium, San Francisco'},
-  {id:78,phase:'r32',date:'2026-06-30T18:00',home:'1º Grupo I',away:'3º C/D/F/G/H',venue:'BC Place, Vancouver'},
-  {id:79,phase:'r32',date:'2026-06-30T22:00',home:'México',away:'3º C/E/F/H/I',venue:'Est. Azteca, Cd. de México'},
+  {id:29,phase:'r32',date:'2026-06-30T14:00',home:'Francia',away:'3º C/D/F/G/H',venue:'MetLife Stadium, NJ'},
+  {id:30,phase:'r32',date:'2026-06-30T18:00',home:'Costa de Marfil',away:'Noruega',venue:'AT&T Stadium, Dallas'},
+  {id:31,phase:'r32',date:'2026-06-30T22:00',home:'México',away:'3º C/E/F/H/I',venue:'Est. Azteca, Cd. de México'},
   // Mie 1/jul
-  {id:80,phase:'r32',date:'2026-07-01T13:00',home:'1º Grupo L',away:'3º E/H/I/J/K',venue:'Mercedes-Benz Stadium, Atlanta'},
-  {id:81,phase:'r32',date:'2026-07-01T17:00',home:'1º Grupo G',away:'3º A/E/H/I/J',venue:'Lumen Field, Seattle'},
-  {id:82,phase:'r32',date:'2026-07-01T21:00',home:'Estados Unidos',away:'3º B/E/F/I/J',venue:'AT&T Stadium, Dallas'},
+  {id:32,phase:'r32',date:'2026-07-01T13:00',home:'1º Grupo L',away:'3º E/H/I/J/K',venue:'Mercedes-Benz, Atlanta'},
+  {id:33,phase:'r32',date:'2026-07-01T17:00',home:'1º Grupo G',away:'3º A/E/H/I/J',venue:'Lumen Field, Seattle'},
+  {id:34,phase:'r32',date:'2026-07-01T21:00',home:'Estados Unidos',away:'3º B/E/F/I/J',venue:'Levi’s Stadium, SF'},
   // Jue 2/jul
-  {id:83,phase:'r32',date:'2026-07-02T16:00',home:'1º Grupo H',away:'2º Grupo J',venue:'SoFi Stadium, Los Ángeles'},
-  {id:84,phase:'r32',date:'2026-07-02T20:00',home:'2º Grupo K',away:'2º Grupo L',venue:'BMO Field, Toronto'},
+  {id:35,phase:'r32',date:'2026-07-02T16:00',home:'1º Grupo H',away:'2º Grupo J',venue:'SoFi Stadium, Los Ángeles'},
+  {id:36,phase:'r32',date:'2026-07-02T20:00',home:'2º Grupo K',away:'2º Grupo L',venue:'BMO Field, Toronto'},
   // Vie 3/jul
-  {id:85,phase:'r32',date:'2026-07-03T00:00',home:'Suiza',away:'3º E/F/G/I/J',venue:'BC Place, Vancouver'},
-  {id:86,phase:'r32',date:'2026-07-03T15:00',home:'Australia',away:'2º Grupo G',venue:'Hard Rock Stadium, Miami'},
-  {id:87,phase:'r32',date:'2026-07-03T19:00',home:'1º Grupo J',away:'2º Grupo H',venue:'Gillette Stadium, Boston'},
-  {id:88,phase:'r32',date:'2026-07-03T22:30',home:'1º Grupo K',away:'3º D/E/I/J/L',venue:'Arrowhead Stadium, Kansas City'},
+  {id:37,phase:'r32',date:'2026-07-03T00:00',home:'Suiza',away:'3º E/F/G/I/J',venue:'BC Place, Vancouver'},
+  {id:38,phase:'r32',date:'2026-07-03T15:00',home:'Australia',away:'2º Grupo G',venue:'AT&T Stadium, Dallas'},
+  {id:39,phase:'r32',date:'2026-07-03T19:00',home:'Argentina',away:'Cabo Verde',venue:'Hard Rock Stadium, Miami'},
+  {id:40,phase:'r32',date:'2026-07-03T22:30',home:'1º Grupo K',away:'3º D/E/I/J/L',venue:'Arrowhead Stadium, KC'},
   // ── OCTAVOS DE FINAL ────────────────────────────────────────
-  // Sáb 4/jul
-  {id:89,phase:'octavos',date:'2026-07-04T14:00',home:'Gan. M73',away:'Gan. M75',venue:'NRG Stadium, Houston'},
-  {id:90,phase:'octavos',date:'2026-07-04T18:00',home:'Gan. M74',away:'Gan. M77',venue:'Lincoln Financial, Philadelphia'},
-  // Dom 5/jul
-  {id:91,phase:'octavos',date:'2026-07-05T17:00',home:'Gan. M76',away:'Gan. M78',venue:'MetLife Stadium, NJ'},
-  {id:92,phase:'octavos',date:'2026-07-05T21:00',home:'Gan. M79',away:'Gan. M80',venue:'Est. Azteca, Cd. de México'},
-  // Lun 6/jul
-  {id:93,phase:'octavos',date:'2026-07-06T16:00',home:'Gan. M83',away:'Gan. M84',venue:'AT&T Stadium, Dallas'},
-  {id:94,phase:'octavos',date:'2026-07-06T21:00',home:'Gan. M81',away:'Gan. M82',venue:'Lumen Field, Seattle'},
-  // Mar 7/jul
-  {id:95,phase:'octavos',date:'2026-07-07T13:00',home:'Gan. M86',away:'Gan. M88',venue:'Mercedes-Benz Stadium, Atlanta'},
-  {id:96,phase:'octavos',date:'2026-07-07T17:00',home:'Gan. M85',away:'Gan. M87',venue:'BC Place, Vancouver'},
+  {id:41,phase:'octavos',date:'2026-07-04T14:00',home:'Gan. P25',away:'Gan. P27',venue:'NRG Stadium, Houston'},
+  {id:42,phase:'octavos',date:'2026-07-04T18:00',home:'Gan. P26',away:'Gan. P29',venue:'Lincoln Financial, Phila'},
+  {id:43,phase:'octavos',date:'2026-07-05T17:00',home:'Gan. P28',away:'Gan. P30',venue:'MetLife Stadium, NJ'},
+  {id:44,phase:'octavos',date:'2026-07-05T21:00',home:'Gan. P31',away:'Gan. P32',venue:'Est. Azteca'},
+  {id:45,phase:'octavos',date:'2026-07-06T16:00',home:'Gan. P35',away:'Gan. P36',venue:'AT&T Stadium, Dallas'},
+  {id:46,phase:'octavos',date:'2026-07-06T21:00',home:'Gan. P33',away:'Gan. P34',venue:'Lumen Field, Seattle'},
+  {id:47,phase:'octavos',date:'2026-07-07T13:00',home:'Gan. P38',away:'Gan. P40',venue:'Mercedes-Benz, Atlanta'},
+  {id:48,phase:'octavos',date:'2026-07-07T17:00',home:'Gan. P37',away:'Gan. P39',venue:'BC Place, Vancouver'},
   // ── CUARTOS DE FINAL ────────────────────────────────────────
-  {id:97,phase:'cuartos',date:'2026-07-09T17:00',home:'Gan. Oct-1',away:'Gan. Oct-2',venue:'Gillette Stadium, Boston'},
-  {id:98,phase:'cuartos',date:'2026-07-10T16:00',home:'Gan. Oct-5',away:'Gan. Oct-6',venue:'SoFi Stadium, Los Ángeles'},
-  {id:99,phase:'cuartos',date:'2026-07-11T18:00',home:'Gan. Oct-3',away:'Gan. Oct-4',venue:'Hard Rock Stadium, Miami'},
-  {id:100,phase:'cuartos',date:'2026-07-11T22:00',home:'Gan. Oct-7',away:'Gan. Oct-8',venue:'Arrowhead Stadium, Kansas City'},
+  {id:49,phase:'cuartos',date:'2026-07-09T17:00',home:'Gan. Oct-1',away:'Gan. Oct-2',venue:'Gillette Stadium, Boston'},
+  {id:50,phase:'cuartos',date:'2026-07-10T16:00',home:'Gan. Oct-5',away:'Gan. Oct-6',venue:'SoFi Stadium, LA'},
+  {id:51,phase:'cuartos',date:'2026-07-11T18:00',home:'Gan. Oct-3',away:'Gan. Oct-4',venue:'Hard Rock, Miami'},
+  {id:52,phase:'cuartos',date:'2026-07-11T22:00',home:'Gan. Oct-7',away:'Gan. Oct-8',venue:'Arrowhead, KC'},
   // ── SEMIFINALES ─────────────────────────────────────────────
-  {id:101,phase:'semis',date:'2026-07-14T16:00',home:'Gan. Cuarto 1',away:'Gan. Cuarto 2',venue:'AT&T Stadium, Dallas'},
-  {id:102,phase:'semis',date:'2026-07-15T16:00',home:'Gan. Cuarto 3',away:'Gan. Cuarto 4',venue:'Mercedes-Benz Stadium, Atlanta'},
+  {id:53,phase:'semis',date:'2026-07-14T16:00',home:'Gan. Cuarto 1',away:'Gan. Cuarto 2',venue:'AT&T Stadium, Dallas'},
+  {id:54,phase:'semis',date:'2026-07-15T16:00',home:'Gan. Cuarto 3',away:'Gan. Cuarto 4',venue:'Mercedes-Benz, Atlanta'},
   // ── TERCER PUESTO ───────────────────────────────────────────
-  {id:103,phase:'tercero',date:'2026-07-18T18:00',home:'Perdedor Semi 1',away:'Perdedor Semi 2',venue:'Hard Rock Stadium, Miami'},
+  {id:55,phase:'tercero',date:'2026-07-18T18:00',home:'Perdedor Semi 1',away:'Perdedor Semi 2',venue:'Hard Rock, Miami'},
   // ── FINAL ───────────────────────────────────────────────────
-  {id:104,phase:'final',date:'2026-07-19T16:00',home:'Gan. Semi 1',away:'Gan. Semi 2',venue:'MetLife Stadium, New Jersey'}
+  {id:56,phase:'final',date:'2026-07-19T16:00',home:'Gan. Semi 1',away:'Gan. Semi 2',venue:'MetLife Stadium, New Jersey'}
 ];
 
 
@@ -589,15 +576,14 @@ function showSection(sec) {
 
 // ══════════ HELPERS ══════════
 function parseARG(dateStr) {
-  // Fuerza interpretación como hora Argentina (UTC-3)
-  // dateStr viene como '2026-06-27T23:00' — lo tratamos como UTC-3
+  // Las fechas estan en hora Argentina (UTC-3)
+  // Sumamos 3 horas para convertir a UTC y comparar correctamente
   var parts = dateStr.split('T');
   var d = parts[0].split('-');
-  var t = parts[1].split(':');
-  // UTC-3 → sumamos 3 horas para obtener UTC
+  var t = (parts[1]||'00:00').split(':');
   return new Date(Date.UTC(
     parseInt(d[0]), parseInt(d[1])-1, parseInt(d[2]),
-    parseInt(t[0])+3, parseInt(t[1]), 0
+    parseInt(t[0])+3, parseInt(t[1])||0, 0
   ));
 }
 function isMatchClosed(m) { return parseARG(m.date) <= now; }
@@ -619,7 +605,11 @@ function getMyStats() {
   return {total:total, exact:exact};
 }
 function ini(nombre) { return nombre.split(' ').map(function(x){return x[0];}).join('').slice(0,2).toUpperCase(); }
-function fmtDate(ds) { var d=new Date(ds); return d.toLocaleDateString('es-AR',{weekday:'short',month:'short',day:'numeric'})+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})+' hs'; }
+function fmtDate(ds) {
+  var d = parseARG(ds);
+  return d.toLocaleDateString('es-AR',{weekday:'short',month:'short',day:'numeric',timeZone:'America/Argentina/Buenos_Aires'})
+    +' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/Argentina/Buenos_Aires'})+' hs';
+}
 
 // ══════════ DASHBOARD ══════════
 function renderDashboard() {
