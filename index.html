@@ -851,28 +851,46 @@ function renderCuadro() {
     { key:'final',   label:'Final' }
   ];
 
-  // Wrapper con scroll horizontal
-  var html = '<div style="overflow-x:auto;padding-bottom:12px;">';
-  html += '<div style="display:flex;gap:10px;min-width:max-content;align-items:flex-start;padding:4px 2px;">';
+  var html = '';
+
+  // Scroll horizontal para el bracket
+  html += '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px;">';
+  html += '<div style="display:flex;gap:8px;padding:4px 2px;width:max-content;">';
 
   phases.forEach(function(phase) {
     var ids = BRACKET[phase.key] || [];
-    html += '<div style="display:flex;flex-direction:column;gap:8px;min-width:180px;">';
-    html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--orange);text-align:center;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:4px;">'+phase.label+'</div>';
-    ids.forEach(function(matchId) {
-      html += buildMatchCard(matchId);
+    var matchesInPhase = ids.filter(function(id){
+      return MATCHES.find(function(m){ return m.id === id; });
     });
+
+    html += '<div style="display:flex;flex-direction:column;gap:6px;width:185px;flex-shrink:0;">';
+    html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;'
+          + 'color:var(--orange);text-align:center;padding:6px 4px;'
+          + 'border-bottom:2px solid var(--orange);margin-bottom:2px;">'+phase.label+'</div>';
+
+    if (matchesInPhase.length === 0) {
+      html += '<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:10px;">-</div>';
+    } else {
+      ids.forEach(function(matchId) {
+        var card = buildMatchCard(matchId);
+        html += card || '';
+      });
+    }
     html += '</div>';
   });
 
   html += '</div></div>';
 
-  // Tabla del 3er puesto separada
+  // 3er Puesto
   if (BRACKET.tercero && BRACKET.tercero.length) {
-    html += '<div style="margin-top:16px;">';
-    html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:8px;">3\u00b0 Puesto</div>';
-    html += buildMatchCard(BRACKET.tercero[0]);
-    html += '</div>';
+    var card3 = buildMatchCard(BRACKET.tercero[0]);
+    if (card3) {
+      html += '<div style="margin-top:14px;">';
+      html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;'
+            + 'letter-spacing:0.8px;color:var(--text-muted);margin-bottom:6px;">3° Puesto</div>';
+      html += '<div style="max-width:185px;">' + card3 + '</div>';
+      html += '</div>';
+    }
   }
 
   container.innerHTML = html;
@@ -880,7 +898,9 @@ function renderCuadro() {
 
 function buildMatchCard(matchId) {
   var m = MATCHES.find(function(x){ return x.id === matchId; });
-  if (!m) return '';
+  if (!m) {
+    return '<div style="background:var(--bg-dark);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:11px;color:var(--text-muted);text-align:center;">Por definir</div>';
+  }
   
   var r = resultados[matchId];
   var myP = myPronos[matchId];
