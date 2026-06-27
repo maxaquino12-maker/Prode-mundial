@@ -125,7 +125,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   <div class="login-card">
     <div class="login-logo">
       <div class="ball">&#9917;</div>
-      <h1>Prode Mundial 2026 - Oben Adm</h1>
+      <h1>Prode Mundial 2026</h1>
       <p>USA &middot; Canad&aacute; &middot; M&eacute;xico</p>
     </div>
     <div id="loginForm">
@@ -577,14 +577,32 @@ function showSection(sec) {
   if(sec==='historial') renderHistorial();
   if(sec==='estadisticas') { showLoader('Cargando stats...'); api({action:'getStats'},function(err,res){ hideLoader(); renderEstadisticas(!err&&res.ok?res.stats:{}); }); }
   if(sec==='admin') { showLoader('Cargando...'); refreshAll(function(){ hideLoader(); renderAdmin(); }); }
-  if(sec==='todos') { showLoader('Cargando...'); refreshAll(function(){ hideLoader(); renderTodos(); }); }
+  if(sec==='todos') {
+    showLoader('Cargando pronósticos...');
+    refreshAll(function(){
+      hideLoader();
+      renderTodos();
+    });
+  }
   if(sec==='perfil') renderPerfil();
 }
 
 // ══════════ HELPERS ══════════
-function isMatchClosed(m) { return new Date(m.date) <= now; }
+function parseARG(dateStr) {
+  // Fuerza interpretación como hora Argentina (UTC-3)
+  // dateStr viene como '2026-06-27T23:00' — lo tratamos como UTC-3
+  var parts = dateStr.split('T');
+  var d = parts[0].split('-');
+  var t = parts[1].split(':');
+  // UTC-3 → sumamos 3 horas para obtener UTC
+  return new Date(Date.UTC(
+    parseInt(d[0]), parseInt(d[1])-1, parseInt(d[2]),
+    parseInt(t[0])+3, parseInt(t[1]), 0
+  ));
+}
+function isMatchClosed(m) { return parseARG(m.date) <= now; }
 function getTimeUntil(ds) {
-  var diff=new Date(ds)-now; if(diff<=0) return null;
+  var diff=parseARG(ds)-now; if(diff<=0) return null;
   var h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000);
   if(h>48) return Math.floor(h/24)+'d'; if(h>0) return h+'h '+m+'m'; return m+'m';
 }
@@ -700,6 +718,11 @@ function renderEstadisticas(stats){
 var todosPhase = 'r32';
 
 function renderTodos() {
+  // Elegir fase con al menos un partido cerrado, si no mostrar grupos
+  var closedPhases = [...new Set(MATCHES.filter(function(m){ return isMatchClosed(m); }).map(function(m){ return m.phase; }))];
+  if (closedPhases.length > 0 && !closedPhases.includes(todosPhase)) {
+    todosPhase = closedPhases[closedPhases.length - 1];
+  }
   var phases = [...new Set(MATCHES.map(function(m){ return m.phase; }))];
   document.getElementById('todosPhase').innerHTML = phases.map(function(p){
     return '<button class="tab-pill'+(todosPhase===p?' active':'')+'\" onclick=\"setTodosPhase(\''+p+'\')\">'+PHASES[p]+'</button>';
@@ -1104,6 +1127,11 @@ function shareRanking(){
 var todosPhase = 'r32';
 
 function renderTodos() {
+  // Elegir fase con al menos un partido cerrado, si no mostrar grupos
+  var closedPhases = [...new Set(MATCHES.filter(function(m){ return isMatchClosed(m); }).map(function(m){ return m.phase; }))];
+  if (closedPhases.length > 0 && !closedPhases.includes(todosPhase)) {
+    todosPhase = closedPhases[closedPhases.length - 1];
+  }
   var phases = [...new Set(MATCHES.map(function(m){ return m.phase; }))];
   document.getElementById('todosPhase').innerHTML = phases.map(function(p){
     return '<button class="tab-pill'+(todosPhase===p?' active':'')+'\" onclick=\"setTodosPhase(\''+p+'\')\">'+PHASES[p]+'</button>';
