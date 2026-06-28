@@ -125,7 +125,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   <div class="login-card">
     <div class="login-logo">
       <div class="ball">&#9917;</div>
-      <h1>Prode Mundial 2026 - Oben Adm</h1>
+      <h1>Prode Mundial 2026</h1>
       <p>USA &middot; Canad&aacute; &middot; M&eacute;xico</p>
     </div>
     <div id="loginForm">
@@ -668,295 +668,173 @@ function renderEstadisticas(stats){
 // ══════════ PRONÓSTICOS DE TODOS ══════════
 var todosPhase = 'r32';
 
-function renderTodos() {
-  // Elegir automáticamente la fase con partidos cerrados más reciente
-  var phases = [...new Set(MATCHES.map(function(m){ return m.phase; }))];
-  var closedPhases = [...new Set(MATCHES.filter(function(m){ return isMatchClosed(m); }).map(function(m){ return m.phase; }))];
-  if (closedPhases.length > 0 && !closedPhases.includes(todosPhase)) {
-    todosPhase = closedPhases[closedPhases.length - 1];
-  }
-  document.getElementById('todosPhase').innerHTML = phases.map(function(p){
-    return '<button class="tab-pill'+(todosPhase===p?' active':'')+'\" onclick=\"setTodosPhase(\''+p+'\')\">'+PHASES[p]+'</button>';
-  }).join('');
-  renderTodosContent();
-}
-
-function setTodosPhase(p) { todosPhase = p; renderTodos(); }
-
-function renderTodosContent() {
-  var content = document.getElementById('todosContent');
-  if (!content) return;
-  var matches = MATCHES.filter(function(m){ return m.phase === todosPhase; });
-  if (!matches.length) {
-    content.innerHTML = '<div class="empty-state"><div class="icon">\ud83d\udccb</div><div>No hay partidos en esta fase</div></div>';
-    return;
-  }
-  var html = '';
-  matches.forEach(function(m) {
-    var closed = isMatchClosed(m);
-    var fh = FLAGS[m.home]||'\ud83c\udff4', fa = FLAGS[m.away]||'\ud83c\udff4';
-    var r = resultados[m.id];
-    var dateStr = new Date(parseARG(m.date)).toLocaleDateString('es-AR',{weekday:'short',month:'short',day:'numeric',timeZone:'America/Argentina/Buenos_Aires'})
-      +' '+new Date(parseARG(m.date)).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/Argentina/Buenos_Aires'})+' hs';
-    html += '<div class="match-card">';
-    html += '<div class="match-meta">';
-    html += '<span class="match-badge">'+PHASES[m.phase]+'</span>';
-    html += '<span>'+dateStr+'</span>';
-    if (r) html += '<span style="background:var(--bg-card);color:var(--white);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;">'+r.home+' - '+r.away+'</span>';
-    if (!closed) html += '<span style="background:rgba(76,175,80,0.2);color:#69f0ae;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;">\ud83d\udd12 Pronos ocultos</span>';
-    html += '</div>';
-    html += '<div class="match-teams" style="margin-bottom:10px;">';
-    html += '<div class="team"><div class="team-flag">'+fh+'</div><div class="team-name">'+m.home+'</div></div>';
-    html += '<div class="vs">VS</div>';
-    html += '<div class="team right"><div class="team-name">'+m.away+'</div><div class="team-flag">'+fa+'</div></div>';
-    html += '</div>';
-    if (!closed) {
-      var myP = myPronos[m.id];
-      if (myP !== undefined) {
-        html += '<div style="background:rgba(255,122,0,0.12);border:1px solid rgba(255,122,0,0.4);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:12px;">';
-        html += '<span style="font-size:11px;color:var(--orange);font-weight:600;">Tu pron\u00f3stico:</span>';
-        html += '<span style="font-size:18px;font-weight:700;">'+myP.home+' - '+myP.away+'</span>';
-        html += '<span style="font-size:11px;color:var(--text-muted);margin-left:auto;">\ud83d\udd12 Los dem\u00e1s se revelan al inicio</span>';
-        html += '</div>';
-      } else {
-        html += '<div style="font-size:12px;color:var(--text-muted);">A\u00fan no cargaste tu pron\u00f3stico.</div>';
-      }
-    } else {
-      html += '<div id="pronos-match-'+m.id+'"><div style="font-size:12px;color:var(--text-muted);">Cargando pron\u00f3sticos...</div></div>';
-    }
-    html += '</div>';
-  });
-  content.innerHTML = html;
-  // Cargar pronósticos async de partidos cerrados
-  matches.filter(function(m){ return isMatchClosed(m); }).forEach(function(m){
-    loadPronosForMatch(m, resultados[m.id]);
-  });
-}
-
-function loadPronosForMatch(match, result) {
-  var container = document.getElementById('pronos-match-'+match.id);
-  if (!container) return;
-  api({action:'getPronosByMatch', matchId:match.id}, function(err, res) {
-    if (err || !res.ok || !res.pronos || !res.pronos.length) {
-      if (container) container.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:6px 0;">Nadie pronostic\u00f3 este partido a\u00fan.</div>';
-      return;
-    }
-    var pronos = res.pronos;
-    if (result) {
-      pronos.sort(function(a,b){
-        return (calcPts({home:b.homeScore,away:b.awayScore},result)||0)-(calcPts({home:a.homeScore,away:a.awayScore},result)||0);
-      });
-    }
-    var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px;margin-top:4px;">';
-    pronos.forEach(function(p){
-      var isMe = String(p.userId)===String(currentUser.id);
-      var pts = result ? calcPts({home:p.homeScore,away:p.awayScore},result) : null;
-      var ptsBadge = pts!==null?'<span class="pts-badge '+(pts===5?'pts-5':pts>=3?'pts-3':'pts-0')+'" style="font-size:10px;">+'+pts+' pts</span>':'';
-      html += '<div style="'+(isMe?'background:rgba(255,122,0,0.12);border:1px solid var(--orange);':'background:var(--bg-dark);border:1px solid var(--border);')+'border-radius:8px;padding:10px 12px;">';
-      html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">';
-      html += '<div style="font-size:11px;font-weight:600;color:'+(isMe?'var(--orange)':'var(--white)')+';">'+p.nombre+(isMe?' \u2605':'')+'</div>'+ptsBadge;
-      html += '</div>';
-      html += '<div style="font-size:20px;font-weight:700;text-align:center;color:var(--white);">'+p.homeScore+' - '+p.awayScore+'</div>';
-      html += '</div>';
-    });
-    html += '</div>';
-    if (result) {
-      var exact=pronos.filter(function(p){return calcPts({home:p.homeScore,away:p.awayScore},result)===5;}).length;
-      var hit=pronos.filter(function(p){return (calcPts({home:p.homeScore,away:p.awayScore},result)||0)>0;}).length;
-      html += '<div style="display:flex;gap:14px;margin-top:10px;padding:8px 12px;background:var(--bg-dark);border-radius:8px;font-size:11px;color:var(--text-muted);">';
-      html += '<span>\ud83d\udc65 '+pronos.length+' pron\u00f3sticos</span>';
-      html += '<span style="color:#69f0ae;">\u2705 '+exact+' exactos</span>';
-      html += '<span style="color:#82b1ff;">\ud83c\udfaf '+hit+' aciertos</span>';
-      html += '</div>';
-    }
-    if (container) container.innerHTML = html;
-  });
-}
-
-
-
-
-
-
 // ══════════ CUADRO DE ELIMINACIÓN ══════════
+
+
+
+// CUADRO DE ELIMINACION
 function renderCuadro() {
   var el = document.getElementById('bracketContainer');
-  if (!el) { console.log('bracketContainer no encontrado'); return; }
-
-  // Los 16 partidos de R32 ordenados en el bracket
-  // Izquierda: P25,P27,P29,P31,P33,P35,P37,P39
-  // Derecha:   P26,P28,P30,P32,P34,P36,P38,P40
-  var leftR32  = [25,27,29,31,33,35,37,39];
-  var rightR32 = [26,28,30,32,34,36,38,40];
-  // Octavos: L->R
-  var leftOct  = [41,43,45,47];
-  var rightOct = [42,44,46,48];
-  // Cuartos
-  var leftCuar = [49,51];
-  var rightCuar= [50,52];
-  // Semis
-  var leftSemi = [53];
-  var rightSemi= [54];
-
-  function getM(id) {
-    return MATCHES.find(function(x){ return x.id===id; }) || null;
+  if (!el) {
+    console.error('bracketContainer no encontrado en DOM');
+    return;
   }
+  // Debug temporal - mostrar que la función se ejecuta
+  el.innerHTML = '<div style="color:#69f0ae;padding:8px;font-size:12px;">Iniciando cuadro...</div>';
+  
+  try {
 
-  function fmtD(ds) {
+  var r32 = [
+    [25,'Sudáfrica','Canadá'], [27,'Alemania','Paraguay'],
+    [29,'Costa de Marfil','Noruega'], [31,'México','Ecuador'],
+    [33,'Bélgica','Senegal'], [35,'España','Austria'],
+    [37,'Suiza','Argelia'], [39,'Argentina','Cabo Verde']
+  ];
+  var r32b = [
+    [26,'Brasil','Japón'], [28,'Países Bajos','Marruecos'],
+    [30,'Francia','Suecia'], [32,'Inglaterra','Congo DR'],
+    [34,'Estados Unidos','Bosnia'], [36,'Portugal','Croacia'],
+    [38,'Australia','Egipto'], [40,'Colombia','Ghana']
+  ];
+
+  function fmtFecha(ds) {
     var d = new Date(parseARG(ds));
-    var dd = d.toLocaleDateString('es-AR',{day:'numeric',month:'numeric',timeZone:'America/Argentina/Buenos_Aires'});
-    var tt = d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/Argentina/Buenos_Aires'});
-    return dd+' '+tt+'hs';
+    return d.toLocaleDateString('es-AR',{day:'numeric',month:'numeric',timeZone:'America/Argentina/Buenos_Aires'})
+      +' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/Argentina/Buenos_Aires'})+'hs';
   }
 
-  function teamRow(name, score, myScore, won, closed) {
+  function fila(name, gol, esGanador) {
     var flag = FLAGS[name] || '';
-    var short = name.length > 13 ? name.slice(0,12)+'\u2026' : name;
-    var bg    = won ? 'rgba(255,122,0,0.22)' : 'transparent';
-    var nc    = closed ? (won ? '#fff' : 'rgba(255,255,255,0.4)') : 'rgba(255,255,255,0.9)';
-    var fw    = won ? '700' : '400';
-    var sbg   = (score!==null&&score!==undefined) ? (won ? 'var(--orange)' : 'rgba(255,255,255,0.1)') : 'rgba(255,255,255,0.07)';
-    var scol  = (score!==null&&score!==undefined) ? (won ? '#fff' : 'rgba(255,255,255,0.45)') : 'rgba(255,255,255,0.2)';
-    var sval  = (score!==null&&score!==undefined) ? score : '-';
-    var pronEl= (myScore!==null&&myScore!==undefined)
-      ? '<span style="font-size:9px;color:var(--orange);min-width:11px;text-align:center;flex-shrink:0;margin-left:2px;" title="Tu prono">'+myScore+'</span>' : '';
-    return '<div style="display:flex;align-items:center;gap:4px;padding:5px 7px;background:'+bg+';min-width:0;">'
-      +'<span style="font-size:13px;width:17px;flex-shrink:0;text-align:center;">'+flag+'</span>'
-      +'<span style="flex:1;font-size:11px;font-weight:'+fw+';color:'+nc+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+short+'</span>'
-      +'<span style="background:'+sbg+';color:'+scol+';font-size:12px;font-weight:700;padding:1px 6px;border-radius:4px;min-width:20px;text-align:center;flex-shrink:0;">'+sval+'</span>'
-      +pronEl
+    var short = name.length > 14 ? name.slice(0,13)+'…' : name;
+    var bg = esGanador ? 'rgba(255,122,0,0.2)' : 'transparent';
+    var fw = esGanador ? '700' : '400';
+    var col = esGanador ? '#fff' : 'rgba(255,255,255,0.75)';
+    var scoreHtml = (gol !== null && gol !== undefined)
+      ? '<span style="background:'+(esGanador?'#ff7a00':'rgba(255,255,255,0.1)')+';color:'+(esGanador?'#fff':'rgba(255,255,255,0.5)')+';font-size:12px;font-weight:700;padding:1px 7px;border-radius:4px;min-width:20px;text-align:center;flex-shrink:0;">'+gol+'</span>'
+      : '<span style="background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.3);font-size:11px;padding:1px 7px;border-radius:4px;min-width:20px;text-align:center;flex-shrink:0;">-</span>';
+    return '<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;background:'+bg+';">'
+      +'<span style="font-size:14px;width:18px;text-align:center;flex-shrink:0;">'+flag+'</span>'
+      +'<span style="flex:1;font-size:11px;font-weight:'+fw+';color:'+col+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+short+'</span>'
+      +scoreHtml+'</div>';
+  }
+
+  function tarjeta(id, home, away) {
+    var m = MATCHES.find(function(x){ return x.id===id; });
+    var date = m ? m.date : '2026-07-10T12:00';
+    var h = (m&&m.home!==home) ? m.home : home;
+    var a = (m&&m.away!==away) ? m.away : away;
+    var r = resultados[id];
+    var hw = r && r.home > r.away;
+    var aw = r && r.away > r.home;
+    var cerrado = isMatchClosed({date:date});
+    var estado = r ? '<span style="color:#69f0ae;font-size:8px;font-weight:700;">FIN</span>'
+      : (cerrado ? '<span style="color:#f44336;font-size:8px;font-weight:700;">VIVO</span>' : '');
+    return '<div style="background:var(--bg-dark);border:1px solid '+(r?'rgba(76,175,80,0.4)':cerrado?'rgba(244,67,54,0.3)':'rgba(255,255,255,0.15)')+';border-radius:8px;overflow:hidden;width:182px;flex-shrink:0;">'
+      +'<div style="background:var(--bg-card);padding:3px 8px;display:flex;justify-content:space-between;align-items:center;">'
+      +'<span style="font-size:8px;color:rgba(255,255,255,0.5);">'+fmtFecha(date)+'</span>'+estado+'</div>'
+      +'<div style="height:1px;background:rgba(255,255,255,0.1);"></div>'
+      +fila(h, r?r.home:null, hw)
+      +'<div style="height:1px;background:rgba(255,255,255,0.1);"></div>'
+      +fila(a, r?r.away:null, aw)
       +'</div>';
   }
 
-  function card(id, fallbackHome, fallbackAway) {
-    var m   = getM(id);
-    var date = m ? m.date : '2026-07-01T12:00';
-    var home = m ? m.home : (fallbackHome||'Por definir');
-    var away = m ? m.away : (fallbackAway||'Por definir');
-    var r   = resultados[id] || null;
-    var myP = myPronos[id] || null;
-    var closed = isMatchClosed({date:date});
-    var hw  = r && r.home > r.away;
-    var aw  = r && r.away > r.home;
-    var statusEl = r
-      ? '<span style="color:#69f0ae;font-size:8px;font-weight:700;">FIN</span>'
-      : (closed ? '<span style="color:var(--red);font-size:8px;font-weight:700;">VIVO</span>' : '');
-    return '<div style="background:var(--bg-dark);border:1px solid '+(r?'rgba(76,175,80,0.4)':closed?'rgba(244,67,54,0.3)':'var(--border)')+';border-radius:7px;overflow:hidden;width:178px;">'
-      +'<div style="background:var(--bg-card);padding:2px 7px;display:flex;justify-content:space-between;align-items:center;">'
-      +'<span style="font-size:8px;color:var(--text-muted);">'+fmtD(date)+'</span>'+statusEl
-      +'</div>'
-      +'<div style="height:1px;background:var(--border);"></div>'
-      +teamRow(home, r?r.home:null, myP?myP.home:null, hw, !!r)
-      +'<div style="height:1px;background:var(--border);"></div>'
-      +teamRow(away, r?r.away:null, myP?myP.away:null, aw, !!r)
-      +'</div>';
-  }
-
-  function col(label, ids, fallbacks, gapPx) {
-    var gap = gapPx || 8;
-    var s = '<div style="display:flex;flex-direction:column;flex-shrink:0;width:178px;">';
-    s += '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;'
-       + 'color:var(--orange);text-align:center;padding:6px 0;border-bottom:2px solid var(--orange);margin-bottom:6px;">'+label+'</div>';
-    s += '<div style="display:flex;flex-direction:column;gap:'+gap+'px;">';
-    ids.forEach(function(id,i){
-      var fb = fallbacks ? fallbacks[i] : null;
-      s += card(id, fb?fb[0]:null, fb?fb[1]:null);
-    });
+  function columna(titulo, partidos, margenTop) {
+    var s = '<div style="display:flex;flex-direction:column;flex-shrink:0;width:182px;'+(margenTop?'margin-top:'+margenTop+'px;':'')+'">';
+    s += '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#ff7a00;'
+       + 'text-align:center;padding:7px 0;border-bottom:2px solid #ff7a00;margin-bottom:6px;">'+titulo+'</div>';
+    s += '<div style="display:flex;flex-direction:column;gap:8px;">';
+    partidos.forEach(function(p) { s += p; });
     s += '</div></div>';
     return s;
   }
 
-  // Espaciado vertical para alinear visualmente las fases
-  var r32Gap  = 8;
-  var octGap  = 2*178/8 + r32Gap; // aprox
-  var cuarGap = 80;
-  var semiGap = 180;
+  function sep() {
+    return '<div style="width:1px;background:rgba(255,255,255,0.12);align-self:stretch;flex-shrink:0;margin:28px 2px 0;"></div>';
+  }
 
-  var out = '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding:4px 0 12px;">';
-  out += '<div style="display:flex;gap:10px;width:max-content;align-items:flex-start;padding:2px;">';
+  // Calcular partidos de octavos/cuartos/semis/final
+  var oct = [41,43,45,47,42,44,46,48];
+  var cuar = [49,51,50,52];
+  var semi = [53,54];
+
+  var out = '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px;">';
+  out += '<div style="display:flex;align-items:flex-start;gap:6px;padding:4px 2px;width:max-content;">';
 
   // Columna izquierda R32 (8 partidos)
-  out += col('16avos', leftR32, null, r32Gap);
+  var cardsL = r32.map(function(p){ return tarjeta(p[0],p[1],p[2]); });
+  out += columna('16avos', cardsL);
+  out += sep();
 
-  // Separador visual
-  out += '<div style="width:2px;align-self:stretch;background:linear-gradient(to bottom,transparent,var(--border),transparent);flex-shrink:0;margin-top:28px;"></div>';
+  // Octavos izquierda (4 partidos) — con margen para centrar
+  var octL = [41,43,45,47].map(function(id){
+    var m = MATCHES.find(function(x){return x.id===id;});
+    return tarjeta(id, m?m.home:'Por definir', m?m.away:'Por definir');
+  });
+  out += columna('Octavos', octL, 95);
+  out += sep();
 
-  // Octavos izquierda (4)
-  out += '<div style="display:flex;flex-direction:column;flex-shrink:0;width:178px;margin-top:'+(Math.round((178+r32Gap)/2)-14)+'px;">';
-  out += '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--orange);text-align:center;padding:6px 0;border-bottom:2px solid var(--orange);margin-bottom:6px;">Octavos</div>';
-  out += '<div style="display:flex;flex-direction:column;gap:'+Math.round(178+r32Gap+8)+'px;">';
-  leftOct.forEach(function(id){ out += card(id); });
-  out += '</div></div>';
+  // Cuartos izquierda (2 partidos)
+  var cuarL = [49,51].map(function(id){
+    var m = MATCHES.find(function(x){return x.id===id;});
+    return tarjeta(id, m?m.home:'Por definir', m?m.away:'Por definir');
+  });
+  out += columna('Cuartos', cuarL, 285);
+  out += sep();
 
-  out += '<div style="width:2px;align-self:stretch;background:linear-gradient(to bottom,transparent,var(--border),transparent);flex-shrink:0;margin-top:28px;"></div>';
-
-  // Cuartos izquierda (2)
-  var cuarMargin = Math.round((178+r32Gap)*2 + r32Gap + 8);
-  out += '<div style="display:flex;flex-direction:column;flex-shrink:0;width:178px;margin-top:'+cuarMargin+'px;">';
-  out += '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--orange);text-align:center;padding:6px 0;border-bottom:2px solid var(--orange);margin-bottom:6px;">Cuartos</div>';
-  out += '<div style="display:flex;flex-direction:column;gap:'+Math.round((178+r32Gap)*4+r32Gap*3)+'px;">';
-  leftCuar.forEach(function(id){ out += card(id); });
-  out += '</div></div>';
-
-  out += '<div style="width:2px;align-self:stretch;background:linear-gradient(to bottom,transparent,var(--border),transparent);flex-shrink:0;margin-top:28px;"></div>';
-
-  // Semis izquierda (1)
-  var semiMargin = Math.round((178+r32Gap)*4 + r32Gap*3 + 50);
-  out += '<div style="display:flex;flex-direction:column;flex-shrink:0;width:178px;margin-top:'+semiMargin+'px;">';
-  out += '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--orange);text-align:center;padding:6px 0;border-bottom:2px solid var(--orange);margin-bottom:6px;">Semis</div>';
-  out += card(53);
-  out += '</div>';
-
-  out += '<div style="width:2px;align-self:stretch;background:linear-gradient(to bottom,transparent,var(--border),transparent);flex-shrink:0;margin-top:28px;"></div>';
+  // Semi izquierda (1 partido)
+  var mS1 = MATCHES.find(function(x){return x.id===53;});
+  out += columna('Semis', [tarjeta(53, mS1?mS1.home:'Gan. Cuarto 1', mS1?mS1.away:'Gan. Cuarto 2')], 570);
+  out += sep();
 
   // FINAL (centro)
-  var finalMargin = Math.round((178+r32Gap)*7 + r32Gap*6 + 20);
-  out += '<div style="display:flex;flex-direction:column;flex-shrink:0;width:178px;margin-top:'+finalMargin+'px;">';
-  out += '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--orange);text-align:center;padding:7px 0;border-bottom:3px solid var(--orange);margin-bottom:6px;">\u26bd FINAL</div>';
-  out += card(56,'Gan. Semi 1','Gan. Semi 2');
-  out += '</div>';
+  var mF = MATCHES.find(function(x){return x.id===56;});
+  out += columna('⚽ FINAL', [tarjeta(56, mF?mF.home:'Gan. Semi 1', mF?mF.away:'Gan. Semi 2')], 855);
+  out += sep();
 
-  out += '<div style="width:2px;align-self:stretch;background:linear-gradient(to bottom,transparent,var(--border),transparent);flex-shrink:0;margin-top:28px;"></div>';
-
-  // Semis derecha
-  out += '<div style="display:flex;flex-direction:column;flex-shrink:0;width:178px;margin-top:'+semiMargin+'px;">';
-  out += '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--orange);text-align:center;padding:6px 0;border-bottom:2px solid var(--orange);margin-bottom:6px;">Semis</div>';
-  out += card(54);
-  out += '</div>';
-
-  out += '<div style="width:2px;align-self:stretch;background:linear-gradient(to bottom,transparent,var(--border),transparent);flex-shrink:0;margin-top:28px;"></div>';
+  // Semi derecha
+  var mS2 = MATCHES.find(function(x){return x.id===54;});
+  out += columna('Semis', [tarjeta(54, mS2?mS2.home:'Gan. Cuarto 3', mS2?mS2.away:'Gan. Cuarto 4')], 570);
+  out += sep();
 
   // Cuartos derecha
-  out += '<div style="display:flex;flex-direction:column;flex-shrink:0;width:178px;margin-top:'+cuarMargin+'px;">';
-  out += '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--orange);text-align:center;padding:6px 0;border-bottom:2px solid var(--orange);margin-bottom:6px;">Cuartos</div>';
-  out += '<div style="display:flex;flex-direction:column;gap:'+Math.round((178+r32Gap)*4+r32Gap*3)+'px;">';
-  rightCuar.forEach(function(id){ out += card(id); });
-  out += '</div></div>';
-
-  out += '<div style="width:2px;align-self:stretch;background:linear-gradient(to bottom,transparent,var(--border),transparent);flex-shrink:0;margin-top:28px;"></div>';
+  var cuarR = [50,52].map(function(id){
+    var m = MATCHES.find(function(x){return x.id===id;});
+    return tarjeta(id, m?m.home:'Por definir', m?m.away:'Por definir');
+  });
+  out += columna('Cuartos', cuarR, 285);
+  out += sep();
 
   // Octavos derecha
-  out += '<div style="display:flex;flex-direction:column;flex-shrink:0;width:178px;margin-top:'+(Math.round((178+r32Gap)/2)-14)+'px;">';
-  out += '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--orange);text-align:center;padding:6px 0;border-bottom:2px solid var(--orange);margin-bottom:6px;">Octavos</div>';
-  out += '<div style="display:flex;flex-direction:column;gap:'+Math.round(178+r32Gap+8)+'px;">';
-  rightOct.forEach(function(id){ out += card(id); });
-  out += '</div></div>';
+  var octR = [42,44,46,48].map(function(id){
+    var m = MATCHES.find(function(x){return x.id===id;});
+    return tarjeta(id, m?m.home:'Por definir', m?m.away:'Por definir');
+  });
+  out += columna('Octavos', octR, 95);
+  out += sep();
 
-  out += '<div style="width:2px;align-self:stretch;background:linear-gradient(to bottom,transparent,var(--border),transparent);flex-shrink:0;margin-top:28px;"></div>';
-
-  // R32 derecha
-  out += col('16avos', rightR32, null, r32Gap);
+  // Columna derecha R32
+  var cardsR = r32b.map(function(p){ return tarjeta(p[0],p[1],p[2]); });
+  out += columna('16avos', cardsR);
 
   out += '</div></div>';
 
   // 3er puesto
-  out += '<div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">';
-  out += '<div style="font-size:9px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">';
-  out += '3\u00b0 Puesto \u00b7 18 jul \u00b7 Hard Rock Stadium, Miami</div>';
-  out += '<div style="width:178px;">'+card(55,'Perd. Semi 1','Perd. Semi 2')+'</div></div>';
+  var m3 = MATCHES.find(function(x){return x.id===55;});
+  out += '<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.12);">';
+  out += '<div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">3° Puesto · 18 jul · Hard Rock Stadium, Miami</div>';
+  out += '<div style="width:182px;">'+tarjeta(55, m3?m3.home:'Perd. Semi 1', m3?m3.away:'Perd. Semi 2')+'</div></div>';
 
-  el.innerHTML = out;
+    el.innerHTML = out;
+  } catch(e) {
+    console.error('Error en renderCuadro:', e);
+    el.innerHTML = '<div style="background:rgba(244,67,54,0.2);border:1px solid #f44336;border-radius:8px;padding:14px;font-size:13px;color:#f44336;">'
+      + '<b>Error al renderizar el cuadro:</b><br>' + e.message + '<br><br>'
+      + '<span style="font-size:11px;color:rgba(255,255,255,0.6);">Línea: ' + (e.lineNumber||'?') + '</span>'
+      + '</div>';
+  }
 }
+
 
 function renderAdmin(){
   document.getElementById('adminUsers').textContent=ranking.length;
@@ -1258,78 +1136,6 @@ function shareRanking(){
 // ══════════ PRONÓSTICOS DE TODOS ══════════
 var todosPhase = 'r32';
 
-function renderTodos() {
-  // Elegir fase con al menos un partido cerrado, si no mostrar grupos
-  var closedPhases = [...new Set(MATCHES.filter(function(m){ return isMatchClosed(m); }).map(function(m){ return m.phase; }))];
-  if (closedPhases.length > 0 && !closedPhases.includes(todosPhase)) {
-    todosPhase = closedPhases[closedPhases.length - 1];
-  }
-  var phases = [...new Set(MATCHES.map(function(m){ return m.phase; }))];
-  document.getElementById('todosPhase').innerHTML = phases.map(function(p){
-    return '<button class="tab-pill'+(todosPhase===p?' active':'')+'\" onclick=\"setTodosPhase(\''+p+'\')\">'+PHASES[p]+'</button>';
-  }).join('');
-  renderTodosContent();
-}
-
-function setTodosPhase(p) { todosPhase = p; renderTodos(); }
-
-function renderTodosContent() {
-  var content = document.getElementById('todosContent');
-  var matches = MATCHES.filter(function(m){ return m.phase === todosPhase; });
-
-  if (!matches.length) {
-    content.innerHTML = '<div class="empty-state"><div class="icon">&#128203;</div><div>No hay partidos en esta fase</div></div>';
-    return;
-  }
-
-  var html = '';
-  matches.forEach(function(m) {
-    var closed = isMatchClosed(m);
-    var fh = FLAGS[m.home] || '&#127988;';
-    var fa = FLAGS[m.away] || '&#127988;';
-    var r = resultados[m.id];
-    var dateStr = new Date(m.date).toLocaleDateString('es-AR',{weekday:'short',month:'short',day:'numeric'}) + ' ' + new Date(m.date).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}) + ' hs';
-
-    html += '<div class="match-card" style="margin-bottom:12px;">';
-
-    // Cabecera del partido
-    html += '<div class="match-meta">';
-    html += '<span class="match-badge">'+PHASES[m.phase]+'</span>';
-    html += '<span>'+dateStr+'</span>';
-    if (r) html += '<span style="background:var(--bg-card);color:var(--text-muted);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;">'+r.home+' - '+r.away+'</span>';
-    if (!closed) html += '<span style="background:rgba(76,175,80,0.2);color:#69f0ae;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;">ABIERTO</span>';
-    html += '</div>';
-
-    // Equipos
-    html += '<div class="match-teams" style="margin-bottom:12px;">';
-    html += '<div class="team"><div class="team-flag">'+fh+'</div><div class="team-name">'+m.home+'</div></div>';
-    html += '<div class="vs">VS</div>';
-    html += '<div class="team right"><div class="team-name">'+m.away+'</div><div class="team-flag">'+fa+'</div></div>';
-    html += '</div>';
-
-    if (!closed) {
-      // Partido aún no empezó: solo mostramos el propio
-      var myP = myPronos[m.id];
-      if (myP !== undefined) {
-        html += '<div style="background:rgba(255,122,0,0.12);border:1px solid rgba(255,122,0,0.3);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;">';
-        html += '<span style="font-size:11px;color:var(--orange);font-weight:600;">Tu pron&oacute;stico:</span>';
-        html += '<span style="font-size:16px;font-weight:700;color:var(--white);">'+myP.home+' - '+myP.away+'</span>';
-        html += '<span style="font-size:11px;color:var(--text-muted);margin-left:auto;">Los dem&aacute;s se ver&aacute;n cuando empiece el partido</span>';
-        html += '</div>';
-      } else {
-        html += '<div style="font-size:12px;color:var(--text-muted);padding:8px 0;">A&uacute;n no cargaste tu pron&oacute;stico para este partido.</div>';
-      }
-    } else {
-      // Partido cerrado: mostrar todos los pronósticos
-      html += renderAllPronos(m, r);
-    }
-
-    html += '</div>'; // cierre match-card
-  });
-
-  content.innerHTML = html;
-}
-
 function renderAllPronos(match, result) {
   // Recolectar pronósticos de todos los usuarios del ranking
   var pronosticos = [];
@@ -1349,66 +1155,6 @@ function renderAllPronos(match, result) {
   setTimeout(function(){ loadPronosForMatch(match, result); }, 50);
 
   return html;
-}
-
-function loadPronosForMatch(match, result) {
-  var container = document.getElementById('pronos-match-'+match.id);
-  if (!container) return;
-
-  api({action: 'getPronosByMatch', matchId: match.id}, function(err, res) {
-    if (err || !res.ok) {
-      container.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">No se pudieron cargar los pron&oacute;sticos.</div>';
-      return;
-    }
-
-    var pronos = res.pronos || [];
-    if (!pronos.length) {
-      container.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">Nadie pronostic&oacute; este partido.</div>';
-      return;
-    }
-
-    // Ordenar: primero exactos, luego por pts, luego sin acierto
-    pronos.sort(function(a,b){
-      var pa = result ? calcPts({home:a.homeScore, away:a.awayScore}, result) : 0;
-      var pb2 = result ? calcPts({home:b.homeScore, away:b.awayScore}, result) : 0;
-      return (pb2||0) - (pa||0);
-    });
-
-    var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;">';
-    pronos.forEach(function(p) {
-      var isMe = String(p.userId) === String(currentUser.id);
-      var ph = parseInt(p.homeScore), pa2 = parseInt(p.awayScore);
-      var pts = result ? calcPts({home:ph, away:pa2}, result) : null;
-      var ptsBadge = '';
-      if (pts !== null) {
-        var cls = pts===5?'pts-5':pts>=3?'pts-3':'pts-0';
-        ptsBadge = '<span class="pts-badge '+cls+'" style="font-size:10px;">+'+pts+' pts</span>';
-      }
-      var borderStyle = isMe ? 'border:1px solid var(--orange);' : 'border:1px solid var(--border);';
-      var bgStyle = isMe ? 'background:rgba(255,122,0,0.12);' : 'background:var(--bg-dark);';
-      html += '<div style="'+bgStyle+borderStyle+'border-radius:8px;padding:10px 12px;">';
-      html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">';
-      html += '<div style="font-size:11px;font-weight:600;color:'+(isMe?'var(--orange)':'var(--white)')+';">'+p.nombre+(isMe?' (vos)':'')+'</div>';
-      html += ptsBadge;
-      html += '</div>';
-      html += '<div style="font-size:18px;font-weight:700;text-align:center;color:var(--white);padding:4px 0;">'+ph+' - '+pa2+'</div>';
-      html += '</div>';
-    });
-    html += '</div>';
-
-    // Stats resumen
-    if (result) {
-      var exact = pronos.filter(function(p){ return calcPts({home:parseInt(p.homeScore),away:parseInt(p.awayScore)},result)===5; }).length;
-      var hit   = pronos.filter(function(p){ return (calcPts({home:parseInt(p.homeScore),away:parseInt(p.awayScore)},result)||0)>0; }).length;
-      html += '<div style="display:flex;gap:12px;margin-top:10px;padding:8px 12px;background:var(--bg-dark);border-radius:8px;font-size:11px;color:var(--text-muted);">';
-      html += '<span>&#128101; '+pronos.length+' pron&oacute;sticos</span>';
-      html += '<span style="color:#69f0ae;">&#9989; '+exact+' exactos</span>';
-      html += '<span style="color:#82b1ff;">&#127919; '+hit+' aciertos</span>';
-      html += '</div>';
-    }
-
-    container.innerHTML = html;
-  });
 }
 
 function showLoader(txt){document.getElementById('loaderTxt').textContent=txt||'Cargando...';document.getElementById('loaderEl').style.display='flex';}
