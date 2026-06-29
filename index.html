@@ -164,6 +164,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <button class="nav-btn" id="nav-tabla" onclick="showSection('tabla')">&#127942; Tabla</button>
     <button class="nav-btn" id="nav-historial" onclick="showSection('historial')">&#128202; Historial</button>
     <button class="nav-btn" id="nav-estadisticas" onclick="showSection('estadisticas')">&#128200; Stats</button>
+    <button class="nav-btn" id="nav-todos" onclick="showSection('todos')">&#128065; Todos</button>
     <button class="nav-btn" id="nav-cuadro" onclick="showSection('cuadro')">&#127959; Cuadro</button>
     <button class="nav-btn" id="nav-admin" onclick="showSection('admin')" style="display:none">&#9881;&#65039; Admin</button>
   </div>
@@ -253,6 +254,23 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         </div>
       </div>
     </div>
+
+    <!-- SECCIÓN CUADRO -->
+    <div class="section" id="sec-cuadro">
+      <div id="bracketContainer">
+        <div style="text-align:center;padding:40px;color:var(--text-muted);">Cargando cuadro...</div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN TODOS -->
+    <div class="section" id="sec-todos">
+      <div style="background:rgba(255,122,0,0.12);border:1px solid rgba(255,122,0,0.4);border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:12px;color:rgba(255,255,255,0.85);display:flex;gap:10px;align-items:flex-start;">
+        <span style="font-size:16px;flex-shrink:0;">&#128274;</span>
+        <span>Los pron&oacute;sticos de los dem&aacute;s se muestran <b>solo cuando el partido ya empez&oacute;</b>. Los tuyos siempre los ves.</span>
+      </div>
+      <div class="tab-row" id="todosPhaseEl"></div>
+      <div id="todosContent"></div>
+    </div>
   </div>
 </div>
 
@@ -269,13 +287,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <button class="btn-cancel" onclick="closeResultModal()">Cancelar</button>
       <button class="btn-primary" style="width:auto;flex:1;" onclick="adminSaveResult()">Guardar</button>
     </div>
-    <!-- SECCIÓN CUADRO DE ELIMINACIÓN -->
-    <div class="section" id="sec-cuadro">
-      <div id="bracketContainer">
-        <div style="text-align:center;padding:40px;color:var(--text-muted);">Cargando cuadro...</div>
-      </div>
-    </div>
-
     
   <div class="loader-txt" id="loaderTxt">Cargando...</div>
 </div>
@@ -323,6 +334,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <button class="nav-btn" id="nav-tabla" onclick="showSection('tabla')">&#127942; Tabla</button>
     <button class="nav-btn" id="nav-historial" onclick="showSection('historial')">&#128202; Historial</button>
     <button class="nav-btn" id="nav-estadisticas" onclick="showSection('estadisticas')">&#128200; Stats</button>
+    <button class="nav-btn" id="nav-todos" onclick="showSection('todos')">&#128065; Todos</button>
     <button class="nav-btn" id="nav-cuadro" onclick="showSection('cuadro')">&#127959; Cuadro</button>
     <button class="nav-btn" id="nav-admin" onclick="showSection('admin')" style="display:none">&#9881;&#65039; Admin</button>
   </div>
@@ -428,13 +440,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <button class="btn-cancel" onclick="closeResultModal()">Cancelar</button>
       <button class="btn-primary" style="width:auto;flex:1;" onclick="adminSaveResult()">Guardar</button>
     </div>
-    <!-- SECCIÓN CUADRO DE ELIMINACIÓN -->
-    <div class="section" id="sec-cuadro">
-      <div id="bracketContainer">
-        <div style="text-align:center;padding:40px;color:var(--text-muted);">Cargando cuadro...</div>
-      </div>
-    </div>
-
     <!-- SECCIÓN PRONÓSTICOS DE TODOS -->
     
 
@@ -681,6 +686,7 @@ function showSection(sec) {
     refreshAll(function(){ renderCuadro(); });
   }
 
+  if(sec==='todos') { showLoader('Cargando...'); refreshAll(function(){ hideLoader(); renderTodos(); }); }
   if(sec==='perfil') renderPerfil();
 }
 
@@ -822,173 +828,190 @@ function renderEstadisticas(stats){
 // IDs de partidos por ronda (según nuestro fixture)
 
 // ══════════ PRONÓSTICOS DE TODOS ══════════
-var todosPhase = 'r32';
 
 // ══════════ CUADRO DE ELIMINACIÓN ══════════
 
-
-
 // CUADRO DE ELIMINACION
+
+
+// ══════════════════════════════════════════
+// CUADRO DE ELIMINACION
+// ══════════════════════════════════════════
 function renderCuadro() {
   var el = document.getElementById('bracketContainer');
-  if (!el) {
-    console.error('bracketContainer no encontrado en DOM');
-    return;
-  }
-  // Debug temporal - mostrar que la función se ejecuta
-  el.innerHTML = '<div style="color:#69f0ae;padding:8px;font-size:12px;">Iniciando cuadro...</div>';
-  
-  try {
+  if (!el) return;
 
-  var r32 = [
-    [25,'Sudáfrica','Canadá'], [27,'Alemania','Paraguay'],
-    [29,'Costa de Marfil','Noruega'], [31,'México','Ecuador'],
-    [33,'Bélgica','Senegal'], [35,'España','Austria'],
-    [37,'Suiza','Argelia'], [39,'Argentina','Cabo Verde']
-  ];
-  var r32b = [
-    [26,'Brasil','Japón'], [28,'Países Bajos','Marruecos'],
-    [30,'Francia','Suecia'], [32,'Inglaterra','Congo DR'],
-    [34,'Estados Unidos','Bosnia'], [36,'Portugal','Croacia'],
-    [38,'Australia','Egipto'], [40,'Colombia','Ghana']
-  ];
+  var r32left  = [[25,'Sudáfrica','Canadá'],[27,'Alemania','Paraguay'],
+                  [29,'Costa de Marfil','Noruega'],[31,'México','Ecuador'],
+                  [33,'Bélgica','Senegal'],[35,'España','Austria'],
+                  [37,'Suiza','Argelia'],[39,'Argentina','Cabo Verde']];
+  var r32right = [[26,'Brasil','Japón'],[28,'Países Bajos','Marruecos'],
+                  [30,'Francia','Suecia'],[32,'Inglaterra','Congo DR'],
+                  [34,'Estados Unidos','Bosnia'],[36,'Portugal','Croacia'],
+                  [38,'Australia','Egipto'],[40,'Colombia','Ghana']];
 
-  function fmtFecha(ds) {
+  function fd(ds) {
     var d = new Date(parseARG(ds));
     return d.toLocaleDateString('es-AR',{day:'numeric',month:'numeric',timeZone:'America/Argentina/Buenos_Aires'})
       +' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/Argentina/Buenos_Aires'})+'hs';
   }
 
-  function fila(name, gol, esGanador) {
-    var flag = FLAGS[name] || '';
-    var short = name.length > 14 ? name.slice(0,13)+'…' : name;
-    var bg = esGanador ? 'rgba(255,122,0,0.2)' : 'transparent';
-    var fw = esGanador ? '700' : '400';
-    var col = esGanador ? '#fff' : 'rgba(255,255,255,0.75)';
-    var scoreHtml = (gol !== null && gol !== undefined)
-      ? '<span style="background:'+(esGanador?'#ff7a00':'rgba(255,255,255,0.1)')+';color:'+(esGanador?'#fff':'rgba(255,255,255,0.5)')+';font-size:12px;font-weight:700;padding:1px 7px;border-radius:4px;min-width:20px;text-align:center;flex-shrink:0;">'+gol+'</span>'
-      : '<span style="background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.3);font-size:11px;padding:1px 7px;border-radius:4px;min-width:20px;text-align:center;flex-shrink:0;">-</span>';
-    return '<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;background:'+bg+';">'
-      +'<span style="font-size:14px;width:18px;text-align:center;flex-shrink:0;">'+flag+'</span>'
-      +'<span style="flex:1;font-size:11px;font-weight:'+fw+';color:'+col+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+short+'</span>'
-      +scoreHtml+'</div>';
-  }
-
-  function tarjeta(id, home, away) {
-    var m = MATCHES.find(function(x){ return x.id===id; });
-    var date = m ? m.date : '2026-07-10T12:00';
-    var h = (m&&m.home!==home) ? m.home : home;
-    var a = (m&&m.away!==away) ? m.away : away;
-    var r = resultados[id];
-    var hw = r && r.home > r.away;
-    var aw = r && r.away > r.home;
-    var cerrado = isMatchClosed({date:date});
-    var estado = r ? '<span style="color:#69f0ae;font-size:8px;font-weight:700;">FIN</span>'
-      : (cerrado ? '<span style="color:#f44336;font-size:8px;font-weight:700;">VIVO</span>' : '');
-    return '<div style="background:var(--bg-dark);border:1px solid '+(r?'rgba(76,175,80,0.4)':cerrado?'rgba(244,67,54,0.3)':'rgba(255,255,255,0.15)')+';border-radius:8px;overflow:hidden;width:182px;flex-shrink:0;">'
-      +'<div style="background:var(--bg-card);padding:3px 8px;display:flex;justify-content:space-between;align-items:center;">'
-      +'<span style="font-size:8px;color:rgba(255,255,255,0.5);">'+fmtFecha(date)+'</span>'+estado+'</div>'
-      +'<div style="height:1px;background:rgba(255,255,255,0.1);"></div>'
-      +fila(h, r?r.home:null, hw)
-      +'<div style="height:1px;background:rgba(255,255,255,0.1);"></div>'
-      +fila(a, r?r.away:null, aw)
+  function tr(name, gol, ganador) {
+    var fl = FLAGS[name]||'';
+    var sh = name.length>14 ? name.slice(0,13)+'\u2026' : name;
+    return '<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;background:'+(ganador?'rgba(255,122,0,0.2)':'transparent')+';">'
+      +'<span style="font-size:13px;width:17px;text-align:center;flex-shrink:0;">'+fl+'</span>'
+      +'<span style="flex:1;font-size:11px;font-weight:'+(ganador?700:400)+';color:'+(ganador?'#fff':'rgba(255,255,255,0.75)')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+sh+'</span>'
+      +'<span style="background:'+(gol!==null&&gol!==undefined?(ganador?'#ff7a00':'rgba(255,255,255,0.12)'):'rgba(255,255,255,0.07)')+';color:'+(gol!==null&&gol!==undefined?(ganador?'#fff':'rgba(255,255,255,0.5)'):'rgba(255,255,255,0.25)')+';font-size:12px;font-weight:700;padding:1px 7px;border-radius:4px;min-width:20px;text-align:center;flex-shrink:0;">'+(gol!==null&&gol!==undefined?gol:'-')+'</span>'
       +'</div>';
   }
 
-  function columna(titulo, partidos, margenTop) {
-    var s = '<div style="display:flex;flex-direction:column;flex-shrink:0;width:182px;'+(margenTop?'margin-top:'+margenTop+'px;':'')+'">';
-    s += '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#ff7a00;'
-       + 'text-align:center;padding:7px 0;border-bottom:2px solid #ff7a00;margin-bottom:6px;">'+titulo+'</div>';
-    s += '<div style="display:flex;flex-direction:column;gap:8px;">';
-    partidos.forEach(function(p) { s += p; });
-    s += '</div></div>';
-    return s;
+  function tc(id, h, a) {
+    var m = MATCHES.find(function(x){return x.id===id;});
+    var dt = m?m.date:'2026-07-15T12:00';
+    var home = m?m.home:(h||'Por definir');
+    var away = m?m.away:(a||'Por definir');
+    var r = resultados[id];
+    var hw = r&&r.home>r.away; var aw = r&&r.away>r.home;
+    var cl = isMatchClosed({date:dt});
+    var st = r?'<span style="color:#69f0ae;font-size:8px;font-weight:700;">FIN</span>'
+      :(cl?'<span style="color:#f44336;font-size:8px;font-weight:700;">VIVO</span>':'');
+    return '<div style="background:var(--bg-dark);border:1px solid '+(r?'rgba(76,175,80,0.4)':cl?'rgba(244,67,54,0.3)':'rgba(255,255,255,0.15)')+';border-radius:8px;overflow:hidden;width:180px;">'
+      +'<div style="background:var(--bg-card);padding:2px 8px;display:flex;justify-content:space-between;">'
+      +'<span style="font-size:8px;color:rgba(255,255,255,0.45);">'+fd(dt)+'</span>'+st+'</div>'
+      +'<div style="height:1px;background:rgba(255,255,255,0.1);"></div>'
+      +tr(home,r?r.home:null,hw)
+      +'<div style="height:1px;background:rgba(255,255,255,0.1);"></div>'
+      +tr(away,r?r.away:null,aw)+'</div>';
   }
 
-  function sep() {
-    return '<div style="width:1px;background:rgba(255,255,255,0.12);align-self:stretch;flex-shrink:0;margin:28px 2px 0;"></div>';
+  function col(titulo, cards, mt) {
+    return '<div style="display:flex;flex-direction:column;flex-shrink:0;width:180px;'+(mt?'margin-top:'+mt+'px;':'')+'\">'
+      +'<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#ff7a00;text-align:center;padding:6px 0;border-bottom:2px solid #ff7a00;margin-bottom:6px;">'+titulo+'</div>'
+      +'<div style="display:flex;flex-direction:column;gap:8px;">'+cards.join('')+'</div></div>';
   }
 
-  // Calcular partidos de octavos/cuartos/semis/final
-  var oct = [41,43,45,47,42,44,46,48];
-  var cuar = [49,51,50,52];
-  var semi = [53,54];
+  function vline() {
+    return '<div style="width:1px;background:rgba(255,255,255,0.1);align-self:stretch;flex-shrink:0;margin:28px 2px 0;"></div>';
+  }
 
-  var out = '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px;">';
-  out += '<div style="display:flex;align-items:flex-start;gap:6px;padding:4px 2px;width:max-content;">';
+  var mS1=MATCHES.find(function(x){return x.id===53;})||{};
+  var mS2=MATCHES.find(function(x){return x.id===54;})||{};
+  var mF=MATCHES.find(function(x){return x.id===56;})||{};
+  var m3=MATCHES.find(function(x){return x.id===55;})||{};
 
-  // Columna izquierda R32 (8 partidos)
-  var cardsL = r32.map(function(p){ return tarjeta(p[0],p[1],p[2]); });
-  out += columna('16avos', cardsL);
-  out += sep();
+  var out = '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding:4px 0 12px;">';
+  out += '<div style="display:flex;align-items:flex-start;gap:5px;padding:2px;width:max-content;">';
 
-  // Octavos izquierda (4 partidos) — con margen para centrar
-  var octL = [41,43,45,47].map(function(id){
-    var m = MATCHES.find(function(x){return x.id===id;});
-    return tarjeta(id, m?m.home:'Por definir', m?m.away:'Por definir');
-  });
-  out += columna('Octavos', octL, 95);
-  out += sep();
-
-  // Cuartos izquierda (2 partidos)
-  var cuarL = [49,51].map(function(id){
-    var m = MATCHES.find(function(x){return x.id===id;});
-    return tarjeta(id, m?m.home:'Por definir', m?m.away:'Por definir');
-  });
-  out += columna('Cuartos', cuarL, 285);
-  out += sep();
-
-  // Semi izquierda (1 partido)
-  var mS1 = MATCHES.find(function(x){return x.id===53;});
-  out += columna('Semis', [tarjeta(53, mS1?mS1.home:'Gan. Cuarto 1', mS1?mS1.away:'Gan. Cuarto 2')], 570);
-  out += sep();
-
-  // FINAL (centro)
-  var mF = MATCHES.find(function(x){return x.id===56;});
-  out += columna('⚽ FINAL', [tarjeta(56, mF?mF.home:'Gan. Semi 1', mF?mF.away:'Gan. Semi 2')], 855);
-  out += sep();
-
-  // Semi derecha
-  var mS2 = MATCHES.find(function(x){return x.id===54;});
-  out += columna('Semis', [tarjeta(54, mS2?mS2.home:'Gan. Cuarto 3', mS2?mS2.away:'Gan. Cuarto 4')], 570);
-  out += sep();
-
-  // Cuartos derecha
-  var cuarR = [50,52].map(function(id){
-    var m = MATCHES.find(function(x){return x.id===id;});
-    return tarjeta(id, m?m.home:'Por definir', m?m.away:'Por definir');
-  });
-  out += columna('Cuartos', cuarR, 285);
-  out += sep();
-
-  // Octavos derecha
-  var octR = [42,44,46,48].map(function(id){
-    var m = MATCHES.find(function(x){return x.id===id;});
-    return tarjeta(id, m?m.home:'Por definir', m?m.away:'Por definir');
-  });
-  out += columna('Octavos', octR, 95);
-  out += sep();
-
-  // Columna derecha R32
-  var cardsR = r32b.map(function(p){ return tarjeta(p[0],p[1],p[2]); });
-  out += columna('16avos', cardsR);
+  out += col('16avos', r32left.map(function(p){return tc(p[0],p[1],p[2]);}));
+  out += vline();
+  out += col('Octavos',[tc(41),tc(43),tc(45),tc(47)], 95);
+  out += vline();
+  out += col('Cuartos',[tc(49),tc(51)], 285);
+  out += vline();
+  out += col('Semis',[tc(53,mS1.home||'Gan. Cuarto 1',mS1.away||'Gan. Cuarto 2')], 570);
+  out += vline();
+  out += col('\u26bd FINAL',[tc(56,mF.home||'Gan. Semi 1',mF.away||'Gan. Semi 2')], 855);
+  out += vline();
+  out += col('Semis',[tc(54,mS2.home||'Gan. Cuarto 3',mS2.away||'Gan. Cuarto 4')], 570);
+  out += vline();
+  out += col('Cuartos',[tc(50),tc(52)], 285);
+  out += vline();
+  out += col('Octavos',[tc(42),tc(44),tc(46),tc(48)], 95);
+  out += vline();
+  out += col('16avos', r32right.map(function(p){return tc(p[0],p[1],p[2]);}));
 
   out += '</div></div>';
+  out += '<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);">';
+  out += '<div style="font-size:9px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:6px;">3\u00b0 Puesto \u00b7 18 jul \u00b7 Miami</div>';
+  out += '<div style="width:180px;">'+tc(55,m3.home||'Perd. Semi 1',m3.away||'Perd. Semi 2')+'</div></div>';
 
-  // 3er puesto
-  var m3 = MATCHES.find(function(x){return x.id===55;});
-  out += '<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.12);">';
-  out += '<div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">3° Puesto · 18 jul · Hard Rock Stadium, Miami</div>';
-  out += '<div style="width:182px;">'+tarjeta(55, m3?m3.home:'Perd. Semi 1', m3?m3.away:'Perd. Semi 2')+'</div></div>';
+  el.innerHTML = out;
+}
 
-    el.innerHTML = out;
-  } catch(e) {
-    console.error('Error en renderCuadro:', e);
-    el.innerHTML = '<div style="background:rgba(244,67,54,0.2);border:1px solid #f44336;border-radius:8px;padding:14px;font-size:13px;color:#f44336;">'
-      + '<b>Error al renderizar el cuadro:</b><br>' + e.message + '<br><br>'
-      + '<span style="font-size:11px;color:rgba(255,255,255,0.6);">Línea: ' + (e.lineNumber||'?') + '</span>'
-      + '</div>';
-  }
+// ══════════════════════════════════════════
+// PRONÓSTICOS DE TODOS (visibilidad diferida)
+// ══════════════════════════════════════════
+var todosPhase = 'r32';
+
+function renderTodos() {
+  var phases = [...new Set(MATCHES.map(function(m){return m.phase;}))];
+  document.getElementById('todosPhaseEl').innerHTML = phases.map(function(p){
+    return '<button class="tab-pill'+(todosPhase===p?' active':'')+'\" onclick=\"setTodosPhase(\''+p+'\')\">'+PHASES[p]+'</button>';
+  }).join('');
+  renderTodosContent();
+}
+
+function setTodosPhase(p){ todosPhase=p; renderTodos(); }
+
+function renderTodosContent() {
+  var content = document.getElementById('todosContent');
+  if (!content) return;
+  var matches = MATCHES.filter(function(m){return m.phase===todosPhase;});
+  if (!matches.length) { content.innerHTML='<div class="empty-state"><div class="icon">&#128203;</div><div>No hay partidos</div></div>'; return; }
+  var html='';
+  matches.forEach(function(m) {
+    var closed=isMatchClosed(m);
+    var fh=FLAGS[m.home]||'&#127988;',fa=FLAGS[m.away]||'&#127988;';
+    var r=resultados[m.id];
+    var myP=myPronos[m.id];
+    var ds=new Date(parseARG(m.date)).toLocaleDateString('es-AR',{weekday:'short',month:'short',day:'numeric',timeZone:'America/Argentina/Buenos_Aires'})
+      +' '+new Date(parseARG(m.date)).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/Argentina/Buenos_Aires'})+' hs';
+    html+='<div class="match-card">';
+    html+='<div class="match-meta"><span class="match-badge">'+PHASES[m.phase]+'</span><span>'+ds+'</span>';
+    if(r) html+='<span style="background:var(--bg-card);color:var(--white);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;">'+r.home+' - '+r.away+'</span>';
+    if(!closed) html+='<span style="background:rgba(76,175,80,0.15);color:#69f0ae;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;">&#128274; Ocultos</span>';
+    html+='</div>';
+    html+='<div class="match-teams" style="margin-bottom:10px;"><div class="team"><div class="team-flag">'+fh+'</div><div class="team-name">'+m.home+'</div></div><div class="vs">VS</div><div class="team right"><div class="team-name">'+m.away+'</div><div class="team-flag">'+fa+'</div></div></div>';
+    if (!closed) {
+      if (myP!==undefined) {
+        html+='<div style="background:rgba(255,122,0,0.12);border:1px solid rgba(255,122,0,0.4);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:12px;">';
+        html+='<span style="font-size:11px;color:var(--orange);font-weight:600;">Tu pron\u00f3stico:</span>';
+        html+='<span style="font-size:18px;font-weight:700;">'+myP.home+' - '+myP.away+'</span>';
+        html+='<span style="font-size:11px;color:var(--text-muted);margin-left:auto;">&#128274; Los dem\u00e1s se revelan al inicio</span></div>';
+      } else {
+        html+='<div style="font-size:12px;color:var(--text-muted);">A\u00fan no cargaste tu pron\u00f3stico.</div>';
+      }
+    } else {
+      html+='<div id="pm-'+m.id+'"><div style="font-size:12px;color:var(--text-muted);">Cargando pron\u00f3sticos...</div></div>';
+    }
+    html+='</div>';
+  });
+  content.innerHTML=html;
+  matches.filter(function(m){return isMatchClosed(m);}).forEach(function(m){ loadPronosForMatch(m,resultados[m.id]); });
+}
+
+function loadPronosForMatch(match, result) {
+  var container=document.getElementById('pm-'+match.id);
+  if(!container) return;
+  api({action:'getPronosByMatch',matchId:match.id},function(err,res){
+    if(err||!res.ok||!res.pronos||!res.pronos.length){
+      if(container) container.innerHTML='<div style="font-size:12px;color:var(--text-muted);padding:6px 0;">Nadie pronostic\u00f3 este partido.</div>';
+      return;
+    }
+    var pronos=res.pronos;
+    if(result) pronos.sort(function(a,b){return (calcPts({home:b.homeScore,away:b.awayScore},result)||0)-(calcPts({home:a.homeScore,away:a.awayScore},result)||0);});
+    var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px;margin-top:4px;">';
+    pronos.forEach(function(p){
+      var isMe=String(p.userId)===String(currentUser.id);
+      var pts=result?calcPts({home:p.homeScore,away:p.awayScore},result):null;
+      var pb=pts!==null?'<span class="pts-badge '+(pts===5?'pts-5':pts>=3?'pts-3':'pts-0')+'" style="font-size:10px;">+'+pts+' pts</span>':'';
+      html+='<div style="'+(isMe?'background:rgba(255,122,0,0.12);border:1px solid var(--orange);':'background:var(--bg-dark);border:1px solid var(--border);')+'border-radius:8px;padding:10px 12px;">';
+      html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">';
+      html+='<div style="font-size:11px;font-weight:600;color:'+(isMe?'var(--orange)':'var(--white)')+';">'+p.nombre+(isMe?' \u2605':'')+'</div>'+pb+'</div>';
+      html+='<div style="font-size:20px;font-weight:700;text-align:center;color:var(--white);">'+p.homeScore+' - '+p.awayScore+'</div></div>';
+    });
+    html+='</div>';
+    if(result){
+      var exact=pronos.filter(function(p){return calcPts({home:p.homeScore,away:p.awayScore},result)===5;}).length;
+      var hit=pronos.filter(function(p){return (calcPts({home:p.homeScore,away:p.awayScore},result)||0)>0;}).length;
+      html+='<div style="display:flex;gap:14px;margin-top:10px;padding:8px 12px;background:var(--bg-dark);border-radius:8px;font-size:11px;color:var(--text-muted);">';
+      html+='<span>&#128101; '+pronos.length+' pron\u00f3sticos</span>';
+      html+='<span style="color:#69f0ae;">&#10003; '+exact+' exactos</span>';
+      html+='<span style="color:#82b1ff;">&#127919; '+hit+' aciertos</span></div>';
+    }
+    if(container) container.innerHTML=html;
+  });
 }
 
 
@@ -1141,22 +1164,6 @@ var ELIM_PHASES = ['r32','octavos','cuartos','semis','final'];
 // customTeams guarda los nombres editados: { matchId: {home:'X', away:'Y'} }
 var customTeams = JSON.parse(localStorage.getItem('customTeams26')||'{}');
 
-function getTeamName(matchId, side) {
-  var ct = customTeams[matchId];
-  if (ct && ct[side]) return ct[side];
-  var m = MATCHES.find(function(x){return x.id===matchId;});
-  return m ? m[side] : '';
-}
-
-function getMatchDisplay(m) {
-  return {
-    home: getTeamName(m.id, 'home'),
-    away: getTeamName(m.id, 'away'),
-    flag_home: FLAGS[getTeamName(m.id,'home')] || '\ud83c\udff4',
-    flag_away: FLAGS[getTeamName(m.id,'away')] || '\ud83c\udff4'
-  };
-}
-
 function openEquiposPanel() {
   document.getElementById('equiposPanel').style.display = 'block';
   document.getElementById('equiposPanel').scrollIntoView({behavior:'smooth', block:'start'});
@@ -1290,28 +1297,6 @@ function shareRanking(){
 // ══════════ UI ══════════
 
 // ══════════ PRONÓSTICOS DE TODOS ══════════
-var todosPhase = 'r32';
-
-function renderAllPronos(match, result) {
-  // Recolectar pronósticos de todos los usuarios del ranking
-  var pronosticos = [];
-  ranking.forEach(function(u) {
-    var up = myPronos; // propio
-    // Para otros usuarios necesitamos cargar desde la API
-    // Por ahora usamos el ranking que ya tiene los datos base
-    // y cargamos en batch si es necesario
-  });
-
-  // Pedimos al server todos los pronósticos de este partido
-  var html = '<div id="pronos-match-'+match.id+'">';
-  html += '<div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">Cargando pron&oacute;sticos...</div>';
-  html += '</div>';
-
-  // Disparar carga async
-  setTimeout(function(){ loadPronosForMatch(match, result); }, 50);
-
-  return html;
-}
 
 function showLoader(txt){document.getElementById('loaderTxt').textContent=txt||'Cargando...';document.getElementById('loaderEl').style.display='flex';}
 function hideLoader(){document.getElementById('loaderEl').style.display='none';}
