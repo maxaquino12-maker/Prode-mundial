@@ -125,7 +125,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   <div class="login-card">
     <div class="login-logo">
       <div class="ball">&#9917;</div>
-      <h1>Prode Mundial 2026 - Oben Adm</h1>
+      <h1>Prode Mundial 2026</h1>
       <p>USA &middot; Canad&aacute; &middot; M&eacute;xico</p>
     </div>
     <div id="loginForm">
@@ -458,46 +458,40 @@ var API_URL = 'https://script.google.com/macros/s/AKfycbzO0-Rt-80h3ov2KAlAaIYqsR
 var FLAGS = {'M\xe9xico':'\ud83c\uddf2\ud83c\uddfd','Sud\xe1frica':'\ud83c\uddff\ud83c\udde6','Corea del Sur':'\ud83c\uddf0\ud83c\uddf7','Chequia':'\ud83c\udde8\ud83c\uddff','Suiza':'\ud83c\udde8\ud83c\udded','Canad\xe1':'\ud83c\udde8\ud83c\udde6','Bosnia':'\ud83c\udde7\ud83c\udde6','Qatar':'\ud83c\uddf6\ud83c\udde6','Marruecos':'\ud83c\uddf2\ud83c\udde6','Hait\xed':'\ud83c\udded\ud83c\uddf9','Escocia':'\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f','Brasil':'\ud83c\udde7\ud83c\uddf7','Ecuador':'\ud83c\uddea\ud83c\udde8','Alemania':'\ud83c\udde9\ud83c\uddea','Cura\xe7ao':'\ud83c\udde8\ud83c\uddfc','Costa de Marfil':'\ud83c\udde8\ud83c\uddee','Jap\xf3n':'\ud83c\uddef\ud83c\uddf5','Suecia':'\ud83c\uddf8\ud83c\uddea','T\xfanez':'\ud83c\uddf9\ud83c\uddf3','Pa\xedses Bajos':'\ud83c\uddf3\ud83c\uddf1','Turqu\xeda':'\ud83c\uddf9\ud83c\uddf7','Estados Unidos':'\ud83c\uddfa\ud83c\uddf8','Paraguay':'\ud83c\uddf5\ud83c\uddfe','Australia':'\ud83c\udde6\ud83c\uddfa','Noruega':'\ud83c\uddf3\ud83c\uddf4','Francia':'\ud83c\uddeb\ud83c\uddf7','Senegal':'\ud83c\uddf8\ud83c\uddf3','Iraq':'\ud83c\uddee\ud83c\uddf6','Espa\xf1a':'\ud83c\uddea\ud83c\uddf8','Uruguay':'\ud83c\uddfa\ud83c\uddfe','Cabo Verde':'\ud83c\udde8\ud83c\uddfb','Arabia Saudita':'\ud83c\uddf8\ud83c\udde6','B\xe9lgica':'\ud83c\udde7\ud83c\uddea','Egipto':'\ud83c\uddea\ud83c\uddec','Ir\xe1n':'\ud83c\uddee\ud83c\uddf7','Nueva Zelanda':'\ud83c\uddf3\ud83c\uddff','Panam\xe1':'\ud83c\uddf5\ud83c\udde6','Inglaterra':'\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f','Ghana':'\ud83c\uddec\ud83c\udded','Croacia':'\ud83c\udded\ud83c\uddf7','Colombia':'\ud83c\udde8\ud83c\uddf4','Portugal':'\ud83c\uddf5\ud83c\uddf9','Congo DR':'\ud83c\udde8\ud83c\udde9','Uzbekist\xe1n':'\ud83c\uddfa\ud83c\uddff','Argelia':'\ud83c\udde9\ud83c\uddff','Austria':'\ud83c\udde6\ud83c\uddf9','Jordania':'\ud83c\uddef\ud83c\uddf4','Argentina':'\ud83c\udde6\ud83c\uddf7'};
 var PHASES = {'r32':'Ronda de 32','octavos':'Octavos de Final','cuartos':'Cuartos de Final','semis':'Semifinales','tercero':'3º Puesto','final':'Final'};
 var MATCHES = [
-  // ── RONDA DE 32 — 16 cruces CONFIRMADOS ─────────────────────
-  // Dom 28/jun
+  // ── RONDA DE 32 — resultados ya conocidos ───────────────────
   {id:25,phase:'r32',date:'2026-06-28T16:00',home:'Sudáfrica',away:'Canadá',venue:'SoFi Stadium, Los Ángeles'},
-  // Lun 29/jun
   {id:26,phase:'r32',date:'2026-06-29T14:00',home:'Brasil',away:'Japón',venue:'NRG Stadium, Houston'},
   {id:27,phase:'r32',date:'2026-06-29T17:30',home:'Alemania',away:'Paraguay',venue:'Gillette Stadium, Boston'},
   {id:28,phase:'r32',date:'2026-06-29T22:00',home:'Países Bajos',away:'Marruecos',venue:'Est. BBVA, Monterrey'},
-  // Mar 30/jun
   {id:29,phase:'r32',date:'2026-06-30T14:00',home:'Costa de Marfil',away:'Noruega',venue:'AT&T Stadium, Dallas'},
   {id:30,phase:'r32',date:'2026-06-30T18:00',home:'Francia',away:'Suecia',venue:'MetLife Stadium, NJ'},
   {id:31,phase:'r32',date:'2026-06-30T22:00',home:'México',away:'Ecuador',venue:'Est. Azteca, México'},
-  // Mie 1/jul
   {id:32,phase:'r32',date:'2026-07-01T13:00',home:'Inglaterra',away:'Congo DR',venue:'Mercedes-Benz, Atlanta'},
-  {id:33,phase:'r32',date:'2026-07-01T17:00',home:'Bélgica',away:'Senegal',venue:'Hard Rock Stadium, Miami'},
+  {id:33,phase:'r32',date:'2026-07-01T17:00',home:'Bélgica',away:'Senegal',venue:'Hard Rock, Miami'},
   {id:34,phase:'r32',date:'2026-07-01T21:00',home:'Estados Unidos',away:'Bosnia',venue:'Levi’s Stadium, SF'},
-  // Jue 2/jul
-  {id:35,phase:'r32',date:'2026-07-02T16:00',home:'España',away:'Austria',venue:'SoFi Stadium, Los Ángeles'},
+  {id:35,phase:'r32',date:'2026-07-02T16:00',home:'España',away:'Austria',venue:'SoFi Stadium, LA'},
   {id:36,phase:'r32',date:'2026-07-02T20:00',home:'Portugal',away:'Croacia',venue:'BMO Field, Toronto'},
-  // Vie 3/jul
-  {id:37,phase:'r32',date:'2026-07-03T00:00',home:'Suiza',away:'Argelia',venue:'BC Place, Vancouver'},
+  {id:37,phase:'r32',date:'2026-07-02T22:00',home:'Suiza',away:'Argelia',venue:'BC Place, Vancouver'},
   {id:38,phase:'r32',date:'2026-07-03T15:00',home:'Australia',away:'Egipto',venue:'AT&T Stadium, Dallas'},
   {id:39,phase:'r32',date:'2026-07-03T19:00',home:'Argentina',away:'Cabo Verde',venue:'Hard Rock Stadium, Miami'},
   {id:40,phase:'r32',date:'2026-07-03T22:30',home:'Colombia',away:'Ghana',venue:'Arrowhead Stadium, KC'},
-  // ── OCTAVOS DE FINAL ────────────────────────────────────────
+  // ── OCTAVOS DE FINAL — cruces confirmados ───────────────────
   // Sáb 4/jul
-  {id:41,phase:'octavos',date:'2026-07-04T14:00',home:'Gan. P25',away:'Gan. P27',venue:'NRG Stadium, Houston'},
-  {id:42,phase:'octavos',date:'2026-07-04T18:00',home:'Gan. P26',away:'Gan. P29',venue:'Lincoln Financial, Phila'},
+  {id:41,phase:'octavos',date:'2026-07-04T15:00',home:'Paraguay',away:'Francia',venue:'Lincoln Financial, Philadelphia'},
+  {id:42,phase:'octavos',date:'2026-07-04T14:00',home:'Canadá',away:'Marruecos',venue:'NRG Stadium, Houston'},
   // Dom 5/jul
-  {id:43,phase:'octavos',date:'2026-07-05T17:00',home:'Gan. P28',away:'Gan. P30',venue:'MetLife Stadium, NJ'},
-  {id:44,phase:'octavos',date:'2026-07-05T21:00',home:'Gan. P31',away:'Gan. P32',venue:'Est. Azteca'},
+  {id:43,phase:'octavos',date:'2026-07-05T17:00',home:'Brasil',away:'Noruega',venue:'MetLife Stadium, NJ'},
+  {id:44,phase:'octavos',date:'2026-07-05T21:00',home:'México',away:'Inglaterra',venue:'Est. Azteca, México'},
   // Lun 6/jul
-  {id:45,phase:'octavos',date:'2026-07-06T16:00',home:'Gan. P33',away:'Gan. P34',venue:'AT&T Stadium, Dallas'},
-  {id:46,phase:'octavos',date:'2026-07-06T21:00',home:'Gan. P35',away:'Gan. P36',venue:'Lumen Field, Seattle'},
+  {id:45,phase:'octavos',date:'2026-07-06T16:00',home:'Gan. P35',away:'Gan. P36',venue:'AT&T Stadium, Dallas'},
+  {id:46,phase:'octavos',date:'2026-07-06T21:00',home:'Estados Unidos',away:'Bélgica',venue:'Lumen Field, Seattle'},
   // Mar 7/jul
-  {id:47,phase:'octavos',date:'2026-07-07T13:00',home:'Gan. P37',away:'Gan. P38',venue:'Mercedes-Benz, Atlanta'},
-  {id:48,phase:'octavos',date:'2026-07-07T17:00',home:'Gan. P39',away:'Gan. P40',venue:'BC Place, Vancouver'},
+  {id:47,phase:'octavos',date:'2026-07-07T13:00',home:'Gan. P37',away:'Gan. P40',venue:'Mercedes-Benz, Atlanta'},
+  {id:48,phase:'octavos',date:'2026-07-07T17:00',home:'Gan. P39',away:'Gan. P38',venue:'BC Place, Vancouver'},
   // ── CUARTOS DE FINAL ────────────────────────────────────────
   {id:49,phase:'cuartos',date:'2026-07-09T17:00',home:'Gan. Oct-1',away:'Gan. Oct-2',venue:'Gillette Stadium, Boston'},
-  {id:50,phase:'cuartos',date:'2026-07-10T16:00',home:'Gan. Oct-3',away:'Gan. Oct-4',venue:'SoFi Stadium, LA'},
-  {id:51,phase:'cuartos',date:'2026-07-11T18:00',home:'Gan. Oct-5',away:'Gan. Oct-6',venue:'Hard Rock, Miami'},
+  {id:50,phase:'cuartos',date:'2026-07-10T16:00',home:'Gan. Oct-5',away:'Gan. Oct-6',venue:'SoFi Stadium, LA'},
+  {id:51,phase:'cuartos',date:'2026-07-11T18:00',home:'Gan. Oct-3',away:'Gan. Oct-4',venue:'Hard Rock, Miami'},
   {id:52,phase:'cuartos',date:'2026-07-11T22:00',home:'Gan. Oct-7',away:'Gan. Oct-8',venue:'Arrowhead, KC'},
   // ── SEMIFINALES ─────────────────────────────────────────────
   {id:53,phase:'semis',date:'2026-07-14T16:00',home:'Gan. Cuarto 1',away:'Gan. Cuarto 2',venue:'AT&T Stadium, Dallas'},
@@ -905,7 +899,7 @@ function renderCuadro() {
 
   out += col('16avos', r32left.map(function(p){return tc(p[0],p[1],p[2]);}));
   out += vline();
-  out += col('Octavos',[tc(41),tc(43),tc(45),tc(47)], 95);
+  out += col('Octavos',[tc(41,'Paraguay','Francia'),tc(43,'Brasil','Noruega'),tc(45),tc(47)], 95);
   out += vline();
   out += col('Cuartos',[tc(49),tc(51)], 285);
   out += vline();
@@ -917,7 +911,7 @@ function renderCuadro() {
   out += vline();
   out += col('Cuartos',[tc(50),tc(52)], 285);
   out += vline();
-  out += col('Octavos',[tc(42),tc(44),tc(46),tc(48)], 95);
+  out += col('Octavos',[tc(42,'Canadá','Marruecos'),tc(44,'México','Inglaterra'),tc(46,'Estados Unidos','Bélgica'),tc(48)], 95);
   out += vline();
   out += col('16avos', r32right.map(function(p){return tc(p[0],p[1],p[2]);}));
 
