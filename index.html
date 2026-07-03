@@ -124,8 +124,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 <div id="loginView" class="login-wrap">
   <div class="login-card">
     <div class="login-logo">
-      <div class="ball">&#9917;</div>
-      <h1>Prode Mundial 2026 - Oben Adm</h1>
+      <div class="ball">
+        <img src="copa.png"
+             alt="Copa del Mundo FIFA"
+             style="width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.5));"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span style="display:none;font-size:56px;">&#127942;</span>
+      </div>
+      <h1>Prode Mundial 2026</h1>
       <p>USA &middot; Canad&aacute; &middot; M&eacute;xico</p>
     </div>
     <div id="loginForm">
@@ -150,7 +156,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 <div id="appView" style="display:none">
   <div class="header">
     <div class="logo">
-      <div class="logo-icon">&#9917;</div>
+      <div class="logo-icon" style="background:transparent;overflow:visible;">
+          <img src="copa.png" alt="Copa" style="width:30px;height:30px;object-fit:contain;"
+               onerror="this.style.display='none';this.parentElement.innerHTML='&#127942;';">
+        </div>
       <div><div class="logo-text">Prode 2026</div><span class="logo-sub">Mundial FIFA</span></div>
     </div>
     <div class="header-right">
@@ -294,7 +303,50 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 <div id="loginView" class="login-wrap">
   <div class="login-card">
     <div class="login-logo">
-      <div class="ball">&#9917;</div>
+      <div class="ball"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="88" height="88" style="filter:drop-shadow(0 4px 14px rgba(0,0,0,0.5));">
+  <defs>
+    <radialGradient id="ballGrad" cx="38%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#f0f0f0"/>
+      <stop offset="100%" stop-color="#cccccc"/>
+    </radialGradient>
+    <radialGradient id="shineGrad" cx="35%" cy="30%" r="40%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.9)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+    <clipPath id="ballClip">
+      <circle cx="50" cy="50" r="46"/>
+    </clipPath>
+  </defs>
+  <!-- Base pelota -->
+  <circle cx="50" cy="50" r="46" fill="url(#ballGrad)" stroke="#ddd" stroke-width="0.5"/>
+  <!-- Panel rojo (Canada - hoja de arce) -->
+  <path d="M50 4 Q72 20 78 50 Q72 65 50 75 Q35 65 22 50 Q28 20 50 4Z" fill="#e8f0e8" clip-path="url(#ballClip)"/>
+  <path d="M50 4 Q65 15 72 35 Q60 42 50 40 Q40 42 28 35 Q35 15 50 4Z" fill="#cc0000" opacity="0.85" clip-path="url(#ballClip)"/>
+  <!-- Panel verde (Mexico - aguila) -->
+  <path d="M78 50 Q90 65 80 82 Q65 92 50 95 Q50 75 50 75 Q72 65 78 50Z" fill="#006600" opacity="0.85" clip-path="url(#ballClip)"/>
+  <!-- Panel azul (USA - estrella) -->
+  <path d="M22 50 Q10 65 20 82 Q35 92 50 95 Q50 75 50 75 Q28 65 22 50Z" fill="#003399" opacity="0.85" clip-path="url(#ballClip)"/>
+  <!-- Panel blanco central -->
+  <path d="M50 40 Q60 42 72 35 Q78 50 72 65 Q60 68 50 75 Q40 68 28 65 Q22 50 28 35 Q40 42 50 40Z" fill="white" opacity="0.92" clip-path="url(#ballClip)"/>
+  <!-- Lineas de costura -->
+  <path d="M50 4 Q65 15 72 35" fill="none" stroke="#999" stroke-width="0.8" clip-path="url(#ballClip)"/>
+  <path d="M50 4 Q35 15 28 35" fill="none" stroke="#999" stroke-width="0.8" clip-path="url(#ballClip)"/>
+  <path d="M72 35 Q78 50 72 65" fill="none" stroke="#999" stroke-width="0.8" clip-path="url(#ballClip)"/>
+  <path d="M28 35 Q22 50 28 65" fill="none" stroke="#999" stroke-width="0.8" clip-path="url(#ballClip)"/>
+  <path d="M72 65 Q60 80 50 95" fill="none" stroke="#999" stroke-width="0.8" clip-path="url(#ballClip)"/>
+  <path d="M28 65 Q40 80 50 95" fill="none" stroke="#999" stroke-width="0.8" clip-path="url(#ballClip)"/>
+  <!-- Onda decorativa central -->
+  <path d="M30 48 Q40 42 50 48 Q60 54 70 48" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" clip-path="url(#ballClip)"/>
+  <path d="M30 52 Q40 58 50 52 Q60 46 70 52" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1" clip-path="url(#ballClip)"/>
+  <!-- Brillo -->
+  <ellipse cx="38" cy="32" rx="12" ry="8" fill="url(#shineGrad)" clip-path="url(#ballClip)"/>
+  <!-- Borde exterior -->
+  <circle cx="50" cy="50" r="46" fill="none" stroke="#bbb" stroke-width="1"/>
+  <!-- Logo FIFA pequeño -->
+  <text x="50" y="57" font-family="Arial Black, sans-serif" font-size="5" font-weight="900" fill="#003399" text-anchor="middle" clip-path="url(#ballClip)">FIFA</text>
+  <text x="50" y="51" font-family="Arial, sans-serif" font-size="3.5" fill="#666" text-anchor="middle" clip-path="url(#ballClip)">TRIONDA</text>
+</svg></div>
       <h1>Prode Mundial 2026</h1>
       <p>USA &middot; Canad&aacute; &middot; M&eacute;xico</p>
     </div>
@@ -320,7 +372,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 <div id="appView" style="display:none">
   <div class="header">
     <div class="logo">
-      <div class="logo-icon">&#9917;</div>
+      <div class="logo-icon" style="overflow:hidden;padding:1px;background:transparent;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32">
+            <circle cx="50" cy="50" r="46" fill="white"/>
+            <path d="M50 4 Q65 15 72 35 Q60 42 50 40 Q40 42 28 35 Q35 15 50 4Z" fill="#cc0000" opacity="0.9"/>
+            <path d="M72 35 Q78 50 72 65 Q60 68 50 75 Q50 75 72 65 Z" fill="#006600" opacity="0.9"/>
+            <path d="M28 35 Q22 50 28 65 Q40 68 50 75 Q50 75 28 65 Z" fill="#003399" opacity="0.9"/>
+            <path d="M50 40 Q60 42 72 35 Q78 50 72 65 Q60 68 50 75 Q40 68 28 65 Q22 50 28 35 Q40 42 50 40Z" fill="white" opacity="0.85"/>
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#ccc" stroke-width="1"/>
+          </svg>
+        </div>
       <div><div class="logo-text">Prode 2026</div><span class="logo-sub">Mundial FIFA</span></div>
     </div>
     <div class="header-right">
@@ -471,7 +532,7 @@ var MATCHES = [
   {id:34,phase:'r32',date:'2026-07-01T21:00',home:'Estados Unidos',away:'Bosnia',venue:'Levi’s Stadium, SF'},
   {id:35,phase:'r32',date:'2026-07-02T16:00',home:'España',away:'Austria',venue:'SoFi Stadium, LA'},
   {id:36,phase:'r32',date:'2026-07-02T20:00',home:'Portugal',away:'Croacia',venue:'BMO Field, Toronto'},
-  {id:37,phase:'r32',date:'2026-07-02T23:59',home:'Suiza',away:'Argelia',venue:'BC Place, Vancouver'},
+  {id:37,phase:'r32',date:'2026-07-02T22:00',home:'Suiza',away:'Argelia',venue:'BC Place, Vancouver'},
   {id:38,phase:'r32',date:'2026-07-03T15:00',home:'Australia',away:'Egipto',venue:'AT&T Stadium, Dallas'},
   {id:39,phase:'r32',date:'2026-07-03T19:00',home:'Argentina',away:'Cabo Verde',venue:'Hard Rock Stadium, Miami'},
   {id:40,phase:'r32',date:'2026-07-03T22:30',home:'Colombia',away:'Ghana',venue:'Arrowhead Stadium, KC'},
