@@ -37,7 +37,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .login-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:18px; }
 .login-card { background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:32px 26px; width:100%; max-width:380px; }
 .login-logo { text-align:center; margin-bottom:24px; }
-.login-logo .ball { font-size:44px; }
+.login-logo .ball { font-size:44px; display:flex; align-items:center; justify-content:center; min-height:96px; }
 .login-logo h1 { font-size:20px; font-weight:700; margin-top:8px; }
 .login-logo p { font-size:13px; color:var(--text-muted); margin-top:3px; }
 .form-group { margin-bottom:12px; }
@@ -127,9 +127,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <div class="ball">
         <img src="imagen/Copa.png"
              alt="Copa del Mundo FIFA"
-             style="width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.5));"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-        <span style="display:none;font-size:56px;">&#127942;</span>
+             style="width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.5));display:block;"
+             onload="this.style.opacity=1;"
+             onerror="this.style.display='none';document.getElementById('ballFallback').style.display='block';">
+        <span id="ballFallback" style="display:none;font-size:56px;">&#127942;</span>
       </div>
       <h1>Prode Mundial 2026</h1>
       <p>USA &middot; Canad&aacute; &middot; M&eacute;xico</p>
@@ -538,17 +539,18 @@ var MATCHES = [
   {id:40,phase:'r32',date:'2026-07-03T22:30',home:'Colombia',away:'Ghana',venue:'Arrowhead Stadium, KC'},
   // ── OCTAVOS DE FINAL — cruces confirmados ───────────────────
   // Sáb 4/jul
-  {id:41,phase:'octavos',date:'2026-07-04T15:00',home:'Paraguay',away:'Francia',venue:'Lincoln Financial, Philadelphia'},
-  {id:42,phase:'octavos',date:'2026-07-04T14:00',home:'Canadá',away:'Marruecos',venue:'NRG Stadium, Houston'},
-  // Dom 5/jul
-  {id:43,phase:'octavos',date:'2026-07-05T17:00',home:'Brasil',away:'Noruega',venue:'MetLife Stadium, NJ'},
-  {id:44,phase:'octavos',date:'2026-07-05T21:00',home:'México',away:'Inglaterra',venue:'Est. Azteca, México'},
-  // Lun 6/jul
-  {id:45,phase:'octavos',date:'2026-07-06T16:00',home:'Gan. P35',away:'Gan. P36',venue:'AT&T Stadium, Dallas'},
-  {id:46,phase:'octavos',date:'2026-07-06T21:00',home:'Estados Unidos',away:'Bélgica',venue:'Lumen Field, Seattle'},
-  // Mar 7/jul
-  {id:47,phase:'octavos',date:'2026-07-07T13:00',home:'Gan. P37',away:'Gan. P40',venue:'Mercedes-Benz, Atlanta'},
-  {id:48,phase:'octavos',date:'2026-07-07T17:00',home:'Gan. P39',away:'Gan. P38',venue:'BC Place, Vancouver'},
+    // Sáb 5/jul
+  {id:41,phase:'octavos',date:'2026-07-05T14:00',home:'Canadá',away:'Marruecos',venue:'NRG Stadium, Houston'},
+  {id:42,phase:'octavos',date:'2026-07-05T18:00',home:'Paraguay',away:'Francia',venue:'Lincoln Financial, Philadelphia'},
+  // Dom 6/jul
+  {id:43,phase:'octavos',date:'2026-07-06T17:00',home:'Brasil',away:'Noruega',venue:'MetLife Stadium, NJ'},
+  {id:44,phase:'octavos',date:'2026-07-06T21:00',home:'México',away:'Inglaterra',venue:'Est. Azteca, México'},
+  // Lun 7/jul
+  {id:45,phase:'octavos',date:'2026-07-07T16:00',home:'Portugal',away:'España',venue:'AT&T Stadium, Dallas'},
+  {id:46,phase:'octavos',date:'2026-07-07T21:00',home:'Estados Unidos',away:'Bélgica',venue:'Lumen Field, Seattle'},
+  // Mar 8/jul
+  {id:47,phase:'octavos',date:'2026-07-08T13:00',home:'Argentina',away:'Egipto',venue:'Mercedes-Benz, Atlanta'},
+  {id:48,phase:'octavos',date:'2026-07-08T17:00',home:'Suiza',away:'Colombia',venue:'BC Place, Vancouver'},
   // ── CUARTOS DE FINAL ────────────────────────────────────────
   {id:49,phase:'cuartos',date:'2026-07-09T17:00',home:'Gan. Oct-1',away:'Gan. Oct-2',venue:'Gillette Stadium, Boston'},
   {id:50,phase:'cuartos',date:'2026-07-10T16:00',home:'Gan. Oct-5',away:'Gan. Oct-6',venue:'SoFi Stadium, LA'},
@@ -960,7 +962,7 @@ function renderCuadro() {
 
   out += col('16avos', r32left.map(function(p){return tc(p[0],p[1],p[2]);}));
   out += vline();
-  out += col('Octavos',[tc(41,'Paraguay','Francia'),tc(43,'Brasil','Noruega'),tc(45),tc(47)], 95);
+  out += col('Octavos',[tc(41,'Canadá','Marruecos'),tc(43,'Brasil','Noruega'),tc(45,'Portugal','España'),tc(47,'Argentina','Egipto')], 95);
   out += vline();
   out += col('Cuartos',[tc(49),tc(51)], 285);
   out += vline();
