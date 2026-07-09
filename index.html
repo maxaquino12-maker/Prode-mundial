@@ -552,10 +552,10 @@ var MATCHES = [
   {id:47,phase:'octavos',date:'2026-07-07T13:00',home:'Argentina',away:'Egipto',venue:'Mercedes-Benz, Atlanta'},
   {id:48,phase:'octavos',date:'2026-07-07T17:00',home:'Suiza',away:'Colombia',venue:'BC Place, Vancouver'},
   // ── CUARTOS DE FINAL ────────────────────────────────────────
-  {id:49,phase:'cuartos',date:'2026-07-09T17:00',home:'Gan. Oct-1',away:'Gan. Oct-2',venue:'Gillette Stadium, Boston'},
-  {id:50,phase:'cuartos',date:'2026-07-10T16:00',home:'Gan. Oct-5',away:'Gan. Oct-6',venue:'SoFi Stadium, LA'},
-  {id:51,phase:'cuartos',date:'2026-07-11T18:00',home:'Gan. Oct-3',away:'Gan. Oct-4',venue:'Hard Rock, Miami'},
-  {id:52,phase:'cuartos',date:'2026-07-11T22:00',home:'Gan. Oct-7',away:'Gan. Oct-8',venue:'Arrowhead, KC'},
+  {id:49,phase:'cuartos',date:'2026-07-10T17:00',home:'Francia',away:'Marruecos',venue:'Gillette Stadium, Boston'},
+  {id:50,phase:'cuartos',date:'2026-07-10T16:00',home:'España',away:'Bélgica',venue:'SoFi Stadium, LA'},
+  {id:51,phase:'cuartos',date:'2026-07-11T18:00',home:'Noruega',away:'Inglaterra',venue:'Hard Rock, Miami'},
+  {id:52,phase:'cuartos',date:'2026-07-11T22:00',home:'Argentina',away:'Suiza',venue:'Arrowhead Stadium, KC'},
   // ── SEMIFINALES ─────────────────────────────────────────────
   {id:53,phase:'semis',date:'2026-07-14T16:00',home:'Gan. Cuarto 1',away:'Gan. Cuarto 2',venue:'AT&T Stadium, Dallas'},
   {id:54,phase:'semis',date:'2026-07-15T16:00',home:'Gan. Cuarto 3',away:'Gan. Cuarto 4',venue:'Mercedes-Benz, Atlanta'},
@@ -964,7 +964,7 @@ function renderCuadro() {
   out += vline();
   out += col('Octavos',[tc(41,'Canadá','Marruecos'),tc(43,'Brasil','Noruega'),tc(45,'Portugal','España'),tc(47,'Argentina','Egipto')], 95);
   out += vline();
-  out += col('Cuartos',[tc(49),tc(51)], 285);
+  out += col('Cuartos',[tc(49,'Francia','Marruecos'),tc(51,'Noruega','Inglaterra')], 285);
   out += vline();
   out += col('Semis',[tc(53,mS1.home||'Gan. Cuarto 1',mS1.away||'Gan. Cuarto 2')], 570);
   out += vline();
@@ -972,7 +972,7 @@ function renderCuadro() {
   out += vline();
   out += col('Semis',[tc(54,mS2.home||'Gan. Cuarto 3',mS2.away||'Gan. Cuarto 4')], 570);
   out += vline();
-  out += col('Cuartos',[tc(50),tc(52)], 285);
+  out += col('Cuartos',[tc(50,'España','Bélgica'),tc(52,'Argentina','Suiza')], 285);
   out += vline();
   out += col('Octavos',[tc(42,'Canadá','Marruecos'),tc(44,'México','Inglaterra'),tc(46,'Estados Unidos','Bélgica'),tc(48)], 95);
   out += vline();
