@@ -110,6 +110,53 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .modal-footer { display:flex; gap:8px; margin-top:16px; }
 .btn-cancel { flex:1; padding:9px; background:none; border:1px solid var(--border); border-radius:7px; color:var(--text-muted); cursor:pointer; font-size:13px; }
 @media(max-width:560px){ .main{padding:10px;} .team-name{font-size:11px;} .stats-row{grid-template-columns:1fr 1fr;} }
+
+/* ── GANADOR ─────────────────────────────── */
+.winner-overlay {
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,0.85);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  animation:fadeInOverlay 0.5s ease;
+}
+@keyframes fadeInOverlay { from{opacity:0} to{opacity:1} }
+.winner-box {
+  background:linear-gradient(135deg,#2a2a2a,#3a3a3a);
+  border:2px solid var(--orange);
+  border-radius:20px;padding:36px 32px;text-align:center;
+  max-width:420px;width:90%;position:relative;overflow:hidden;
+  box-shadow:0 0 60px rgba(255,122,0,0.4);
+}
+.winner-copa { font-size:72px;animation:copaFloat 2s ease-in-out infinite; }
+@keyframes copaFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+.winner-title { font-size:14px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:2px;margin:12px 0 4px; }
+.winner-name { font-size:32px;font-weight:800;color:#fff;margin:8px 0; }
+.winner-pts { font-size:16px;color:var(--orange);font-weight:700;margin-bottom:20px; }
+.winner-close { background:var(--orange);border:none;color:#fff;padding:10px 28px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:background 0.2s; }
+.winner-close:hover { background:var(--orange-light); }
+
+/* Confetti canvas */
+#confettiCanvas { position:fixed;inset:0;z-index:9998;pointer-events:none; }
+
+/* ── PODIO ───────────────────────────────── */
+.podio-wrap { margin-top:16px; }
+.podio-row { display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-bottom:12px; }
+.podio-step {
+  display:flex;flex-direction:column;align-items:center;
+  border-radius:10px 10px 0 0;
+  padding:10px 8px 0;
+  min-width:90px;
+}
+.podio-step.gold { background:linear-gradient(180deg,rgba(255,215,0,0.2),rgba(255,215,0,0.05));border:1px solid rgba(255,215,0,0.4);height:140px; }
+.podio-step.silver { background:linear-gradient(180deg,rgba(192,192,192,0.2),rgba(192,192,192,0.05));border:1px solid rgba(192,192,192,0.3);height:110px; }
+.podio-step.bronze { background:linear-gradient(180deg,rgba(205,127,50,0.2),rgba(205,127,50,0.05));border:1px solid rgba(205,127,50,0.3);height:85px; }
+.podio-medal { font-size:28px;margin-bottom:4px; }
+.podio-avatar { width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;margin:0 auto 6px; }
+.podio-avatar.gold { background:var(--gold);color:#000; }
+.podio-avatar.silver { background:#c0c0c0;color:#000; }
+.podio-avatar.bronze { background:#cd7f32;color:#fff; }
+.podio-pname { font-size:11px;font-weight:700;color:#fff;text-align:center;max-width:80px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.podio-pts { font-size:12px;font-weight:700;color:var(--orange);margin-top:2px; }
+.podio-base { background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;padding:6px 10px;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px; }
 </style>
 </head>
 <body>
@@ -132,7 +179,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
              onerror="this.style.display='none';document.getElementById('ballFallback').style.display='block';">
         <span id="ballFallback" style="display:none;font-size:56px;">&#127942;</span>
       </div>
-      <h1>Prode Mundial 2026 - Oben Arg</h1>
+      <h1>Prode Mundial 2026</h1>
       <p>USA &middot; Canad&aacute; &middot; M&eacute;xico</p>
     </div>
     <div id="loginForm">
@@ -560,9 +607,9 @@ var MATCHES = [
   {id:53,phase:'semis',date:'2026-07-14T16:00',home:'Francia',away:'España',venue:'AT&T Stadium, Dallas'},
   {id:54,phase:'semis',date:'2026-07-15T16:00',home:'Inglaterra',away:'Argentina',venue:'Mercedes-Benz, Atlanta'},
   // ── TERCER PUESTO ───────────────────────────────────────────
-  {id:55,phase:'tercero',date:'2026-07-18T18:00',home:'Francia',away:'Inglaterra',venue:'Hard Rock, Miami'},
+  {id:55,phase:'tercero',date:'2026-07-18T18:00',home:'Perd. Semi 1',away:'Perd. Semi 2',venue:'Hard Rock, Miami'},
   // ── FINAL ───────────────────────────────────────────────────
-  {id:56,phase:'final',date:'2026-07-19T16:00',home:'España',away:'Argentina',venue:'MetLife Stadium, NJ'}
+  {id:56,phase:'final',date:'2026-07-19T16:00',home:'Gan. Semi 1',away:'Gan. Semi 2',venue:'MetLife Stadium, NJ'}
 ];
 
 
@@ -799,6 +846,7 @@ function renderDashboard() {
   document.getElementById('dashLeaderboard').innerHTML=ranking.slice(0,5).map(function(u,i){var medal=i===0?'\ud83e\udd47':i===1?'\ud83e\udd48':i===2?'\ud83e\udd49':'';var isMe=String(u.id)===String(currentUser.id);return '<div class="lb-row'+(isMe?' me':'')+'"><div class="lb-rank">'+(medal||'#'+(i+1))+'</div><div class="lb-avatar" style="font-size:11px;">'+ini(u.nombre)+'</div><div class="lb-name">'+u.nombre+(isMe?' <span class="user-chip">Vos</span>':'')+'</div><div><div class="lb-pts">'+u.total+'</div><div style="font-size:11px;color:var(--text-muted);">'+u.exact+' exactos</div></div></div>';}).join('');
   var todayStr=new Date().toISOString().slice(0,10);
   var todayM=MATCHES.filter(function(m){return m.date.startsWith(todayStr);});
+  checkWinner();
   var tmd=document.getElementById('todayMatches');
   if(!todayM.length){tmd.innerHTML='<div class="empty-state"><div class="icon">\ud83d\udcc5</div><div>No hay partidos programados hoy</div></div>';return;}
   tmd.innerHTML=todayM.map(function(m){var fh=FLAGS[m.home]||'\ud83c\udff4',fa=FLAGS[m.away]||'\ud83c\udff4',r=resultados[m.id];var st2=isMatchClosed(m)?(r?'<span style="background:var(--bg-dark);color:var(--text-muted);padding:3px 8px;border-radius:5px;font-size:11px;">'+r.home+' - '+r.away+'</span>':'<span class="result-live">\u26bd VIVO</span>'):'<span class="result-upcoming">'+new Date(m.date).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})+' hs</span>';return '<div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);"><div style="flex:1;font-size:12px;">'+fh+' '+m.home+' vs '+fa+' '+m.away+'</div>'+st2+'</div>';}).join('');
@@ -966,11 +1014,11 @@ function renderCuadro() {
   out += vline();
   out += col('Cuartos',[tc(49,'Francia','Marruecos'),tc(51,'Noruega','Inglaterra')], 285);
   out += vline();
-  out += col('Semis',[tc(53,mS1.home||'Gan. Cuarto 1',mS1.away||'Gan. Cuarto 2')], 570);
+  out += col('Semis',[tc(53,'Francia','España')], 570);
   out += vline();
   out += col('\u26bd FINAL',[tc(56,mF.home||'Gan. Semi 1',mF.away||'Gan. Semi 2')], 855);
   out += vline();
-  out += col('Semis',[tc(54,mS2.home||'Gan. Cuarto 3',mS2.away||'Gan. Cuarto 4')], 570);
+  out += col('Semis',[tc(54,'Inglaterra','Argentina')], 570);
   out += vline();
   out += col('Cuartos',[tc(50,'España','Bélgica'),tc(52,'Argentina','Suiza')], 285);
   out += vline();
@@ -1069,6 +1117,141 @@ function loadPronosForMatch(match, result) {
     }
     if(container) container.innerHTML=html;
   });
+}
+
+
+
+// ══════════ GANADOR & CONFETTI & PODIO ══════════
+
+// Verificar si el torneo terminó y mostrar ganador
+function checkWinner() {
+  var finalMatch = MATCHES.find(function(m){ return m.phase === 'final'; });
+  if (!finalMatch) return;
+  if (!isMatchClosed({date: finalMatch.date})) return;
+  if (!resultados[finalMatch.id]) return;
+
+  // El torneo terminó - mostrar podio
+  renderPodio();
+
+  // Si ya se cerró el overlay antes, no mostrarlo de nuevo
+  if (localStorage.getItem('winnerShown26') === 'true') return;
+
+  var top = ranking[0];
+  if (!top) return;
+
+  document.getElementById('winnerName').textContent = top.nombre;
+  document.getElementById('winnerPts').textContent = top.total + ' puntos';
+  document.getElementById('winnerStats').textContent =
+    top.exact + ' pronósticos exactos · ' + top.hit + ' aciertos';
+  document.getElementById('winnerOverlay').style.display = 'flex';
+  startConfetti();
+  localStorage.setItem('winnerShown26', 'true');
+}
+
+function closeWinner() {
+  document.getElementById('winnerOverlay').style.display = 'none';
+  stopConfetti();
+}
+
+// ── Confetti ──────────────────────────────────────────
+var confettiAnim = null;
+var confettiPieces = [];
+
+function startConfetti() {
+  var canvas = document.getElementById('confettiCanvas');
+  canvas.style.display = 'block';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  var ctx = canvas.getContext('2d');
+  var colors = ['#ff7a00','#ffd700','#ff4444','#44ff88','#4488ff','#ff44ff','#ffffff'];
+  confettiPieces = [];
+  for (var i = 0; i < 180; i++) {
+    confettiPieces.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      w: Math.random() * 10 + 6,
+      h: Math.random() * 6 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 6,
+      speedX: (Math.random() - 0.5) * 3,
+      speedY: Math.random() * 4 + 2,
+      opacity: Math.random() * 0.7 + 0.3
+    });
+  }
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    confettiPieces.forEach(function(p) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI / 180);
+      ctx.globalAlpha = p.opacity;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+      p.x += p.speedX; p.y += p.speedY; p.rot += p.rotSpeed;
+      if (p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
+    });
+    confettiAnim = requestAnimationFrame(draw);
+  }
+  draw();
+  // Parar después de 8 segundos
+  setTimeout(stopConfetti, 8000);
+}
+
+function stopConfetti() {
+  if (confettiAnim) { cancelAnimationFrame(confettiAnim); confettiAnim = null; }
+  var canvas = document.getElementById('confettiCanvas');
+  if (canvas) canvas.style.display = 'none';
+}
+
+// ── Podio ─────────────────────────────────────────────
+function renderPodio() {
+  var podioCard = document.getElementById('podioCard');
+  var podioRow  = document.getElementById('podioRow');
+  var podioRest = document.getElementById('podioRest');
+  if (!podioCard || ranking.length < 1) return;
+
+  podioCard.style.display = 'block';
+
+  var top3 = ranking.slice(0, 3);
+  var medals = ['gold','silver','bronze'];
+  var emojis = ['\ud83e\udd47','\ud83e\udd48','\ud83e\udd49'];
+  // Orden visual: 2do - 1ro - 3ro
+  var order = top3.length >= 3 ? [top3[1],top3[0],top3[2]] : top3;
+  var orderClass = top3.length >= 3 ? ['silver','gold','bronze'] : medals;
+  var orderEmoji = top3.length >= 3 ? [emojis[1],emojis[0],emojis[2]] : emojis;
+
+  podioRow.innerHTML = order.map(function(u, i) {
+    if (!u) return '';
+    var cls = orderClass[i];
+    var ini = u.nombre.split(' ').map(function(x){return x[0];}).join('').slice(0,2).toUpperCase();
+    var isMe = String(u.id) === String(currentUser.id);
+    return '<div class="podio-step '+cls+'">'
+      + '<div class="podio-medal">'+orderEmoji[i]+'</div>'
+      + '<div class="podio-avatar '+cls+'" style="'+(isMe?'box-shadow:0 0 0 2px white;':'')+'">'+ini+'</div>'
+      + '<div class="podio-pname">'+(isMe?'<b>'+u.nombre+'</b>':u.nombre)+'</div>'
+      + '<div class="podio-pts">'+u.total+' pts</div>'
+      + '</div>';
+  }).join('');
+
+  // Resto del ranking (4to en adelante)
+  if (ranking.length > 3) {
+    podioRest.innerHTML = ranking.slice(3).map(function(u, i) {
+      var isMe = String(u.id) === String(currentUser.id);
+      var ini = u.nombre.split(' ').map(function(x){return x[0];}).join('').slice(0,2).toUpperCase();
+      return '<div class="podio-base" style="'+(isMe?'border-color:var(--orange);background:rgba(255,122,0,0.08);':'')+'\">'
+        + '<div style="display:flex;align-items:center;gap:8px;">'
+        + '<span style="font-size:13px;color:var(--text-muted);font-weight:700;min-width:20px;">'+(i+4)+'</span>'
+        + '<div style="width:28px;height:28px;border-radius:50%;background:var(--bg-card);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;">'+ini+'</div>'
+        + '<span style="font-size:13px;font-weight:'+(isMe?700:400)+';color:'+(isMe?'var(--orange)':'var(--white)')+';">'+u.nombre+'</span>'
+        + '</div>'
+        + '<div style="text-align:right;">'
+        + '<div style="font-size:14px;font-weight:700;color:var(--orange);">'+u.total+' pts</div>'
+        + '<div style="font-size:10px;color:var(--text-muted);">'+u.exact+' exactos</div>'
+        + '</div></div>';
+    }).join('');
+  }
 }
 
 
@@ -1362,5 +1545,20 @@ function showNotif(msg){var el=document.getElementById('notifEl');el.textContent
 document.getElementById('loginPass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 document.getElementById('loginUser').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 </script>
+
+<!-- CONFETTI CANVAS -->
+<canvas id="confettiCanvas" style="display:none;"></canvas>
+
+<!-- WINNER OVERLAY -->
+<div id="winnerOverlay" class="winner-overlay" style="display:none;">
+  <div class="winner-box">
+    <div class="winner-copa">&#127942;</div>
+    <div class="winner-title">&#127881; Campe&oacute;n del Prode 2026</div>
+    <div class="winner-name" id="winnerName">-</div>
+    <div class="winner-pts" id="winnerPts">0 puntos</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;" id="winnerStats"></div>
+    <button class="winner-close" onclick="closeWinner()">&#127881; &iexcl;Felicitaciones!</button>
+  </div>
+</div>
 </body>
 </html>
